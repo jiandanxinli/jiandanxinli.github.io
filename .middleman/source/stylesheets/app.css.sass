@@ -1,0 +1,140 @@
+@import 'normalize.css'
+@import 'syntax.css'
+
+$black: #2d3c48
+$blue: #3e8cb7
+$grey: #b0b8c1
+
+html
+  overflow-x: hidden
+  height: 100%
+  font-family: sans-serif
+  -ms-text-size-adjust: 100%
+  -webkit-text-size-adjust: 100%
+
+a
+  color: $blue
+  text-decoration: none
+  span
+    margin-left: 1em
+    color: $grey
+    font-size: .9em
+
+img
+  display: block
+  max-width: 100%
+
+pre.highlight
+  background: $black
+  padding: .5em 1em
+  overflow-x: auto
+
+  code
+    color: #f8f8f2
+
+body
+  font-family: 'Hiragino Sans GB', '华文细黑', 'STHeiti', '微软雅黑', 'Microsoft YaHei', SimHei, 'Helvetica Neue', Helvetica, Arial, sans-serif
+  font-size: 16px
+  position: relative
+  top: 0
+  color: $black
+  line-height: 1.6
+  overflow-x: hidden
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0)
+
+.container
+  max-width: 868px
+  padding: 1em 2em
+  margin: 0 auto
+
+@media (max-width: 700px)
+  .container
+    margin: 1em
+    padding: 0
+
+.header
+  overflow: hidden
+  border-bottom: 1px solid #eee
+  padding-bottom: 1em
+  .logo
+    display: block
+    float: left
+    height: 80px
+    img
+      height: 80px
+  h1
+    float: left
+    margin: 0 0 0 .2em
+    font-size: 2em
+    font-weight: normal
+    height: 80px
+    line-height: 80px
+    a
+      color: $black
+  .github
+    float: right
+    text-decoration: none
+    line-height: 80px
+
+@media (max-width: 700px)
+  .header
+    padding-bottom: 2em
+    .logo, h1, .github
+      display: block
+      float: none
+      margin: 0 auto
+      text-align: center
+    h1
+      font-size: 1.6em
+      height: 50px
+      line-height: 55px
+      font-weight: bold
+    img
+      margin: 0 auto
+    .github
+      line-height: 1
+      font-size: .8em
+
+.subheader
+  border-bottom: 1px solid #eee
+  padding-bottom: 1em
+  text-align: center
+  p
+    margin-bottom: .5em
+  a
+    display: inline-block
+    margin: 0 .5em
+    &.active
+      font-weight: bold
+
+.content
+  min-height: 350px
+
+@media (max-width: 700px)
+  .content
+    min-height: 100px
+
+.footer
+  background: #f4f5f6
+  border-top: 1px solid #eff0f1
+  color: $grey
+  font-size: .8em
+  text-align: center
+  padding-bottom: .5em
+  a
+    margin: 0 .5em
+  .copy
+    margin-top: .5em
+
+.article
+  color: #818486
+  .date
+    color: $grey
+    font-size: .8em
+    text-transform: uppercase
+  .summary
+    font-size: .9em
+    line-height: 1.4
+  a
+    display: block
+    margin: .3em 0

@@ -1,0 +1,189 @@
+---
+title: 2.5 个人如何开发一款跨终端的产品？[Ruby Tuesday 的分享]
+date: 2015-09-08
+tags: Ruby,Web
+author: Ben
+summary: 基于 Ruby on Rails 的 Variant Response，以及 Browser gem 来区分设备，使用响应式设计和 Turbolinks 来优化用户体验。
+---
+
+## 2.5 个人？
+
+* 1 个全栈（我 ^_^）
+* 1 个 Ruby 程序员
+* 0.5 个前端开发（产品经理兼职）
+
+## 跨终端？
+
+* 电脑：浏览器、微信 PC 版（PC 版微信支持微信登陆）
+* 平板：浏览器、App（Android & iOS）、微信
+* 手机：浏览器、App（Android & iOS）、微信
+
+这些终端不仅用于访问，还需要支持推送和支付：
+
+* 通知渠道：邮件、短信、微信、App 推送
+* 支付渠道：支付宝、微信支付、银联支付
+
+## 解决方案
+
+* 尽可能降低开发工作量（人员有限）
+* 尽可能利用 RoR 已有技术
+* 基于 User Agent 信息来区分具体终端
+
+## 从 RoR 出发
+
+* 使用 Turbolinks 优化网页加载体验
+* 不使用前端 MVC 框架加重工作量
+* 使用响应式设计 + 部分页面 Variant Response
+* 不针对各个终端单独制作页面
+
+## 基于 browser 区分终端
+
+* browser 的双重含义：浏览器 和 browser gem
+* 每个终端都有各自的 User Agent
+* 通过扩展 browser gem 来判断当前的终端类型
+* 通过打印终端类型到 body class 使得 CSS 可以针对性调整样式
+
+## 具体步骤
+
+### 1. 使用并扩展 [browser gem](https://github.com/fnando/browser) 来判断终端类型
+
+```ruby
+Browser::NAMES[:smileback] = 'SmileBack' # 我们 App 的自定义 User Agent 标识
+Browser::NAMES[:wechat] = 'Wechat'
+Browser::NAMES[:desktop] = 'Desktop'
+
+class Browser
+  module Meta
+    class Smileback < Base
+      def meta
+        'smileback' if browser.smileback?
+      end
+    end
+
+    class Wechat < Base
+      def meta
+        'wechat' if browser.wechat?
+      end
+    end
+
+    class Desktop < Base
+      def meta
+        'desktop' if browser.desktop?
+      end
+    end
+  end
+
+  module Consoles
+    def smileback?
+      !(ua =~ /smileback/i).nil?
+    end
+
+    def wechat?
+      !(ua =~ /MicroMessenger/i).nil?
+    end
+
+    def desktop?
+      !mobile? && !wechat? && !smileback?
+    end
+  end
+end
+```
+
+### 2. 在 html body class 里添加 browser 信息，方便 CSS 套用
+
+```erb
+<body class="<%= Browser.new(ua: request.env['HTTP_USER_AGENT']).to_s %>"> <!-- class 会输出如 chrome modern mac webkit desktop 或 iphone ios mobile modern other safari safari5 webkit --!>
+```
+```css
+body{ /* 默认的样式 */ }
+body.desktop{ /* 桌面浏览器定制样式 */ }
+body.mobile{ /* 手机浏览器定制样式 */ }
+body.wechat{ /* 微信定制样式 */ }
+```
+
+### 3. 使用 [Variant Response](http://api.rubyonrails.org/classes/ActionController/MimeResponds.html) 来针对部分区别大的页面做两套或多套 views
+
+```ruby
+# application_controller.rb
+
+before_action :detect_browser
+
+private
+
+def detect_browser
+  request.variant = :mobile if Browser.new(ua: request.env['HTTP_USER_AGENT']).mobile?
+end
+```
+
+需要拆分的页面，做成如下形式：
+
+```
+app/views/pages/home.erb
+app/views/pages/home.html+mobile.erb # 文件名格式为 响应格式+设备名
+```
+
+### 4. 添加 helper，方便复杂的情况下调用，比如支付
+
+```ruby
+# application_helper.rb
+
+def browser
+  @_browser ||= Browser.new(ua: request.env['HTTP_USER_AGENT'])
+end
+```
+```slim
+/ 懒得转 erb 格式了，下面这段是 slim 格式的
+- if browser.smileback?
+  a.button href="jdxlsmileback://recharges/#{resource.id}/pay" 支付宝付款
+  = link_to '银联付款', pay_recharge_path(resource, unionpay: true), 'data-no-turbolink' => true
+- elsif browser.wechat?
+  - if current_user.weixin_id
+    = link_to '微信支付', '#', id: 'wepay', class: 'button'
+    = link_to '银联付款', pay_recharge_path(resource, unionpay: true), 'data-no-turbolink' => true
+  - else
+    = link_to '银联付款', pay_recharge_path(resource, unionpay: true), 'data-no-turbolink' => true, class: 'button'
+- elsif browser.mobile?
+  = link_to '支付宝付款', pay_recharge_path(resource, alipay: true), class: 'button', 'data-no-turbolink' => true
+  = link_to '银联付款', pay_recharge_path(resource, unionpay: true), 'data-no-turbolink' => true
+- else
+  = link_to '支付宝付款', pay_recharge_path(resource, alipay: true), class: 'button', 'data-no-turbolink' => true
+  = link_to '微信支付', pay_recharge_path(resource, scan_wepay: true)
+  = link_to '银联付款', pay_recharge_path(resource, unionpay: true), 'data-no-turbolink' => true
+```
+
+## 其它经验
+
+* iOS App 我们用 WKWebView 套的壳，WKWebView 比 UIWebView 性能更好些，但限制也更多些，具体可以 Google。
+* Android App 我们用默认的 WebView，目前没发现更好的替代品。
+* 支付渠道之前我们是自己封装的，现在发现 [Ping++](https://pingxx.com) 也不错，大家可以试试。
+
+## 重点来了！！！
+
+### 简单心理是什么？
+
+* 最大的华语心理咨询平台
+* 最严格的咨询师入驻审核
+* 立志于提供最专业的心理服务
+
+### 内心世界那么大，想不想来看看？
+
+我们需要：
+
+* Ruby 工程师 月薪 15k 起
+
+我们提供：
+
+* 最人性化的工作环境（老板及大部分员工都有心理学专业背景，程序员鼓励师弱爆了 :smirk: ）
+* 非北京地区可远程工作（本部位于北京中关村）
+
+欢迎勾搭 [hr@jiandanxinli.com](mailto:hr@jiandanxinli.com)
+
+## 休息下，看看养眼的照片吧（非 PS）
+
+女王大人（曾用名：煤球）及她的孩子们
+![猫](http://jdxl-img.b0.upaiyun.com/id_cards/f6c6fb9742d94eb1aa5f73eb3e8b15d1.jpg)
+
+各种帅哥美女云集的活动
+![帅哥美女](http://jdxl-img.b0.upaiyun.com/id_cards/6a9656184f9a467eac8d7c7f5ab0d5e2.jpg)
+
+了解更多我们公司的详情可以移步这里： https://www.jiandanxinli.com/pages/37

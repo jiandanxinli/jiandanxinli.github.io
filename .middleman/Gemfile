@@ -1,0 +1,17 @@
+# If you do not have OpenSSL installed, change
+# the following line to use 'http://'
+source 'https://gems.ruby-china.org'
+
+# Middleman Gems
+gem 'middleman'
+gem 'middleman-livereload'
+gem 'middleman-syntax'
+gem 'middleman-blog'
+
+gem 'redcarpet'
+gem 'nokogiri'
+
+# For feed.xml.builder
+gem 'builder'
+
+gem 'slim'

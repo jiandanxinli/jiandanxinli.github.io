@@ -1,0 +1,29 @@
+doctype html
+html lang="zh-CN"
+  head
+    meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1'
+    meta name='viewport' content='width=device-width, initial-scale=1'
+    title= current_article ? current_article.title : '简单心理技术团队'
+    = stylesheet_link_tag 'app'
+    = feed_tag :atom, '/feed.xml', title: 'Atom Feed'
+    link rel='icon' href='/images/favicon.ico'
+  body
+    .header.container
+      a.logo href='/'= image_tag 'logo.png'
+      h1
+        a href='/' 简单心理 · 技术团队
+      a.github href="https://github.com/jiandanxinli" github.com/jiandanxinli
+    .subheader.container
+      p 欢迎，这里有我们团队的技术分享，你可以点击查看各个主题
+      - blog.tags.each do |tag, articles|
+        = link_to tag, tag_path(tag), class: ('active' if defined?(tagname) && tagname == tag)
+      a href='https://www.jiandanxinli.com/pages/37' Join Us
+    .content.container= yield
+    .footer
+      .container
+        .links
+          a href='/feed.xml' Feed
+          a href='https://github.com/jiandanxinli' Github
+          a href='https://www.jiandanxinli.com/pages/37' 关于我们
+          a href='https://www.jiandanxinli.com' 简单心理
+        .copy &copy; 2014 - 2016 北京竹间科技有限公司 版权所有

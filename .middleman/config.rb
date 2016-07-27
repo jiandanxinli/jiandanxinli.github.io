@@ -75,7 +75,7 @@ configure :build do
 end
 
 before_build do
-  FileUtils.rm Dir.glob('../*')
+  FileUtils.rm_r Dir.glob('../*')
 end
 after_build do
   FileUtils.mv Dir.glob('./build/*'), '../'

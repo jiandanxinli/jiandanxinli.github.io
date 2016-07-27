@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>简单心理技术团队</title>
+  <subtitle>简单心理 · 技术团队</subtitle>
+  <id>https://jiandanxinli.github.io/</id>
+  <link href="https://jiandanxinli.github.io/"/>
+  <link href="https://jiandanxinli.github.io/feed.xml" rel="self"/>
+  <updated>2015-09-08T08:00:00+08:00</updated>
+  <author>
+    <name>北京竹间科技有限公司</name>
+  </author>
+  <entry>
+    <title>2.5 个人如何开发一款跨终端的产品？[Ruby Tuesday 的分享]</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2015-09-08.html"/>
+    <id>https://jiandanxinli.github.io/2015-09-08.html</id>
+    <published>2015-09-08T08:00:00+08:00</published>
+    <updated>2016-07-27T11:40:16+08:00</updated>
+    <author>
+      <name>Ben</name>
+    </author>
+    <content type="html">&lt;h2&gt;2.5 个人？&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;1 个全栈（我 ^_^）&lt;/li&gt;
+&lt;li&gt;1 个 Ruby 程序员&lt;/li&gt;
+&lt;li&gt;0.5 个前端开发（产品经理兼职）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;跨终端？&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;电脑：浏览器、微信 PC 版（PC 版微信支持微信登陆）&lt;/li&gt;
+&lt;li&gt;平板：浏览器、App（Android &amp;amp; iOS）、微信&lt;/li&gt;
+&lt;li&gt;手机：浏览器、App（Android &amp;amp; iOS）、微信&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这些终端不仅用于访问，还需要支持推送和支付：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;通知渠道：邮件、短信、微信、App 推送&lt;/li&gt;
+&lt;li&gt;支付渠道：支付宝、微信支付、银联支付&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;解决方案&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;尽可能降低开发工作量（人员有限）&lt;/li&gt;
+&lt;li&gt;尽可能利用 RoR 已有技术&lt;/li&gt;
+&lt;li&gt;基于 User Agent 信息来区分具体终端&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;从 RoR 出发&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;使用 Turbolinks 优化网页加载体验&lt;/li&gt;
+&lt;li&gt;不使用前端 MVC 框架加重工作量&lt;/li&gt;
+&lt;li&gt;使用响应式设计 + 部分页面 Variant Response&lt;/li&gt;
+&lt;li&gt;不针对各个终端单独制作页面&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;基于 browser 区分终端&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;browser 的双重含义：浏览器 和 browser gem&lt;/li&gt;
+&lt;li&gt;每个终端都有各自的 User Agent&lt;/li&gt;
+&lt;li&gt;通过扩展 browser gem 来判断当前的终端类型&lt;/li&gt;
+&lt;li&gt;通过打印终端类型到 body class 使得 CSS 可以针对性调整样式&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;具体步骤&lt;/h2&gt;
+
+&lt;h3&gt;1. 使用并扩展 &lt;a href="https://github.com/fnando/browser"&gt;browser gem&lt;/a&gt; 来判断终端类型&lt;/h3&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;Browser&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;NAMES&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:smileback&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'SmileBack'&lt;/span&gt; &lt;span class="c1"&gt;# 我们 App 的自定义 User Agent 标识&lt;/span&gt;
+&lt;span class="no"&gt;Browser&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;NAMES&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:wechat&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Wechat'&lt;/span&gt;
+&lt;span class="no"&gt;Browser&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;NAMES&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:desktop&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Desktop'&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Browser&lt;/span&gt;
+  &lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;Meta&lt;/span&gt;
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Smileback&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;Base&lt;/span&gt;
+      &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;meta&lt;/span&gt;
+        &lt;span class="s1"&gt;'smileback'&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;browser&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;smileback?&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Wechat&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;Base&lt;/span&gt;
+      &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;meta&lt;/span&gt;
+        &lt;span class="s1"&gt;'wechat'&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;browser&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;wechat?&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Desktop&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;Base&lt;/span&gt;
+      &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;meta&lt;/span&gt;
+        &lt;span class="s1"&gt;'desktop'&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;browser&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;desktop?&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+  &lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;Consoles&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;smileback?&lt;/span&gt;
+      &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ua&lt;/span&gt; &lt;span class="o"&gt;=~&lt;/span&gt; &lt;span class="sr"&gt;/smileback/i&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;nil?&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;wechat?&lt;/span&gt;
+      &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ua&lt;/span&gt; &lt;span class="o"&gt;=~&lt;/span&gt; &lt;span class="sr"&gt;/MicroMessenger/i&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;nil?&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;desktop?&lt;/span&gt;
+      &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;mobile?&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;wechat?&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;smileback?&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2. 在 html body class 里添加 browser 信息，方便 CSS 套用&lt;/h3&gt;
+&lt;pre class="highlight erb"&gt;&lt;code&gt;&lt;span class="nt"&gt;&amp;lt;body&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"&lt;/span&gt;&lt;span class="cp"&gt;&amp;lt;%=&lt;/span&gt; &lt;span class="no"&gt;Browser&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;ua: &lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;env&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'HTTP_USER_AGENT'&lt;/span&gt;&lt;span class="p"&gt;]).&lt;/span&gt;&lt;span class="nf"&gt;to_s&lt;/span&gt; &lt;span class="cp"&gt;%&amp;gt;&lt;/span&gt;&lt;span class="s"&gt;"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- class 会输出如 chrome modern mac webkit desktop 或 iphone ios mobile modern other safari safari5 webkit --!&amp;gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight css"&gt;&lt;code&gt;&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="c"&gt;/* 默认的样式 */&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="nc"&gt;.desktop&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="c"&gt;/* 桌面浏览器定制样式 */&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="nc"&gt;.mobile&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="c"&gt;/* 手机浏览器定制样式 */&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="nc"&gt;.wechat&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="c"&gt;/* 微信定制样式 */&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3. 使用 &lt;a href="http://api.rubyonrails.org/classes/ActionController/MimeResponds.html"&gt;Variant Response&lt;/a&gt; 来针对部分区别大的页面做两套或多套 views&lt;/h3&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# application_controller.rb&lt;/span&gt;
+
+&lt;span class="n"&gt;before_action&lt;/span&gt; &lt;span class="ss"&gt;:detect_browser&lt;/span&gt;
+
+&lt;span class="kp"&gt;private&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;detect_browser&lt;/span&gt;
+  &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;variant&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="ss"&gt;:mobile&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="no"&gt;Browser&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;ua: &lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;env&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'HTTP_USER_AGENT'&lt;/span&gt;&lt;span class="p"&gt;]).&lt;/span&gt;&lt;span class="nf"&gt;mobile?&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;需要拆分的页面，做成如下形式：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;app/views/pages/home.erb
+app/views/pages/home.html+mobile.erb # 文件名格式为 响应格式+设备名
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;4. 添加 helper，方便复杂的情况下调用，比如支付&lt;/h3&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# application_helper.rb&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;browser&lt;/span&gt;
+  &lt;span class="vi"&gt;@_browser&lt;/span&gt; &lt;span class="o"&gt;||=&lt;/span&gt; &lt;span class="no"&gt;Browser&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;ua: &lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;env&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'HTTP_USER_AGENT'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight slim"&gt;&lt;code&gt;&lt;span class="c"&gt;/ 懒得转 erb 格式了，下面这段是 slim 格式的&lt;/span&gt;
+&lt;span class="p"&gt;-&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;browser&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;smileback?&lt;/span&gt;
+  &lt;span class="nt"&gt;a&lt;/span&gt;&lt;span class="nc"&gt;.button&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="na"&gt;href&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="s"&gt;"jdxlsmileback://recharges/#{resource.id}/pay"&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;支付宝付款
+  &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;link_to&lt;/span&gt; &lt;span class="s1"&gt;'银联付款'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pay_recharge_path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;unionpay: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="s1"&gt;'data-no-turbolink'&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;
+&lt;span class="p"&gt;-&lt;/span&gt; &lt;span class="k"&gt;elsif&lt;/span&gt; &lt;span class="n"&gt;browser&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;wechat?&lt;/span&gt;
+  &lt;span class="p"&gt;-&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;current_user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;weixin_id&lt;/span&gt;
+    &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;link_to&lt;/span&gt; &lt;span class="s1"&gt;'微信支付'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'#'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;id: &lt;/span&gt;&lt;span class="s1"&gt;'wepay'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;class: &lt;/span&gt;&lt;span class="s1"&gt;'button'&lt;/span&gt;
+    &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;link_to&lt;/span&gt; &lt;span class="s1"&gt;'银联付款'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pay_recharge_path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;unionpay: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="s1"&gt;'data-no-turbolink'&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;
+  &lt;span class="p"&gt;-&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt;
+    &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;link_to&lt;/span&gt; &lt;span class="s1"&gt;'银联付款'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pay_recharge_path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;unionpay: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="s1"&gt;'data-no-turbolink'&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;class: &lt;/span&gt;&lt;span class="s1"&gt;'button'&lt;/span&gt;
+&lt;span class="p"&gt;-&lt;/span&gt; &lt;span class="k"&gt;elsif&lt;/span&gt; &lt;span class="n"&gt;browser&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;mobile?&lt;/span&gt;
+  &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;link_to&lt;/span&gt; &lt;span class="s1"&gt;'支付宝付款'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pay_recharge_path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;alipay: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="ss"&gt;class: &lt;/span&gt;&lt;span class="s1"&gt;'button'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'data-no-turbolink'&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;
+  &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;link_to&lt;/span&gt; &lt;span class="s1"&gt;'银联付款'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pay_recharge_path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;unionpay: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="s1"&gt;'data-no-turbolink'&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;
+&lt;span class="p"&gt;-&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt;
+  &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;link_to&lt;/span&gt; &lt;span class="s1"&gt;'支付宝付款'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pay_recharge_path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;alipay: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="ss"&gt;class: &lt;/span&gt;&lt;span class="s1"&gt;'button'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'data-no-turbolink'&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;
+  &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;link_to&lt;/span&gt; &lt;span class="s1"&gt;'微信支付'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pay_recharge_path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;scan_wepay: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="n"&gt;link_to&lt;/span&gt; &lt;span class="s1"&gt;'银联付款'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pay_recharge_path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;unionpay: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="s1"&gt;'data-no-turbolink'&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;其它经验&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;iOS App 我们用 WKWebView 套的壳，WKWebView 比 UIWebView 性能更好些，但限制也更多些，具体可以 Google。&lt;/li&gt;
+&lt;li&gt;Android App 我们用默认的 WebView，目前没发现更好的替代品。&lt;/li&gt;
+&lt;li&gt;支付渠道之前我们是自己封装的，现在发现 &lt;a href="https://pingxx.com"&gt;Ping++&lt;/a&gt; 也不错，大家可以试试。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;重点来了！！！&lt;/h2&gt;
+
+&lt;h3&gt;简单心理是什么？&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;最大的华语心理咨询平台&lt;/li&gt;
+&lt;li&gt;最严格的咨询师入驻审核&lt;/li&gt;
+&lt;li&gt;立志于提供最专业的心理服务&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;内心世界那么大，想不想来看看？&lt;/h3&gt;
+
+&lt;p&gt;我们需要：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Ruby 工程师 月薪 15k 起&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们提供：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;最人性化的工作环境（老板及大部分员工都有心理学专业背景，程序员鼓励师弱爆了 :smirk: ）&lt;/li&gt;
+&lt;li&gt;非北京地区可远程工作（本部位于北京中关村）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;欢迎勾搭 &lt;a href="mailto:hr@jiandanxinli.com"&gt;hr@jiandanxinli.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;休息下，看看养眼的照片吧（非 PS）&lt;/h2&gt;
+
+&lt;p&gt;女王大人（曾用名：煤球）及她的孩子们
+&lt;img src="http://jdxl-img.b0.upaiyun.com/id_cards/f6c6fb9742d94eb1aa5f73eb3e8b15d1.jpg" alt="猫" /&gt;&lt;/p&gt;
+
+&lt;p&gt;各种帅哥美女云集的活动
+&lt;img src="http://jdxl-img.b0.upaiyun.com/id_cards/6a9656184f9a467eac8d7c7f5ab0d5e2.jpg" alt="帅哥美女" /&gt;&lt;/p&gt;
+
+&lt;p&gt;了解更多我们公司的详情可以移步这里： &lt;a href="https://www.jiandanxinli.com/pages/37"&gt;https://www.jiandanxinli.com/pages/37&lt;/a&gt;&lt;/p&gt;
+</content>
+  </entry>
+</feed>

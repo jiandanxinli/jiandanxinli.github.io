@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>2.5 个人如何开发一款跨终端的产品？[Ruby Tuesday 的分享]</title><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div><div class="subheader container"><p>欢迎，这里有我们团队的技术分享，你可以点击查看各个主题</p><a href="/tags/ruby.html">Ruby</a><a href="/tags/web.html">Web</a><a href="https://www.jiandanxinli.com/pages/37">Join Us</a></div><div class="content container"><h2>2.5 个人？</h2>
+
+<ul>
+<li>1 个全栈（我 ^_^）</li>
+<li>1 个 Ruby 程序员</li>
+<li>0.5 个前端开发（产品经理兼职）</li>
+</ul>
+
+<h2>跨终端？</h2>
+
+<ul>
+<li>电脑：浏览器、微信 PC 版（PC 版微信支持微信登陆）</li>
+<li>平板：浏览器、App（Android &amp; iOS）、微信</li>
+<li>手机：浏览器、App（Android &amp; iOS）、微信</li>
+</ul>
+
+<p>这些终端不仅用于访问，还需要支持推送和支付：</p>
+
+<ul>
+<li>通知渠道：邮件、短信、微信、App 推送</li>
+<li>支付渠道：支付宝、微信支付、银联支付</li>
+</ul>
+
+<h2>解决方案</h2>
+
+<ul>
+<li>尽可能降低开发工作量（人员有限）</li>
+<li>尽可能利用 RoR 已有技术</li>
+<li>基于 User Agent 信息来区分具体终端</li>
+</ul>
+
+<h2>从 RoR 出发</h2>
+
+<ul>
+<li>使用 Turbolinks 优化网页加载体验</li>
+<li>不使用前端 MVC 框架加重工作量</li>
+<li>使用响应式设计 + 部分页面 Variant Response</li>
+<li>不针对各个终端单独制作页面</li>
+</ul>
+
+<h2>基于 browser 区分终端</h2>
+
+<ul>
+<li>browser 的双重含义：浏览器 和 browser gem</li>
+<li>每个终端都有各自的 User Agent</li>
+<li>通过扩展 browser gem 来判断当前的终端类型</li>
+<li>通过打印终端类型到 body class 使得 CSS 可以针对性调整样式</li>
+</ul>
+
+<h2>具体步骤</h2>
+
+<h3>1. 使用并扩展 <a href="https://github.com/fnando/browser">browser gem</a> 来判断终端类型</h3>
+<pre class="highlight ruby"><code><span class="no">Browser</span><span class="o">::</span><span class="no">NAMES</span><span class="p">[</span><span class="ss">:smileback</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'SmileBack'</span> <span class="c1"># 我们 App 的自定义 User Agent 标识</span>
+<span class="no">Browser</span><span class="o">::</span><span class="no">NAMES</span><span class="p">[</span><span class="ss">:wechat</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Wechat'</span>
+<span class="no">Browser</span><span class="o">::</span><span class="no">NAMES</span><span class="p">[</span><span class="ss">:desktop</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Desktop'</span>
+
+<span class="k">class</span> <span class="nc">Browser</span>
+  <span class="k">module</span> <span class="nn">Meta</span>
+    <span class="k">class</span> <span class="nc">Smileback</span> <span class="o">&lt;</span> <span class="no">Base</span>
+      <span class="k">def</span> <span class="nf">meta</span>
+        <span class="s1">'smileback'</span> <span class="k">if</span> <span class="n">browser</span><span class="p">.</span><span class="nf">smileback?</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="k">class</span> <span class="nc">Wechat</span> <span class="o">&lt;</span> <span class="no">Base</span>
+      <span class="k">def</span> <span class="nf">meta</span>
+        <span class="s1">'wechat'</span> <span class="k">if</span> <span class="n">browser</span><span class="p">.</span><span class="nf">wechat?</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="k">class</span> <span class="nc">Desktop</span> <span class="o">&lt;</span> <span class="no">Base</span>
+      <span class="k">def</span> <span class="nf">meta</span>
+        <span class="s1">'desktop'</span> <span class="k">if</span> <span class="n">browser</span><span class="p">.</span><span class="nf">desktop?</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">module</span> <span class="nn">Consoles</span>
+    <span class="k">def</span> <span class="nf">smileback?</span>
+      <span class="o">!</span><span class="p">(</span><span class="n">ua</span> <span class="o">=~</span> <span class="sr">/smileback/i</span><span class="p">).</span><span class="nf">nil?</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">wechat?</span>
+      <span class="o">!</span><span class="p">(</span><span class="n">ua</span> <span class="o">=~</span> <span class="sr">/MicroMessenger/i</span><span class="p">).</span><span class="nf">nil?</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">desktop?</span>
+      <span class="o">!</span><span class="n">mobile?</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">wechat?</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">smileback?</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<h3>2. 在 html body class 里添加 browser 信息，方便 CSS 套用</h3>
+<pre class="highlight erb"><code><span class="nt">&lt;body</span> <span class="na">class=</span><span class="s">"</span><span class="cp">&lt;%=</span> <span class="no">Browser</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">ua: </span><span class="n">request</span><span class="p">.</span><span class="nf">env</span><span class="p">[</span><span class="s1">'HTTP_USER_AGENT'</span><span class="p">]).</span><span class="nf">to_s</span> <span class="cp">%&gt;</span><span class="s">"</span><span class="nt">&gt;</span> <span class="c">&lt;!-- class 会输出如 chrome modern mac webkit desktop 或 iphone ios mobile modern other safari safari5 webkit --!&gt;
+</span></code></pre><pre class="highlight css"><code><span class="nt">body</span><span class="p">{</span> <span class="c">/* 默认的样式 */</span> <span class="p">}</span>
+<span class="nt">body</span><span class="nc">.desktop</span><span class="p">{</span> <span class="c">/* 桌面浏览器定制样式 */</span> <span class="p">}</span>
+<span class="nt">body</span><span class="nc">.mobile</span><span class="p">{</span> <span class="c">/* 手机浏览器定制样式 */</span> <span class="p">}</span>
+<span class="nt">body</span><span class="nc">.wechat</span><span class="p">{</span> <span class="c">/* 微信定制样式 */</span> <span class="p">}</span>
+</code></pre>
+<h3>3. 使用 <a href="http://api.rubyonrails.org/classes/ActionController/MimeResponds.html">Variant Response</a> 来针对部分区别大的页面做两套或多套 views</h3>
+<pre class="highlight ruby"><code><span class="c1"># application_controller.rb</span>
+
+<span class="n">before_action</span> <span class="ss">:detect_browser</span>
+
+<span class="kp">private</span>
+
+<span class="k">def</span> <span class="nf">detect_browser</span>
+  <span class="n">request</span><span class="p">.</span><span class="nf">variant</span> <span class="o">=</span> <span class="ss">:mobile</span> <span class="k">if</span> <span class="no">Browser</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">ua: </span><span class="n">request</span><span class="p">.</span><span class="nf">env</span><span class="p">[</span><span class="s1">'HTTP_USER_AGENT'</span><span class="p">]).</span><span class="nf">mobile?</span>
+<span class="k">end</span>
+</code></pre>
+<p>需要拆分的页面，做成如下形式：</p>
+<pre class="highlight plaintext"><code>app/views/pages/home.erb
+app/views/pages/home.html+mobile.erb # 文件名格式为 响应格式+设备名
+</code></pre>
+<h3>4. 添加 helper，方便复杂的情况下调用，比如支付</h3>
+<pre class="highlight ruby"><code><span class="c1"># application_helper.rb</span>
+
+<span class="k">def</span> <span class="nf">browser</span>
+  <span class="vi">@_browser</span> <span class="o">||=</span> <span class="no">Browser</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">ua: </span><span class="n">request</span><span class="p">.</span><span class="nf">env</span><span class="p">[</span><span class="s1">'HTTP_USER_AGENT'</span><span class="p">])</span>
+<span class="k">end</span>
+</code></pre><pre class="highlight slim"><code><span class="c">/ 懒得转 erb 格式了，下面这段是 slim 格式的</span>
+<span class="p">-</span> <span class="k">if</span> <span class="n">browser</span><span class="p">.</span><span class="nf">smileback?</span>
+  <span class="nt">a</span><span class="nc">.button</span><span class="w"> </span><span class="na">href</span><span class="p">=</span><span class="s">"jdxlsmileback://recharges/#{resource.id}/pay"</span><span class="w"> </span>支付宝付款
+  <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'银联付款'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">unionpay: </span><span class="kp">true</span><span class="p">),</span> <span class="s1">'data-no-turbolink'</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+<span class="p">-</span> <span class="k">elsif</span> <span class="n">browser</span><span class="p">.</span><span class="nf">wechat?</span>
+  <span class="p">-</span> <span class="k">if</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">weixin_id</span>
+    <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'微信支付'</span><span class="p">,</span> <span class="s1">'#'</span><span class="p">,</span> <span class="ss">id: </span><span class="s1">'wepay'</span><span class="p">,</span> <span class="ss">class: </span><span class="s1">'button'</span>
+    <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'银联付款'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">unionpay: </span><span class="kp">true</span><span class="p">),</span> <span class="s1">'data-no-turbolink'</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+  <span class="p">-</span> <span class="k">else</span>
+    <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'银联付款'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">unionpay: </span><span class="kp">true</span><span class="p">),</span> <span class="s1">'data-no-turbolink'</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">class: </span><span class="s1">'button'</span>
+<span class="p">-</span> <span class="k">elsif</span> <span class="n">browser</span><span class="p">.</span><span class="nf">mobile?</span>
+  <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'支付宝付款'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">alipay: </span><span class="kp">true</span><span class="p">),</span> <span class="ss">class: </span><span class="s1">'button'</span><span class="p">,</span> <span class="s1">'data-no-turbolink'</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+  <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'银联付款'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">unionpay: </span><span class="kp">true</span><span class="p">),</span> <span class="s1">'data-no-turbolink'</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+<span class="p">-</span> <span class="k">else</span>
+  <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'支付宝付款'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">alipay: </span><span class="kp">true</span><span class="p">),</span> <span class="ss">class: </span><span class="s1">'button'</span><span class="p">,</span> <span class="s1">'data-no-turbolink'</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+  <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'微信支付'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">scan_wepay: </span><span class="kp">true</span><span class="p">)</span>
+  <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'银联付款'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">unionpay: </span><span class="kp">true</span><span class="p">),</span> <span class="s1">'data-no-turbolink'</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</code></pre>
+<h2>其它经验</h2>
+
+<ul>
+<li>iOS App 我们用 WKWebView 套的壳，WKWebView 比 UIWebView 性能更好些，但限制也更多些，具体可以 Google。</li>
+<li>Android App 我们用默认的 WebView，目前没发现更好的替代品。</li>
+<li>支付渠道之前我们是自己封装的，现在发现 <a href="https://pingxx.com">Ping++</a> 也不错，大家可以试试。</li>
+</ul>
+
+<h2>重点来了！！！</h2>
+
+<h3>简单心理是什么？</h3>
+
+<ul>
+<li>最大的华语心理咨询平台</li>
+<li>最严格的咨询师入驻审核</li>
+<li>立志于提供最专业的心理服务</li>
+</ul>
+
+<h3>内心世界那么大，想不想来看看？</h3>
+
+<p>我们需要：</p>
+
+<ul>
+<li>Ruby 工程师 月薪 15k 起</li>
+</ul>
+
+<p>我们提供：</p>
+
+<ul>
+<li>最人性化的工作环境（老板及大部分员工都有心理学专业背景，程序员鼓励师弱爆了 :smirk: ）</li>
+<li>非北京地区可远程工作（本部位于北京中关村）</li>
+</ul>
+
+<p>欢迎勾搭 <a href="mailto:hr@jiandanxinli.com">hr@jiandanxinli.com</a></p>
+
+<h2>休息下，看看养眼的照片吧（非 PS）</h2>
+
+<p>女王大人（曾用名：煤球）及她的孩子们
+<img src="http://jdxl-img.b0.upaiyun.com/id_cards/f6c6fb9742d94eb1aa5f73eb3e8b15d1.jpg" alt="猫" /></p>
+
+<p>各种帅哥美女云集的活动
+<img src="http://jdxl-img.b0.upaiyun.com/id_cards/6a9656184f9a467eac8d7c7f5ab0d5e2.jpg" alt="帅哥美女" /></p>
+
+<p>了解更多我们公司的详情可以移步这里： <a href="https://www.jiandanxinli.com/pages/37">https://www.jiandanxinli.com/pages/37</a></p>
+</div><div class="footer"><div class="container"><div class="links"><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">关于我们</a><a href="https://www.jiandanxinli.com">简单心理</a></div><div class="copy">&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</div></div></div></body></html>

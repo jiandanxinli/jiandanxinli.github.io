@@ -18,7 +18,11 @@ html lang="zh-CN"
       - blog.tags.each do |tag, articles|
         = link_to tag, tag_path(tag), class: ('active' if defined?(tagname) && tagname == tag)
       a href='https://www.jiandanxinli.com/pages/37' Join Us
-    .content.container= yield
+    .content.container
+      = yield
+      - unless current_article.nil?
+        #uyan_frame
+        script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1938211"
     .footer
       .container
         .links

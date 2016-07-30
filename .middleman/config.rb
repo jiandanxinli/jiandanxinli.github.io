@@ -9,6 +9,7 @@ require 'slim'
 page '/*.xml', layout: false
 page '/*.json', layout: false
 page '/*.txt', layout: false
+ignore 'blog'
 
 # With alternative layout
 # page "/path/to/file.html", layout: :otherlayout
@@ -30,7 +31,7 @@ activate :blog do |blog|
   # Matcher for blog source files
   blog.sources = '{year}-{month}-{day}.html'
   # blog.taglink = 'tags/{tag}.html'
-  # blog.layout = 'layout'
+  blog.layout = 'blog'
   # blog.summary_separator = /(READMORE)/
   # blog.summary_length = 250
   # blog.year_link = '{year}.html'

@@ -3,7 +3,7 @@ html lang="zh-CN"
   head
     meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1'
     meta name='viewport' content='width=device-width, initial-scale=1'
-    title= current_article ? current_article.title : '简单心理技术团队'
+    title= current_article.title + ' · 简单心理技术团队'
     = stylesheet_link_tag 'app'
     = feed_tag :atom, '/feed.xml', title: 'Atom Feed'
     link rel='icon' href='/images/favicon.ico'
@@ -19,7 +19,13 @@ html lang="zh-CN"
         = link_to tag, tag_path(tag), class: ('active' if defined?(tagname) && tagname == tag)
       a href='https://www.jiandanxinli.com/pages/37' Join Us
     .content.container
+      h2= current_article.title
+      .meta
+        span.date= current_page.data.date
+        span.author= current_page.data.author
       = yield
+      #uyan_frame
+      script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1938211"
     .footer
       .container
         .links

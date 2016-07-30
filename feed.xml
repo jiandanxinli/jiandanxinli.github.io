@@ -5,10 +5,40 @@
   <id>https://jiandanxinli.github.io/</id>
   <link href="https://jiandanxinli.github.io/"/>
   <link href="https://jiandanxinli.github.io/feed.xml" rel="self"/>
-  <updated>2015-09-08T08:00:00+08:00</updated>
+  <updated>2016-07-30T08:00:00+08:00</updated>
   <author>
     <name>北京竹间科技有限公司</name>
   </author>
+  <entry>
+    <title>选择 jsonapi-resources 的理由</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2016-07-30.html"/>
+    <id>https://jiandanxinli.github.io/2016-07-30.html</id>
+    <published>2016-07-30T08:00:00+08:00</published>
+    <updated>2016-07-30T16:20:32+08:00</updated>
+    <author>
+      <name>Ben</name>
+    </author>
+    <content type="html">&lt;p&gt;Rails 5 发布时的官方日志里，推荐了三种用于构建 API 的 gem，分别是 &lt;a href="https://github.com/rails/jbuilder"&gt;Jbuilder&lt;/a&gt;、&lt;a href="https://github.com/rails-api/active_model_serializers"&gt;Active Model Serializers&lt;/a&gt; 和 &lt;a href="https://github.com/cerebris/jsonapi-resources"&gt;JSONAPI::Resources&lt;/a&gt;，其中前两种需要配合 rails-api 来使用，只有 jsonapi-resources 提供了 JSONAPI::ResourceController。&lt;/p&gt;
+
+&lt;p&gt;我们最终选择了 jsonapi-resources 主要基于以下原因：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;它的 resource 语法与 active_model_serializers 相近，而我们之前使用的是 active_model_serializers&lt;/li&gt;
+&lt;li&gt;active_model_serializers 不支持 immutable 特性，必须基于某个 model，而我们有些 resource 并非基于 model&lt;/li&gt;
+&lt;li&gt;jsonapi-resources 内置了 fields 选项，可以方便的在请求端指定返回的字段，而不必返回全部字段&lt;/li&gt;
+&lt;li&gt;返回的数据结构符合 &lt;a href="http://jsonapi.org/"&gt;jsonapi 规范&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;JSONAPI::ResourceController 提供了 RESTful 的封装，可以省去不少代码&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;以上的原因只是对目前项目来说最需要的特性，更多特性可以去看官方文档。&lt;/p&gt;
+
+&lt;p&gt;参考链接：&lt;/p&gt;
+
+&lt;p&gt;jsonapi-resources： &lt;a href="https://github.com/cerebris/jsonapi-resources"&gt;https://github.com/cerebris/jsonapi-resources&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;jsonapi：&lt;a href="http://jsonapi.org"&gt;http://jsonapi.org&lt;/a&gt;&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>2.5 个人如何开发一款跨终端的产品？[Ruby Tuesday 的分享]</title>
     <link rel="alternate" href="https://jiandanxinli.github.io/2015-09-08.html"/>

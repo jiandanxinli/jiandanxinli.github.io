@@ -21,4 +21,5 @@ Rails 5 发布时的官方日志里，推荐了三种用于构建 API 的 gem，
 参考链接：
 
 jsonapi-resources： https://github.com/cerebris/jsonapi-resources
+
 jsonapi：http://jsonapi.org

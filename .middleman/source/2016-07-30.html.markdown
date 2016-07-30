@@ -17,3 +17,8 @@ Rails 5 发布时的官方日志里，推荐了三种用于构建 API 的 gem，
 5. JSONAPI::ResourceController 提供了 RESTful 的封装，可以省去不少代码
 
 以上的原因只是对目前项目来说最需要的特性，更多特性可以去看官方文档。
+
+参考链接：
+
+jsonapi-resources： https://github.com/cerebris/jsonapi-resources
+jsonapi：http://jsonapi.org

@@ -1,0 +1,149 @@
+---
+title: iOS上简易轮播图的实现
+date: 2016-07-30
+tags: iOS
+author: Qiuncheng
+summary: 以一个三张imageView的轮播图为例，具体到如何实现轮播图，添加自动轮播器，添加手势点击事件等。
+---
+### 前言
+见过很多的iOS应用，都有无限轮播图，之前也看到过很多相关实现的文章，可是仅仅就是一看而过罢了。当自己在项目中用到这个，真正去写的时候才发现不是很容易，遇到了一些问题，这篇文章就记录下自己最后成功实现轮播图的历程。
+### 原理
+原理其实就是一种假象。不过在我这里，目前有过两种原理的实现。一种利用`UICollectionView`实现轮播，另一种利用`UIScrollView`实现轮播。
+今天我们要来打造一款这样的轮播图（图画的不好，请勿见怪）。
+![举例：三张图的无限轮播](https://cloud.githubusercontent.com/assets/9990834/17270175/36fa47a0-568f-11e6-8f3f-bbed783d6b41.png)
+#### 原理一：利用`UIScrollView`实现轮播图。
+要想实现这样的效果，我们使用`UIScrollView`包含image0，image1，image2的三个`UIImageView`都是放在`UIScrollView`里面的，但是这样的话是不可以实现轮播的。要想实现轮播就要再在该`UIScrollView`的左右两侧各加一张`UIImageView`。在最后一张放image0， 第一张放image2。这样的话当我们滚动到最后或者最前面的的时候，我们就把列表切换到相应的位置，注意这时候切换的时候不能有动画。只需要调用`scrollView.contentOffset = CGPoint(...)`即可。
+![实际UISrollView图](https://cloud.githubusercontent.com/assets/9990834/17270176/408925d4-568f-11e6-9217-e26c3cf09093.png)
+#### 原理二：利用`UICollectionView`实现轮播图。
+你当然可以利用**原理一**再用`UICollectionView`实现一次。但是我这里采用一种偷懒的方式，利用`UICollectionView`的cell重用机制。创建个无数个cell，比如3x20000。当用户第一次进来的我们就将UICollectionView滑到3x20000x0.5的位置。然后利用`cell.indexPath.item % 3`来对cell上的UIImageView进行image显示。这种方式比较偷懒，在后来添加NSTimer自动轮播和点击事件的时候也比较简单，不过有点大炮打小鸟的感觉。所以我在这里也只是介绍下原理，如果你有兴趣，可以自己尝试去实现下。而且UICollectionView自带一个方法`- scrollToItemAtIndexPath:atScrollPosition:animated:`还比较厉害。
+### 具体实现
+针对原理一，我就来简单实现下。(我这里使用代码创建,你也可以使用Storyboard创建,原理一样)
+
+#### 创建工程，创建`BannerView.Swift`,添加初始化代码如下：
+```Swift
+/// 初始化scrollView
+lazy var scrollView: UIScrollView = {
+       let scrollView = UIScrollView()
+       scrollView.delegate = self
+       scrollView.alwaysBounceVertical = false
+       scrollView.bounces = true
+       scrollView.pagingEnabled = true
+       scrollView.scrollEnabled = true
+       scrollView.showsVerticalScrollIndicator = false
+       scrollView.showsHorizontalScrollIndicator = false
+       return scrollView
+   }()
+/// 初始化pageControl
+   lazy var pageControl: UIPageControl = {
+       let pageControl = UIPageControl()
+       pageControl.currentPageIndicatorTintColor = UIColor.redColor()
+       pageControl.pageIndicatorTintColor = UIColor.whiteColor()
+       return pageControl
+   }()
+
+   /// 在init里调用setupSubviews即可
+   func setupSubviews() {  
+       self.addSubview(scrollView)
+       self.addSubview(pageControl)
+
+       scrollView.translatesAutoresizingMaskIntoConstraints = false
+       pageControl.translatesAutoresizingMaskIntoConstraints = false
+
+       self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[v]|", options: [], metrics: nil, views: ["v": scrollView]))
+       self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[v]|", options: [], metrics: nil, views: ["v": scrollView]))
+
+       self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[p(==20)]-10-|", options: [], metrics: nil, views: ["p": pageControl]))
+       self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[p(==100)]-10-|", options: [], metrics: nil, views: ["p": pageControl]))
+   }
+```
+#### 初始化UIScrollView：
+```Swift
+func setupScrollView() {
+        /// 创建 （imageNames.count + 2）个UIImageView
+        for index in 0 ... (imageNmaes.count + 1) {
+            let imageView = UIImageView(frame: CGRect(x: self.width*CGFloat(index), y: 0, width: self.width, height: self.height))
+            var picName = String()
+            switch index {
+            case 0:
+                picName = imageNames[imageNames.count-1]
+                break
+            case imageNames.count + 1:
+                picName = imageNames[0]
+                break
+            default:
+                picName = imageNames[index-1]
+                break
+            }
+
+//          imageView.af_setImageWithURL(NSURL(string: picName)!)
+            imageView.image = UIImage(named: picName)
+            imageView.contentMode = .ScaleToFill
+            imageView.clipsToBounds = true
+            imageView.userInteractionEnabled = true
+            scrollView.addSubview(imageView)
+        }
+        scrollView.contentSize = CGSize(width: self.width * CGFloat(imageNames.count + 2), height: self.height)
+        scrollView.contentOffset = CGPoint(x: self.width, y: 0)
+    }
+```
+#### 无限轮番的实现。（重点）使用UIScrollViewDelegate协议。
+```Swift
+func scrollViewDidScroll(scrollView: UIScrollView) {
+       if scrollView == self.scrollView {
+           let contentOffsetX = scrollView.contentOffset.x
+          ///向前滑动到第0张图的时候，滚到第三张图
+           if contentOffsetX == 0 {
+               scrollView.contentOffset = CGPoint(x: self.width * CGFloat(self.imageNames.count), y: 0)
+           }
+           /// 跑到第三张图的时候，滚到第0张图
+           if contentOffsetX == CGFloat(self.imageNames.count + 1)*self.width {
+               scrollView.contentOffset = CGPoint(x: self.width, y: 0)
+           }
+           /// 改变pageControl，这里要注意，一定要一定要一定要 - 0.5， 因为最前面的第0张图一直不显示。
+           let index = scrollView.contentOffset.x / self.width - 0.5
+           self.pageControl.currentPage = Int(index)
+       }
+   }
+```
+#### 添加计时器
+好了，做到这里，你已经成功实现了轮播图，可是这个轮播图是手动的，下面添加自动滚动。也很简单，设置一个NSTimer计时器即可。代码如下：
+```Swift
+// MARK: - Timer
+   var timer: NSTimer?
+   var i = 1
+   /// 在scrollView上的图片成功设置后调用startTimer即可
+   private func startTimer() {
+       if timer != nil {
+           self.stopTimer()
+       }
+       /// 这里设置的滚动间隔为2秒
+       timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(autoScroll), userInfo: nil, repeats: true)
+       NSRunLoop.currentRunLoop().addTimer(timer!, forMode: NSDefaultRunLoopMode)
+   }
+   private func stopTimer() {
+       timer?.invalidate()
+       timer = nil
+   }
+   func autoScroll() {
+       if i == imageNames.count + 1 {
+           i = 1
+       }
+       i += 1
+       /// 在处理无限轮番的时候设置contentOffset没有添加animated，这里要添加上来，不然有种很突兀的感觉。
+       scrollView.setContentOffset(CGPoint(x: self.width * CGFloat(i), y: 0), animated: true)
+   }
+    /// 手动滚动结束后恢复计时
+   func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        self.startTimer()
+    }
+    /// 当手动滚动开始时停止计时
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        self.stopTimer()
+    }
+```
+#### 添加具体点击事件
+具体到点击事件的话，我是放在初始化imageView那里处理的，给imageVIew添加一个UITapGestureRecognizer，在这里最好再写一个代理方法，将imageView的点击事件传递出去。然后根据当前`contentOffet.x / self.width`来将具体哪张图片的事件传递出去。我就不用代码展示了。
+### 结尾
+还是比较简单的。但是我这个复用性比较差，封装的也不好，可是具体要看思路😂。代码实现放在了Github Wiki上了[BannerView.Swift](https://github.com/qiuncheng/qiuncheng.github.io/wiki/BannerView.Swift)，由于工程量太小，就没将工程文件上传了。
+#### 关于作者
+[Qiuncheng](http://qiuncheng.com)，一位正在iOS路上前行的初学者，正在努力成为一名合格的iOS开发者。

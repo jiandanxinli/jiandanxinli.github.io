@@ -18,13 +18,6 @@ html lang="zh-CN"
       - blog.tags.each do |tag, articles|
         = link_to tag, tag_path(tag), class: ('active' if defined?(tagname) && tagname == tag)
       a href='https://www.jiandanxinli.com/pages/37' Join Us
-    .content.container
-      = yield
-    .footer
-      .container
-        .links
-          a href='/feed.xml' Feed
-          a href='https://github.com/jiandanxinli' Github
-          a href='https://www.jiandanxinli.com/pages/37' 关于我们
-          a href='https://www.jiandanxinli.com' 简单心理
-        .copy &copy; 2014 - 2016 北京竹间科技有限公司 版权所有
+    .animated_container
+      .content.container.animated.fadeIn= yield
+    = partial 'footer'

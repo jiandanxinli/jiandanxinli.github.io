@@ -1,25 +1,38 @@
 ---
 title: iOS上简易轮播图的实现
-date: 2016-07-30
+date: 2016-07-29
 tags: iOS
 author: Qiuncheng
 summary: 以一个三张imageView的轮播图为例，具体到如何实现轮播图，添加自动轮播器，添加手势点击事件等。
 ---
+
 ### 前言
+
 见过很多的iOS应用，都有无限轮播图，之前也看到过很多相关实现的文章，可是仅仅就是一看而过罢了。当自己在项目中用到这个，真正去写的时候才发现不是很容易，遇到了一些问题，这篇文章就记录下自己最后成功实现轮播图的历程。
+
 ### 原理
+
 原理其实就是一种假象。不过在我这里，目前有过两种原理的实现。一种利用`UICollectionView`实现轮播，另一种利用`UIScrollView`实现轮播。
 今天我们要来打造一款这样的轮播图（图画的不好，请勿见怪）。
+
 ![举例：三张图的无限轮播](https://cloud.githubusercontent.com/assets/9990834/17270175/36fa47a0-568f-11e6-8f3f-bbed783d6b41.png)
+
 #### 原理一：利用`UIScrollView`实现轮播图。
+
 要想实现这样的效果，我们使用`UIScrollView`包含image0，image1，image2的三个`UIImageView`都是放在`UIScrollView`里面的，但是这样的话是不可以实现轮播的。要想实现轮播就要再在该`UIScrollView`的左右两侧各加一张`UIImageView`。在最后一张放image0， 第一张放image2。这样的话当我们滚动到最后或者最前面的的时候，我们就把列表切换到相应的位置，注意这时候切换的时候不能有动画。只需要调用`scrollView.contentOffset = CGPoint(...)`即可。
+
 ![实际UISrollView图](https://cloud.githubusercontent.com/assets/9990834/17270176/408925d4-568f-11e6-9217-e26c3cf09093.png)
+
 #### 原理二：利用`UICollectionView`实现轮播图。
+
 你当然可以利用**原理一**再用`UICollectionView`实现一次。但是我这里采用一种偷懒的方式，利用`UICollectionView`的cell重用机制。创建个无数个cell，比如3x20000。当用户第一次进来的我们就将UICollectionView滑到3x20000x0.5的位置。然后利用`cell.indexPath.item % 3`来对cell上的UIImageView进行image显示。这种方式比较偷懒，在后来添加NSTimer自动轮播和点击事件的时候也比较简单，不过有点大炮打小鸟的感觉。所以我在这里也只是介绍下原理，如果你有兴趣，可以自己尝试去实现下。而且UICollectionView自带一个方法`- scrollToItemAtIndexPath:atScrollPosition:animated:`还比较厉害。
+
 ### 具体实现
+
 针对原理一，我就来简单实现下。(我这里使用代码创建,你也可以使用Storyboard创建,原理一样)
 
 #### 创建工程，创建`BannerView.Swift`,添加初始化代码如下：
+
 ```Swift
 /// 初始化scrollView
 lazy var scrollView: UIScrollView = {
@@ -56,7 +69,9 @@ lazy var scrollView: UIScrollView = {
        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[p(==100)]-10-|", options: [], metrics: nil, views: ["p": pageControl]))
    }
 ```
+
 #### 初始化UIScrollView：
+
 ```Swift
 func setupScrollView() {
         /// 创建 （imageNames.count + 2）个UIImageView
@@ -105,8 +120,11 @@ func scrollViewDidScroll(scrollView: UIScrollView) {
        }
    }
 ```
+
 #### 添加计时器
+
 好了，做到这里，你已经成功实现了轮播图，可是这个轮播图是手动的，下面添加自动滚动。也很简单，设置一个NSTimer计时器即可。代码如下：
+
 ```Swift
 // MARK: - Timer
    var timer: NSTimer?
@@ -141,9 +159,15 @@ func scrollViewDidScroll(scrollView: UIScrollView) {
         self.stopTimer()
     }
 ```
+
 #### 添加具体点击事件
+
 具体到点击事件的话，我是放在初始化imageView那里处理的，给imageVIew添加一个UITapGestureRecognizer，在这里最好再写一个代理方法，将imageView的点击事件传递出去。然后根据当前`contentOffet.x / self.width`来将具体哪张图片的事件传递出去。我就不用代码展示了。
+
 ### 结尾
+
 还是比较简单的。但是我这个复用性比较差，封装的也不好，可是具体要看思路😂。代码实现放在了Github Wiki上了[BannerView.Swift](https://github.com/qiuncheng/qiuncheng.github.io/wiki/BannerView.Swift)，由于工程量太小，就没将工程文件上传了。
+
 #### 关于作者
+
 [Qiuncheng](http://qiuncheng.com)，一位正在iOS路上前行的初学者，正在努力成为一名合格的iOS开发者。

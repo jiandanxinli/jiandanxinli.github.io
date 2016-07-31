@@ -1,5 +1,6 @@
 @import 'normalize.css'
 @import 'syntax.css'
+@import 'animate.css'
 
 $black: #2d3c48
 $blue: #3e8cb7
@@ -41,6 +42,12 @@ body
   line-height: 1.6
   overflow-x: hidden
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0)
+
+.animated_container
+  overflow: hidden
+
+.animated.delay
+  animation-delay: 1s
 
 .container
   max-width: 868px
@@ -121,10 +128,12 @@ body
   font-size: .8em
   text-align: center
   padding-bottom: .5em
+  .links
+    margin-top: .5em
   a
     margin: 0 .5em
-  .copy
-    margin-top: .5em
+  p
+    margin: .5em 0 0
 
 .article
   color: #818486

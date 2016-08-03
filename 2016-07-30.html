@@ -4,7 +4,7 @@
 
 <ol>
 <li>它的 resource 语法与 active_model_serializers 相近，而我们之前使用的是 active_model_serializers</li>
-<li>active_model_serializers 不支持 immutable 特性，必须基于某个 model，而我们有些 resource 并非基于 model</li>
+<li>active_model_serializers 不支持 abstract 特性，必须基于某个 model，而我们有些 resource 并非基于 model</li>
 <li>jsonapi-resources 内置了 fields 选项，可以方便的在请求端指定返回的字段，而不必返回全部字段</li>
 <li>返回的数据结构符合 <a href="http://jsonapi.org/">jsonapi 规范</a></li>
 <li>JSONAPI::ResourceController 提供了 RESTful 的封装，可以省去不少代码</li>

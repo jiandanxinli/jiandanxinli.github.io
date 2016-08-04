@@ -1,16 +1,8 @@
----
-title: Rails ActiveRecord 不同的赋值方法
-date: 2016-07-31
-tags: Ruby
-author: fengd
-summary: Rails 提供了多种设置Model属性的方法，方法之间又各有异同，有的会出发回调，有的不会，有的会对所属对象其它属性也产生影响。 因此理解方法之间的区别就显得很重要。
----
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>Rails ActiveRecord 不同的赋值方法 · 简单心理技术团队</title><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div><div class="subheader container"><a href="/tags/ruby.html">Ruby</a><a href="/tags/web.html">Web</a><a href="/tags/ios.html">iOS</a><a href="/tags/api.html">API</a><a href="https://www.jiandanxinli.com/pages/37">Join Us</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>Rails ActiveRecord 不同的赋值方法</h2><div class="meta"><span class="date">2016-07-31</span><span class="author">fengd</span></div><p>Rails 提供了多种设置Model属性的方法，方法之间又各有异同，有的会出发回调，有的不会，有的会对所属对象其它属性也产生影响。 因此理解方法之间的区别就显得很重要。</p>
 
-Rails 提供了多种设置Model属性的方法，方法之间又各有异同，有的会出发回调，有的不会，有的会对所属对象其它属性也产生影响。 因此理解方法之间的区别就显得很重要。
+<h3>Cheat Sheet</h3>
 
-### Cheat Sheet
-
-最方便的先来，cheetsheet表，方便查询：
+<p>最方便的先来，cheetsheet表，方便查询：</p>
 
 <table class="table-compact table table-striped">
                 <thead>
@@ -109,55 +101,50 @@ Rails 提供了多种设置Model属性的方法，方法之间又各有异同，
                 </tbody>
               </table>
 
+<h3>user.name =</h3>
 
+<p>这是最常用的赋值方法，这个也是Rails默认生成的赋值方法。赋值后，对应的属性会被标记为dirty, 脏数据，但是并没有更新到数据里去。</p>
 
+<p>调用<code>save</code>会把数据更新到数据库。调用<code>reload</code>会丢弃脏数据。</p>
 
-### user.name =
+<h3>user.write_attribute(:name, &#39;feng&#39;)</h3>
 
-这是最常用的赋值方法，这个也是Rails默认生成的赋值方法。赋值后，对应的属性会被标记为dirty, 脏数据，但是并没有更新到数据里去。
+<p>这是上面那个赋值方法会调用的方法， 这个方法也不会更新数据库。</p>
 
+<h3>user.update_attribute(:name, &#39;feng&#39;)</h3>
 
-调用`save`会把数据更新到数据库。调用`reload`会丢弃脏数据。
+<p>这个方法会直接更新数据到数据库，而且会忽略到所有的验证，直接更新数据库。</p>
 
+<ul>
+<li>所有更新会直接到数据库</li>
+<li>所有的验证会被跳过</li>
+</ul>
 
-### user.write_attribute(:name, 'feng')
+<h3>user.attributes = { name: &#39;feng&#39; }</h3>
 
-这是上面那个赋值方法会调用的方法， 这个方法也不会更新数据库。
+<p>这个赋值方法会根据右边传入的哈希，对相应的属性进行赋值。其它的属性不会有变动。</p>
 
+<p><code>user.assign_attributes { name: &#39;feng&#39; }</code></p>
 
-### user.update_attribute(:name, 'feng')
+<h3>user.update(name: &#39;feng&#39;)</h3>
 
-这个方法会直接更新数据到数据库，而且会忽略到所有的验证，直接更新数据库。
+<p>在Rails 3中，这个方法叫<code>update_attributes</code>， 这个方法会更新对象，进行验证，然后更新到数据库.这方法会把所属对象中别的脏数据也更新到数据库。</p>
 
-* 所有更新会直接到数据库
-* 所有的验证会被跳过
+<h3>user.update_columns(name: &#39;feng&#39;)</h3>
 
+<p>这个方法会生成 SQL Update，直接更新到数据库，跳过所有的数据验证和回调。</p>
 
-### user.attributes = { name: 'feng' }
+<h3>user.update_column(:name, &#39;feng&#39;)</h3>
 
-这个赋值方法会根据右边传入的哈希，对相应的属性进行赋值。其它的属性不会有变动。
+<p>跟上面的方法类似</p>
 
-`user.assign_attributes { name: 'feng' }`
+<h3>User.update(1, name: &#39;feng&#39;)</h3>
 
+<p><strong>这是一个类方法</strong></p>
 
-### user.update(name: 'feng')
+<p>这个方法的第一个参数是 <code>id</code>, 后面是更新的属性hash。 第一个参数，可以是一个数组， 一组 <code>id</code>。</p>
 
-在Rails 3中，这个方法叫`update_attributes`， 这个方法会更新对象，进行验证，然后更新到数据库.这方法会把所属对象中别的脏数据也更新到数据库。
+<h3>User.update_all(name: &#39;feng&#39;)</h3>
 
-### user.update_columns(name: 'feng')
-
-这个方法会生成 SQL Update，直接更新到数据库，跳过所有的数据验证和回调。
-
-### user.update_column(:name, 'feng')
-
-跟上面的方法类似
-
-### User.update(1, name: 'feng')
-
-__这是一个类方法__
-
-这个方法的第一个参数是 `id`, 后面是更新的属性hash。 第一个参数，可以是一个数组， 一组 `id`。
-
-### User.update_all(name: 'feng')
-
-批量更新，__be careful！__
+<p>批量更新，<strong>be careful！</strong></p>
+</div></div><div class="container" id="uyan_frame"></div><div class="footer"><div class="container"><p>提升价值，而非估值</p><div class="links"><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">关于我们</a><a href="https://www.jiandanxinli.com">简单心理</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div><script src="http://v2.uyan.cc/code/uyan.js?uid=1938211" type="text/javascript"></script></body></html>

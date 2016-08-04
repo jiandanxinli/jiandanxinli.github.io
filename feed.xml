@@ -5,16 +5,176 @@
   <id>https://jiandanxinli.github.io/</id>
   <link href="https://jiandanxinli.github.io/"/>
   <link href="https://jiandanxinli.github.io/feed.xml" rel="self"/>
-  <updated>2016-07-30T08:00:00+08:00</updated>
+  <updated>2016-07-31T08:00:00+08:00</updated>
   <author>
     <name>北京竹间科技有限公司</name>
   </author>
+  <entry>
+    <title>Rails ActiveRecord 不同的赋值方法</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2016-07-31.html"/>
+    <id>https://jiandanxinli.github.io/2016-07-31.html</id>
+    <published>2016-07-31T08:00:00+08:00</published>
+    <updated>2016-08-04T13:13:28+08:00</updated>
+    <author>
+      <name>fengd</name>
+    </author>
+    <content type="html">&lt;p&gt;Rails 提供了多种设置Model属性的方法，方法之间又各有异同，有的会出发回调，有的不会，有的会对所属对象其它属性也产生影响。 因此理解方法之间的区别就显得很重要。&lt;/p&gt;
+
+&lt;h3&gt;Cheat Sheet&lt;/h3&gt;
+
+&lt;p&gt;最方便的先来，cheetsheet表，方便查询：&lt;/p&gt;
+
+&lt;table class="table-compact table table-striped"&gt;
+                &lt;thead&gt;
+                  &lt;tr&gt;
+                    &lt;th&gt;Method&lt;/th&gt;
+                    &lt;th&gt;Uses Default Accessor&lt;/th&gt;
+                    &lt;th&gt;Saved to Database&lt;/th&gt;
+                    &lt;th&gt;Validations&lt;/th&gt;
+                    &lt;th&gt;Callbacks&lt;/th&gt;
+                    &lt;th&gt;Touches &lt;code&gt;updated_at&lt;/code&gt;&lt;/th&gt;
+                    &lt;th&gt;Readonly check&lt;/th&gt;
+                  &lt;/tr&gt;
+                &lt;/thead&gt;
+                &lt;tbody&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/AttributeMethods/Write/attribute%3D" style="text-decoration: none"&gt;attribute=&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/AttributeMethods/Write/write_attribute" style="text-decoration: none"&gt;write_attribute&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/Persistence/update_attribute" style="text-decoration: none"&gt;update_attribute&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/AttributeAssignment/attributes%3D" style="text-decoration: none"&gt;attributes=&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/Persistence/update" style="text-decoration: none"&gt;update&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/Persistence/update_column" style="text-decoration: none"&gt;update_column&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/Persistence/update_columns" style="text-decoration: none"&gt;update_columns&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/Relation/update" style="text-decoration: none"&gt;User::update&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/v4.0.2/ActiveRecord/Relation/update_all" style="text-decoration: none"&gt;User::update_all&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                  &lt;/tr&gt;
+                &lt;/tbody&gt;
+              &lt;/table&gt;
+
+&lt;h3&gt;user.name =&lt;/h3&gt;
+
+&lt;p&gt;这是最常用的赋值方法，这个也是Rails默认生成的赋值方法。赋值后，对应的属性会被标记为dirty, 脏数据，但是并没有更新到数据里去。&lt;/p&gt;
+
+&lt;p&gt;调用&lt;code&gt;save&lt;/code&gt;会把数据更新到数据库。调用&lt;code&gt;reload&lt;/code&gt;会丢弃脏数据。&lt;/p&gt;
+
+&lt;h3&gt;user.write_attribute(:name, &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;这是上面那个赋值方法会调用的方法， 这个方法也不会更新数据库。&lt;/p&gt;
+
+&lt;h3&gt;user.update_attribute(:name, &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;这个方法会直接更新数据到数据库，而且会忽略到所有的验证，直接更新数据库。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;所有更新会直接到数据库&lt;/li&gt;
+&lt;li&gt;所有的验证会被跳过&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;user.attributes = { name: &amp;#39;feng&amp;#39; }&lt;/h3&gt;
+
+&lt;p&gt;这个赋值方法会根据右边传入的哈希，对相应的属性进行赋值。其它的属性不会有变动。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;user.assign_attributes { name: &amp;#39;feng&amp;#39; }&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3&gt;user.update(name: &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;在Rails 3中，这个方法叫&lt;code&gt;update_attributes&lt;/code&gt;， 这个方法会更新对象，进行验证，然后更新到数据库.这方法会把所属对象中别的脏数据也更新到数据库。&lt;/p&gt;
+
+&lt;h3&gt;user.update_columns(name: &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;这个方法会生成 SQL Update，直接更新到数据库，跳过所有的数据验证和回调。&lt;/p&gt;
+
+&lt;h3&gt;user.update_column(:name, &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;跟上面的方法类似&lt;/p&gt;
+
+&lt;h3&gt;User.update(1, name: &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;这是一个类方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这个方法的第一个参数是 &lt;code&gt;id&lt;/code&gt;, 后面是更新的属性hash。 第一个参数，可以是一个数组， 一组 &lt;code&gt;id&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h3&gt;User.update_all(name: &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;批量更新，&lt;strong&gt;be careful！&lt;/strong&gt;&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>选择 jsonapi-resources 的理由</title>
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-07-30.html"/>
     <id>https://jiandanxinli.github.io/2016-07-30.html</id>
     <published>2016-07-30T08:00:00+08:00</published>
-    <updated>2016-07-30T16:20:32+08:00</updated>
+    <updated>2016-08-04T13:09:46+08:00</updated>
     <author>
       <name>Ben</name>
     </author>
@@ -24,7 +184,7 @@
 
 &lt;ol&gt;
 &lt;li&gt;它的 resource 语法与 active_model_serializers 相近，而我们之前使用的是 active_model_serializers&lt;/li&gt;
-&lt;li&gt;active_model_serializers 不支持 immutable 特性，必须基于某个 model，而我们有些 resource 并非基于 model&lt;/li&gt;
+&lt;li&gt;active_model_serializers 不支持 abstract 特性，必须基于某个 model，而我们有些 resource 并非基于 model&lt;/li&gt;
 &lt;li&gt;jsonapi-resources 内置了 fields 选项，可以方便的在请求端指定返回的字段，而不必返回全部字段&lt;/li&gt;
 &lt;li&gt;返回的数据结构符合 &lt;a href="http://jsonapi.org/"&gt;jsonapi 规范&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;JSONAPI::ResourceController 提供了 RESTful 的封装，可以省去不少代码&lt;/li&gt;

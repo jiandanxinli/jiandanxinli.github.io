@@ -1,5 +1,5 @@
 ---
-title: Rails4 ActiveRecord 不同的赋值方法
+title: Rails ActiveRecord 不同的赋值方法
 date: 2016-07-31
 tags: Ruby On Rails,Web
 author: fengd

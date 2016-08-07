@@ -5,10 +5,94 @@
   <id>https://jiandanxinli.github.io/</id>
   <link href="https://jiandanxinli.github.io/"/>
   <link href="https://jiandanxinli.github.io/feed.xml" rel="self"/>
-  <updated>2016-07-31T08:00:00+08:00</updated>
+  <updated>2016-08-06T08:00:00+08:00</updated>
   <author>
     <name>北京竹间科技有限公司</name>
   </author>
+  <entry>
+    <title>阿里云 Ubuntu 支持 IPv6 的完整步骤</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-06.html"/>
+    <id>https://jiandanxinli.github.io/2016-08-06.html</id>
+    <published>2016-08-06T08:00:00+08:00</published>
+    <updated>2016-08-07T17:57:49+08:00</updated>
+    <author>
+      <name>Ben</name>
+    </author>
+    <content type="html">&lt;p&gt;前几天提交新版 iOS App 被拒，原因是在 IPv6 only 的环境下无法使用。但阿里云的 ECS 并不支持 IPv6，只提供 IPv4 的 IP。好在 Hurricane Electric （下文简称 HE）提供免费的 IPv6 通道，基本够用了。&lt;/p&gt;
+
+&lt;p&gt;先说下 ECS 的基本环境：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;操作系统：Ubuntu&lt;/li&gt;
+&lt;li&gt;前端服务器：Nginx&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;启用 IPv6 的主要有四步：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;注册并创建 IPv6 通道&lt;/li&gt;
+&lt;li&gt;配置 ECS 使其支持 IPv6&lt;/li&gt;
+&lt;li&gt;配置 Nginx 使其监听 IPv6 端口&lt;/li&gt;
+&lt;li&gt;配置 DNS 使其支持 IPv6 解析&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第一步：注册并创建 IPv6 通道&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;注册 &lt;a href="https://www.tunnelbroker.net/"&gt;https://www.tunnelbroker.net/&lt;/a&gt; （需要邮箱验证）&lt;/li&gt;
+&lt;li&gt;点击 &lt;a href="https://www.tunnelbroker.net/new_tunnel.php"&gt;Create Regular Tunnel&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;在&lt;code&gt;IPv4 Endpoint (Your side)&lt;/code&gt;处填上 ECS 的 IPv4 地址&lt;/li&gt;
+&lt;li&gt;在&lt;code&gt;Available Tunnel Servers&lt;/code&gt;中选择&lt;code&gt;Hong Kong, HK&lt;/code&gt;（如果你面向海外用户，可以选择更接近目标用户的地区）&lt;/li&gt;
+&lt;li&gt;点击&lt;code&gt;Create Tunnel&lt;/code&gt;后，通道就创建完成了&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第二步：配置 ECS 使其支持 IPv6&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;编辑&lt;code&gt;/etc/sysctl.conf&lt;/code&gt;，将以下三项的配置改成&lt;code&gt;0&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class="highlight conf"&gt;&lt;code&gt;  &lt;span class="n"&gt;net&lt;/span&gt;.&lt;span class="n"&gt;ipv6&lt;/span&gt;.&lt;span class="n"&gt;conf&lt;/span&gt;.&lt;span class="n"&gt;all&lt;/span&gt;.&lt;span class="n"&gt;disable_ipv6&lt;/span&gt; = &lt;span class="m"&gt;0&lt;/span&gt;
+  &lt;span class="n"&gt;net&lt;/span&gt;.&lt;span class="n"&gt;ipv6&lt;/span&gt;.&lt;span class="n"&gt;conf&lt;/span&gt;.&lt;span class="n"&gt;default&lt;/span&gt;.&lt;span class="n"&gt;disable_ipv6&lt;/span&gt; = &lt;span class="m"&gt;0&lt;/span&gt;
+  &lt;span class="n"&gt;net&lt;/span&gt;.&lt;span class="n"&gt;ipv6&lt;/span&gt;.&lt;span class="n"&gt;conf&lt;/span&gt;.&lt;span class="n"&gt;lo&lt;/span&gt;.&lt;span class="n"&gt;disable_ipv6&lt;/span&gt; = &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;在&lt;code&gt;/etc/network/interface&lt;/code&gt;底部加上以下内容（注：下面大写的&lt;IPV6&gt;处，需要替换成你在 HE 得到的&lt;code&gt;Server IPv6 Address&lt;/code&gt;，但不包括最后的&lt;code&gt;::1/64&lt;/code&gt;，如：&lt;code&gt;2001:470:100:100&lt;/code&gt;）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class="highlight conf"&gt;&lt;code&gt;  &lt;span class="n"&gt;auto&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt;
+  &lt;span class="n"&gt;iface&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt; &lt;span class="n"&gt;inet6&lt;/span&gt; &lt;span class="n"&gt;v4tunnel&lt;/span&gt;
+  &lt;span class="n"&gt;address&lt;/span&gt; &amp;lt;&lt;span class="n"&gt;IPV6&lt;/span&gt;&amp;gt;::&lt;span class="m"&gt;2&lt;/span&gt;
+  &lt;span class="n"&gt;netmask&lt;/span&gt; &lt;span class="m"&gt;64&lt;/span&gt;
+  &lt;span class="n"&gt;remote&lt;/span&gt; &amp;lt;&lt;span class="n"&gt;HE&lt;/span&gt; 的 &lt;span class="n"&gt;Server&lt;/span&gt; &lt;span class="n"&gt;IPv4&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt;&amp;gt;
+  &lt;span class="n"&gt;local&lt;/span&gt; &amp;lt;阿里云的 &lt;span class="n"&gt;IPv4&lt;/span&gt; 地址&amp;gt;
+  &lt;span class="n"&gt;endpoint&lt;/span&gt; &lt;span class="n"&gt;any&lt;/span&gt;
+  &lt;span class="n"&gt;ttl&lt;/span&gt; &lt;span class="m"&gt;255&lt;/span&gt;
+  &lt;span class="n"&gt;gateway&lt;/span&gt; &amp;lt;&lt;span class="n"&gt;IPv6&lt;/span&gt;&amp;gt;::&lt;span class="m"&gt;1&lt;/span&gt;
+  &lt;span class="n"&gt;up&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt; -&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="n"&gt;route&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="m"&gt;2000&lt;/span&gt;::/&lt;span class="m"&gt;3&lt;/span&gt; &lt;span class="n"&gt;via&lt;/span&gt; ::&amp;lt;&lt;span class="n"&gt;HE&lt;/span&gt; 的 &lt;span class="n"&gt;Server&lt;/span&gt; &lt;span class="n"&gt;IPv4&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt;&amp;gt; &lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt;
+  &lt;span class="n"&gt;up&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt; -&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="n"&gt;addr&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &amp;lt;&lt;span class="n"&gt;IPv6&lt;/span&gt;&amp;gt;::&lt;span class="m"&gt;1&lt;/span&gt;:&lt;span class="m"&gt;1&lt;/span&gt;/&lt;span class="m"&gt;128&lt;/span&gt; &lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt;
+  &lt;span class="n"&gt;up&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt; -&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="n"&gt;addr&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &amp;lt;&lt;span class="n"&gt;IPv6&lt;/span&gt;&amp;gt;::&lt;span class="m"&gt;2&lt;/span&gt;:&lt;span class="m"&gt;1&lt;/span&gt;/&lt;span class="m"&gt;128&lt;/span&gt; &lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt;
+  &lt;span class="n"&gt;down&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt; -&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="n"&gt;route&lt;/span&gt; &lt;span class="n"&gt;flush&lt;/span&gt; &lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;重启服务器&lt;/li&gt;
+&lt;li&gt;执行&lt;code&gt;ifup he-ipv6&lt;/code&gt;确认 IPv6 已启用&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第三步：配置 Nginx 使其监听 IPv6 端口&lt;/p&gt;
+&lt;pre class="highlight conf"&gt;&lt;code&gt;&lt;span class="n"&gt;server&lt;/span&gt; {
+  &lt;span class="n"&gt;listen&lt;/span&gt; &lt;span class="m"&gt;80&lt;/span&gt;; // 监听 &lt;span class="n"&gt;IPv4&lt;/span&gt; 的 &lt;span class="m"&gt;80&lt;/span&gt; 端口
+  &lt;span class="n"&gt;listen&lt;/span&gt; [::]:&lt;span class="m"&gt;80&lt;/span&gt;; // 监听 &lt;span class="n"&gt;IPv6&lt;/span&gt; 的 &lt;span class="m"&gt;80&lt;/span&gt; 端口
+}
+
+&lt;span class="n"&gt;server&lt;/span&gt; {
+  &lt;span class="n"&gt;listen&lt;/span&gt; &lt;span class="m"&gt;443&lt;/span&gt; &lt;span class="n"&gt;ssl&lt;/span&gt; &lt;span class="n"&gt;http2&lt;/span&gt;; // 监听 &lt;span class="n"&gt;IPv4&lt;/span&gt; 的 &lt;span class="m"&gt;443&lt;/span&gt; 端口
+  &lt;span class="n"&gt;listen&lt;/span&gt; [::]:&lt;span class="m"&gt;443&lt;/span&gt; &lt;span class="n"&gt;ssl&lt;/span&gt; &lt;span class="n"&gt;http2&lt;/span&gt;; // 监听 &lt;span class="n"&gt;IPv6&lt;/span&gt; 的 &lt;span class="m"&gt;443&lt;/span&gt; 端口
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第四步：配置 DNS 使其支持 IPv6 解析&lt;/p&gt;
+
+&lt;p&gt;这步最简单，只需给相应的域名加上&lt;code&gt;AAAA&lt;/code&gt;解析，值填 HE 里的&lt;code&gt;Client IPv6 Address&lt;/code&gt;，去掉最后的&lt;code&gt;/64&lt;/code&gt;即可，如&lt;code&gt;2001:470:100:100::2&lt;/code&gt;&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Rails ActiveRecord 不同的赋值方法</title>
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-07-31.html"/>

@@ -32,7 +32,7 @@ summary: 使用 Hurricane Electric Free IPv6 Tunnel Broker 来让阿里云服务
 
 1. 编辑`/etc/sysctl.conf`，将以下三项的配置改成`0`
 
-  ```
+  ```config
   net.ipv6.conf.all.disable_ipv6 = 0
   net.ipv6.conf.default.disable_ipv6 = 0
   net.ipv6.conf.lo.disable_ipv6 = 0
@@ -40,7 +40,7 @@ summary: 使用 Hurricane Electric Free IPv6 Tunnel Broker 来让阿里云服务
 
 2. 在`/etc/network/interface`底部加上以下内容（注：下面大写的<IPV6>处，需要替换成你在 HE 得到的`Server IPv6 Address`，但不包括最后的`::1/64`，如：`2001:470:100:100`）
 
-  ```
+  ```config
   auto he-ipv6
   iface he-ipv6 inet6 v4tunnel
   address <IPV6>::2
@@ -55,13 +55,13 @@ summary: 使用 Hurricane Electric Free IPv6 Tunnel Broker 来让阿里云服务
   up ip -6 addr add <IPv6>::2:1/128 dev he-ipv6
   down ip -6 route flush dev he-ipv6
   ```
-  
+
 3. 重启服务器
 4. 执行`ifup he-ipv6`确认 IPv6 已启用
 
 第三步：配置 Nginx 使其监听 IPv6 端口
 
-```
+```config
 server {
   listen 80; // 监听 IPv4 的 80 端口
   listen [::]:80; // 监听 IPv6 的 80 端口

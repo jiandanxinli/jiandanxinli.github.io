@@ -1,0 +1,598 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>Rails遗留程序里最常犯的错误(译) · 简单心理技术团队</title><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div><div class="subheader container"><a href="/tags/ruby.html" class="active">Ruby</a><a href="/tags/web.html">Web</a><a href="/tags/ios.html">iOS</a><a href="/tags/ubuntu.html">Ubuntu</a><a href="/tags/nginx.html">Nginx</a><a href="/tags/ipv6.html">IPv6</a><a href="/tags/api.html">API</a><a href="https://www.jiandanxinli.com/pages/37">Join Us</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>Rails遗留程序里最常犯的错误(译)</h2><div class="meta"><span class="date">2014-07-23</span><span class="author">韩冰</span></div><p>原文出自<a href="http://edelpero.svbtle.com/most-common-mistakes-on-legacy-rails-apps">most-common-mistakes-on-legacy-rails-apps</a>, 感谢作者<a href="http://edelpero.svbtle.com/">EZEQUIEL DELPERO</a></p>
+
+<p>近来我一直在对几个遗留项目作维护。</p>
+
+<p>众所周知，处理遗留项目多数时间都感觉糟透了，因为那些代码通常都丑陋不堪而且晦涩难懂。</p>
+
+<p>我决定做一个列表，记录下那些公认的不良实践，或者是我认为不太好的实践，以及如何改良代码来避免这些不良实践。</p>
+
+<h3>问题一览</h3>
+
+<ul>
+<li>在模型层以外使用查询方法</li>
+<li>在视图层使用业务逻辑</li>
+<li>使用无意义的方法名和变量名</li>
+<li>条件判断时使用unless或者否定的表达式</li>
+<li>没有遵循“命令，不要去询问”原则</li>
+<li>使用复杂的条件</li>
+<li>在模型的实例方法里，本来不需要的时候使用了“self.”</li>
+<li>使用条件表达式并且返回了条件</li>
+<li>在视图层使用行内样式</li>
+<li>在视图层使用JavaScript</li>
+<li>调用方法时把另一个方法的调用作为参数</li>
+<li>没有使用类来隔离Rake Tasks</li>
+<li>没有遵循Sandi Metz的规则</li>
+</ul>
+
+<h3>在模型层以外使用查询方法</h3>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="c1"># app/controllers/users_controller.rb</span>
+<span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">active: </span><span class="kp">true</span><span class="p">).</span><span class="nf">order</span><span class="p">(</span><span class="ss">:last_login_at</span><span class="p">)</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>这段代码不可重用而且难于测试。如果你在别的地方也想查找全部用户并进行排序，就会出现冗余代码。</p>
+
+<p><strong>好的</strong></p>
+
+<p>比起在控制器里使用查询方法，我们的做法是在模型层中使用scope把它们独立出来，就如下例所示。这样做既可以使代码能够复用，又便于代码阅读和测试。</p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/user.rb</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="n">scope</span> <span class="ss">:active</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">where</span><span class="p">(</span><span class="ss">active: </span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">scope</span> <span class="ss">:by_last_login_at</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="ss">:lasst_login_at</span><span class="p">)</span> <span class="p">}</span>
+
+<span class="k">end</span>
+</code></pre><pre class="highlight ruby"><code><span class="c1"># app/controllers/users_controller.rb</span>
+<span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">active</span><span class="p">.</span><span class="nf">by_last_login_at</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>每当你想用where、order、joins、includes、group、having或者其他查询方法时，记得要把它们放在模型层里。</p>
+
+<h3>在视图层使用业务逻辑</h3>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="o">&lt;!--</span> <span class="n">app</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">posts</span><span class="o">/</span><span class="n">show</span><span class="p">.</span><span class="nf">html</span><span class="p">.</span><span class="nf">erb</span> <span class="o">--&gt;</span>
+<span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+<span class="nf">&lt;</span><span class="n">h2</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="sx">%= "#{@comments.count} Comment#{@comments.count =</span><span class="o">=</span> <span class="mi">1</span> <span class="p">?</span> <span class="s1">''</span> <span class="p">:</span> <span class="s1">'s'</span><span class="p">}</span><span class="s2">" %&gt;
+&lt;/h2&gt;
+...
+</span></code></pre>
+<p>初看之下这小段代码似乎没什么问题，但是它会让HTML变得有点难以阅读，而且可以肯定的说一旦你在视图层添加了逻辑代码，那么日后你定会添加更多的逻辑到视图。这段代码还有一个问题，里面的逻辑无法复用，而且不能单独测试。</p>
+
+<p><strong>好的</strong></p>
+
+<p>使用Rails的helper方法把业务逻辑隔离出来</p>
+<pre class="highlight ruby"><code><span class="c1"># app/helpers/comments_helper.rb</span>
+<span class="k">module</span> <span class="nn">CommentsHelper</span>
+  <span class="k">def</span> <span class="nf">comments_count</span><span class="p">(</span><span class="n">comments</span><span class="p">)</span>
+    <span class="s2">"</span><span class="si">#{</span><span class="n">comments</span><span class="p">.</span><span class="nf">count</span><span class="si">}</span><span class="s2"> Comment</span><span class="si">#{</span><span class="n">comments</span><span class="p">.</span><span class="nf">count</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">?</span> <span class="s1">''</span> <span class="p">:</span> <span class="s1">'s'</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre><pre class="highlight ruby"><code><span class="o">&lt;!--</span> <span class="n">app</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">posts</span><span class="o">/</span><span class="n">show</span><span class="p">.</span><span class="nf">html</span><span class="p">.</span><span class="nf">erb</span> <span class="o">--&gt;</span>
+<span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="sx">%= comments_count(@comments) %&gt;
+&lt;/h2&gt;
+</span></code></pre>
+<h3>使用无意义的方法名和变量名</h3>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/topic.rb</span>
+<span class="k">class</span> <span class="nc">Topic</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">r_topics</span><span class="p">(</span><span class="n">questions</span><span class="p">)</span>
+    <span class="n">rt</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">questions</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">q</span><span class="o">|</span>
+      <span class="n">topics</span> <span class="o">=</span> <span class="n">q</span><span class="p">.</span><span class="nf">topics</span>
+
+      <span class="n">topics</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+        <span class="k">if</span> <span class="n">t</span><span class="p">.</span><span class="nf">enabled?</span>
+          <span class="n">rt</span> <span class="o">&lt;&lt;</span> <span class="n">t</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="no">Topic</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">id: </span><span class="n">rt</span><span class="p">)</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>这类遗留代码最主要的问题在于：你需要花费大把时间来搞清楚这些代码的用途。r_topics这个方法是做什么的，rt这个变量又是什么意思。其他的一些变量，比如在代码块里用到的那个，变量名的含义很模糊，这样也使得它们的用途初看起来很难理解。</p>
+
+<p><strong>好的</strong></p>
+
+<p>对方法和变量命名时选那些能表达出其含义的名字。这样更便于其他开发者理解你的代码。</p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/topic.rb</span>
+<span class="k">class</span> <span class="nc">Topic</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">related</span><span class="p">(</span><span class="n">questions</span><span class="p">)</span>
+    <span class="n">related_topics</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">questions</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">question</span><span class="o">|</span>
+      <span class="n">topics</span> <span class="o">=</span> <span class="n">question</span><span class="p">.</span><span class="nf">topics</span>
+
+      <span class="n">topics</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">topic</span><span class="o">|</span>
+        <span class="k">if</span> <span class="n">topic</span><span class="p">.</span><span class="nf">enabled?</span>
+          <span class="n">related_topics</span> <span class="o">&lt;&lt;</span> <span class="n">topic</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="no">Topic</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">id: </span><span class="n">related_topics</span><span class="p">)</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>这样改进的好处在于：</p>
+
+<ul>
+<li>第一次看到方法名时就会对方法返回值有个概念。一个与给定问题集合相关联的主题的集合。</li>
+<li>现在你能够了解related_topics表示一个数组，它里面存放了一个与给定问题集合相关联的主题的集合。之前打代码里rt表示什么非常含糊。</li>
+<li>使用topic代替之前的t，并用question替换掉q，使得你的代码更便于阅读，因为你不再需要脑补这些变量的用途。现在这些代码已然能够自解释一切。</li>
+</ul>
+
+<h3>条件判断时使用unless或者否定的表达式</h3>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="c1"># app/services/charge_user.rb</span>
+<span class="k">class</span> <span class="nc">ChargeUser</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">perform</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">amount</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kp">false</span> <span class="k">unless</span> <span class="n">user</span><span class="p">.</span><span class="nf">enabled?</span>
+
+    <span class="no">PaymentGateway</span><span class="p">.</span><span class="nf">charge</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">account_id</span><span class="p">,</span> <span class="n">amount</span><span class="p">)</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>这段代码也许并不难理解，但是使用unless或者否定的条件表达式会稍微增加代码的发复杂度，因为你必须对它要判断的条件自行脑补。</p>
+
+<p><strong>好的</strong></p>
+
+<p>改用if或者肯定的条件表达式之后，上述代码就会好懂得多。</p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/user.rb</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="k">def</span> <span class="nf">disabled?</span>
+    <span class="o">!</span><span class="n">enabled?</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre><pre class="highlight ruby"><code><span class="c1"># app/services/charge_user.rb</span>
+<span class="k">class</span> <span class="nc">ChargeUser</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">perform</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">amount</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kp">false</span> <span class="k">if</span> <span class="n">user</span><span class="p">.</span><span class="nf">disabled?</span>
+
+    <span class="no">PaymentGateway</span><span class="p">.</span><span class="nf">charge</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">account_id</span><span class="p">,</span> <span class="n">amount</span><span class="p">)</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>不觉得这样写代码更易读了吗？我更倾向于使用if而非unless，用肯定的表达式多过肯定的表达式。实在不行就添加个反意的方法，比如我们在User模型里加的那个。</p>
+
+<h3>没有遵循“命令，不要去询问”原则</h3>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/user.rb</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="k">def</span> <span class="nf">enable!</span>
+    <span class="n">update</span><span class="p">(</span><span class="ss">enabled: </span><span class="kp">true</span><span class="p">)</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre><pre class="highlight ruby"><code><span class="c1"># app/controllers/users_controller.rb</span>
+<span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">enable</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">user</span><span class="p">.</span><span class="nf">disabled?</span>
+      <span class="n">user</span><span class="p">.</span><span class="nf">enable!</span>
+      <span class="n">message</span> <span class="o">=</span> <span class="s2">"User enabled"</span>
+    <span class="k">else</span>
+      <span class="n">message</span> <span class="o">=</span> <span class="s2">"User already disabled"</span>
+    <span class="k">end</span>
+
+    <span class="n">redirect_to</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">),</span> <span class="ss">notice: </span><span class="n">message</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>这里的问题是在不恰当的地方出现了控制逻辑。你先判断了用户是否是不可用，如果的确不可用，就启用这个用户。</p>
+
+<p><strong>好的</strong></p>
+
+<p>比较好的改办法是把控制逻辑放到enable!方法里。</p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/user.rb</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="k">def</span> <span class="nf">enable!</span>
+    <span class="k">if</span> <span class="n">disabled?</span>
+      <span class="n">update</span><span class="p">(</span><span class="ss">enabled: </span><span class="kp">true</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre><pre class="highlight ruby"><code><span class="c1"># app/controllers/users_controller.rb</span>
+<span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">enable</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">user</span><span class="p">.</span><span class="nf">enable!</span>
+      <span class="n">message</span> <span class="o">=</span> <span class="s2">"User enabled"</span>
+    <span class="k">else</span>
+      <span class="n">message</span> <span class="o">=</span> <span class="s2">"User already disabled"</span>
+    <span class="k">end</span>
+
+    <span class="n">redirect_to</span> <span class="n">user_path</span><span class="p">(</span><span class="n">user</span><span class="p">),</span> <span class="ss">notice: </span><span class="n">message</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>现在控制器不用关心user需要满足何种条件才会被启用。相关的判断由User模型和enable！方法来处理。</p>
+
+<h3>使用复杂的条件</h3>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="c1"># app/controllers/posts_controller.rb</span>
+<span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">destroy</span>
+    <span class="n">post</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">post</span><span class="p">.</span><span class="nf">enabled?</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">own_post?</span><span class="p">(</span><span class="n">post</span><span class="p">)</span> <span class="o">||</span> <span class="n">user</span><span class="p">.</span><span class="nf">admin?</span><span class="p">)</span>
+      <span class="n">post</span><span class="p">.</span><span class="nf">destroy</span>
+      <span class="n">message</span> <span class="o">=</span> <span class="s2">"Post destroyed."</span>
+    <span class="k">else</span>
+      <span class="n">message</span> <span class="o">=</span> <span class="s2">"You're not allow to destroy this post."</span>
+    <span class="k">end</span>
+
+    <span class="n">redirect_to</span> <span class="n">posts_path</span><span class="p">,</span> <span class="ss">notice: </span><span class="n">message</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>条件表达式弄的太过复杂了，实际上这里只想知道一件事：用户可以删掉post吗？</p>
+
+<p><strong>好的</strong></p>
+
+<p>从上面的代码我们可以了解到，一个用户需要是post的所有者或者这个用户是管理员，并且post本身也是可用的，才可以删除这个post。最好的做法就是，把这些条件抽取成一个日后可以复用的方法。</p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/user.rb</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="k">def</span> <span class="nf">can_destroy_post?</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+    <span class="n">post</span><span class="p">.</span><span class="nf">enabled?</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">own_post?</span><span class="p">(</span><span class="n">post</span><span class="p">)</span> <span class="o">||</span> <span class="n">admin?</span><span class="p">)</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre><pre class="highlight ruby"><code><span class="c1"># app/controllers/posts_controller.rb</span>
+<span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+
+  <span class="k">def</span> <span class="nf">destroy</span>
+    <span class="n">post</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">user</span><span class="p">.</span><span class="nf">can_destroy_post?</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+      <span class="n">post</span><span class="p">.</span><span class="nf">destroy</span>
+      <span class="n">message</span> <span class="o">=</span> <span class="s2">"Post destroyed."</span>
+    <span class="k">else</span>
+      <span class="n">message</span> <span class="o">=</span> <span class="s2">"You're not allow to destroy this post."</span>
+    <span class="k">end</span>
+
+    <span class="n">redirect_to</span> <span class="n">posts_path</span><span class="p">,</span> <span class="ss">notice: </span><span class="n">message</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>每当条件表达式里出现了&amp;&amp;或者||，就应该把它们提取为方法，以备以后复用。</p>
+
+<h3>在模型的实例方法里，本来不需要的时候使用了“self.”</h3>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/user.rb</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="k">def</span> <span class="nf">full_name</span>
+    <span class="s2">"</span><span class="si">#{</span><span class="nb">self</span><span class="p">.</span><span class="nf">first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="nb">self</span><span class="p">.</span><span class="nf">last_name</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>这段代码并不复杂但是里面并不需要使用“self.”。把“self.”去掉会使代码更简洁且不影响可用性。</p>
+
+<p><strong>好的</strong></p>
+
+<p>在模型里，只有在实例方法里需要赋值时，才会用到“self.”，否则通篇的“self.”只会徒增代码复杂度。</p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/user.rb</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="k">def</span> <span class="nf">full_name</span>
+    <span class="s2">"</span><span class="si">#{</span><span class="n">first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">last_name</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<h3>使用条件表达式并且返回了条件</h3>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/user.rb</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="k">def</span> <span class="nf">full_name</span>
+    <span class="k">if</span> <span class="nb">name</span>
+      <span class="nb">name</span>
+    <span class="k">else</span>
+      <span class="s2">"No name"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>或者</p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/user.rb</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="k">def</span> <span class="nf">full_name</span>
+    <span class="nb">name</span> <span class="p">?</span> <span class="nb">name</span> <span class="p">:</span> <span class="s2">"No name"</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>这段代码的问题在于：在不需要的地方添加了控制语句。</p>
+
+<p><strong>好的</strong></p>
+
+<p>有种更简便的处理方式也能达到同样效果</p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/user.rb</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+  <span class="k">def</span> <span class="nf">full_name</span>
+    <span class="nb">name</span> <span class="o">||</span> <span class="s2">"No name"</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>简单来说这段代码会在name不为false或nil时将其返回，否则返回&quot;No name&quot;.</p>
+
+<p>使用得当的话，||和&amp;&amp;这些操作符会对提升你的代码品质提供巨大助力。</p>
+
+<h3>在视图层使用行内样式</h3>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="o">&lt;!--</span> <span class="n">app</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">show</span><span class="p">.</span><span class="nf">html</span><span class="p">.</span><span class="nf">erb</span> <span class="o">--&gt;</span>
+<span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+<span class="nf">&lt;</span><span class="n">h3</span> <span class="n">style</span><span class="o">=</span><span class="s2">"font-size:20px;letter-spacing:normal;color:#95d60a;line-height:100%;margin:0;font-family:'Proxima Nova';"</span><span class="o">&gt;</span>
+  <span class="no">SECRET</span> <span class="no">PROJECT</span>
+<span class="o">&lt;</span><span class="sr">/h3&gt;
+...
+</span></code></pre>
+<p>这里我们只列出一个标签，所有的样式都写在了标签里。现在，请设想一下，如果所有的标签都接收行内样式。这会把你的HTML变得和其难度，除此之外，每当你需要引入另一个同样的h3元素时，将不得不把同样代码照搬一边，造成冗余。</p>
+
+<p><strong>好的</strong></p>
+<pre class="highlight ruby"><code><span class="sr">//</span> <span class="n">app</span><span class="o">/</span><span class="n">assets</span><span class="o">/</span><span class="n">stylesheets</span><span class="o">/</span><span class="n">application</span><span class="p">.</span><span class="nf">css</span>
+<span class="p">.</span><span class="nf">project</span><span class="o">-</span><span class="n">title</span> <span class="p">{</span>
+    <span class="n">font</span><span class="o">-</span><span class="ss">size: </span><span class="mi">20</span><span class="n">px</span><span class="p">;</span>
+    <span class="n">letter</span><span class="o">-</span><span class="ss">spacing: </span><span class="n">normal</span><span class="p">;</span>
+    <span class="ss">color: </span><span class="c1">#95d60a;</span>
+    <span class="n">line</span><span class="o">-</span><span class="ss">height: </span><span class="mi">100</span><span class="o">%</span><span class="p">;</span>
+    <span class="ss">margin: </span><span class="mi">0</span><span class="p">;</span>
+    <span class="n">font</span><span class="o">-</span><span class="n">family</span><span class="ss">:'Proxima Nova'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre><pre class="highlight ruby"><code><span class="o">&lt;!--</span> <span class="n">app</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">show</span><span class="p">.</span><span class="nf">html</span><span class="p">.</span><span class="nf">erb</span> <span class="o">--&gt;</span>
+<span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+<span class="nf">&lt;</span><span class="n">h3</span> <span class="k">class</span><span class="o">=</span><span class="s2">"project-title"</span><span class="o">&gt;</span>
+  <span class="no">SECRET</span> <span class="no">PROJECT</span>
+<span class="o">&lt;</span><span class="sr">/h3&gt;
+...
+</span></code></pre>
+<p>现在我么可以复用样式了，并且HTML的可读性也有所提高。</p>
+
+<p><strong>注意：</strong>这只是个简单的范例，实际应用时你应该把CSS拆分成多个小文件，并通过application.css来加载这些文件。另外只有在email模板里，才会用到行内样式。</p>
+
+<p>###在视图层使用JavaScript</p>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="o">&lt;!--</span> <span class="n">app</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">questions</span><span class="o">/</span><span class="n">show</span><span class="p">.</span><span class="nf">html</span><span class="p">.</span><span class="nf">erb</span> <span class="o">--&gt;</span>
+<span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+<span class="nf">&lt;</span><span class="n">textarea</span> <span class="n">rows</span><span class="o">=</span><span class="s2">"4"</span> <span class="n">cols</span><span class="o">=</span><span class="s2">"50"</span> <span class="k">class</span><span class="o">=</span><span class="s1">'wysihtml5'</span><span class="o">&gt;</span>
+  <span class="no">Insert</span> <span class="n">your</span> <span class="n">question</span> <span class="n">details</span> <span class="n">here</span><span class="p">.</span>
+<span class="nf">&lt;</span><span class="o">/</span><span class="n">textarea</span><span class="o">&gt;</span>
+<span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+<span class="nf">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
+  <span class="err">$</span><span class="p">(</span><span class="n">document</span><span class="p">).</span><span class="nf">ready</span><span class="p">(</span><span class="n">function</span><span class="p">(){</span>
+  <span class="err">$</span><span class="p">(</span><span class="s1">'textarea.wysihtml5'</span><span class="p">).</span><span class="nf">wysihtml5</span><span class="p">({</span>
+    <span class="s2">"font-styles"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="sr">//</span><span class="no">Font</span> <span class="n">styling</span><span class="p">,</span> <span class="n">e</span><span class="p">.</span><span class="nf">g</span><span class="p">.</span> <span class="nf">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+    <span class="s2">"emphasis"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="sr">//</span><span class="no">Italics</span><span class="p">,</span> <span class="n">bold</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+    <span class="s2">"lists"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="sr">//</span><span class="p">(</span><span class="no">Un</span><span class="p">)</span><span class="n">ordered</span> <span class="n">lists</span><span class="p">,</span> <span class="n">e</span><span class="p">.</span><span class="nf">g</span><span class="o">.</span> <span class="no">Bullets</span><span class="p">,</span> <span class="no">Numbers</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+    <span class="s2">"html"</span><span class="p">:</span> <span class="kp">false</span><span class="p">,</span> <span class="sr">//</span><span class="no">Button</span> <span class="n">which</span> <span class="n">allows</span> <span class="n">you</span> <span class="n">to</span> <span class="n">edit</span> <span class="n">the</span> <span class="n">generated</span> <span class="no">HTML</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">false</span><span class="o">.</span>
+    <span class="s2">"link"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="sr">//</span><span class="no">Button</span> <span class="n">to</span> <span class="n">insert</span> <span class="n">a</span> <span class="n">link</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+    <span class="s2">"image"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="sr">//</span><span class="no">Button</span> <span class="n">to</span> <span class="n">insert</span> <span class="n">an</span> <span class="n">image</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+    <span class="s2">"color"</span><span class="p">:</span> <span class="kp">true</span> <span class="sr">//</span><span class="no">Button</span> <span class="n">to</span> <span class="n">change</span> <span class="n">color</span> <span class="n">of</span> <span class="n">font</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+<span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
+</code></pre>
+<p>这里的逻辑和特定页面耦合在一起，导致代码不可复用。</p>
+
+<p><strong>好的</strong></p>
+
+<p>Rails里面有专门用于组织和存放javascript代码的地方：“app/assets/javascripts/”。</p>
+<pre class="highlight ruby"><code><span class="sr">//</span> <span class="n">app</span><span class="o">/</span><span class="n">assets</span><span class="o">/</span><span class="n">javascripts</span><span class="o">/</span><span class="n">application</span><span class="p">.</span><span class="nf">js</span>
+<span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+<span class="err">$</span><span class="p">(</span><span class="n">document</span><span class="p">).</span><span class="nf">ready</span><span class="p">(</span><span class="n">function</span><span class="p">(){</span>
+  <span class="err">$</span><span class="p">(</span><span class="s1">'textarea.wysihtml5'</span><span class="p">).</span><span class="nf">wysihtml5</span><span class="p">({</span>
+    <span class="s2">"font-styles"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="sr">//</span><span class="no">Font</span> <span class="n">styling</span><span class="p">,</span> <span class="n">e</span><span class="p">.</span><span class="nf">g</span><span class="p">.</span> <span class="nf">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+    <span class="s2">"emphasis"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="sr">//</span><span class="no">Italics</span><span class="p">,</span> <span class="n">bold</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+    <span class="s2">"lists"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="sr">//</span><span class="p">(</span><span class="no">Un</span><span class="p">)</span><span class="n">ordered</span> <span class="n">lists</span><span class="p">,</span> <span class="n">e</span><span class="p">.</span><span class="nf">g</span><span class="o">.</span> <span class="no">Bullets</span><span class="p">,</span> <span class="no">Numbers</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+    <span class="s2">"html"</span><span class="p">:</span> <span class="kp">false</span><span class="p">,</span> <span class="sr">//</span><span class="no">Button</span> <span class="n">which</span> <span class="n">allows</span> <span class="n">you</span> <span class="n">to</span> <span class="n">edit</span> <span class="n">the</span> <span class="n">generated</span> <span class="no">HTML</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">false</span><span class="o">.</span>
+    <span class="s2">"link"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="sr">//</span><span class="no">Button</span> <span class="n">to</span> <span class="n">insert</span> <span class="n">a</span> <span class="n">link</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+    <span class="s2">"image"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="sr">//</span><span class="no">Button</span> <span class="n">to</span> <span class="n">insert</span> <span class="n">an</span> <span class="n">image</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+    <span class="s2">"color"</span><span class="p">:</span> <span class="kp">true</span> <span class="sr">//</span><span class="no">Button</span> <span class="n">to</span> <span class="n">change</span> <span class="n">color</span> <span class="n">of</span> <span class="n">font</span><span class="o">.</span> <span class="no">Default</span> <span class="kp">true</span><span class="o">.</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+<span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+</code></pre><pre class="highlight ruby"><code><span class="o">&lt;!--</span> <span class="n">app</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">questions</span><span class="o">/</span><span class="n">show</span><span class="p">.</span><span class="nf">html</span><span class="p">.</span><span class="nf">erb</span> <span class="o">--&gt;</span>
+<span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+<span class="nf">&lt;</span><span class="n">textarea</span> <span class="n">rows</span><span class="o">=</span><span class="s2">"4"</span> <span class="n">cols</span><span class="o">=</span><span class="s2">"50"</span> <span class="k">class</span><span class="o">=</span><span class="s1">'wysihtml5'</span><span class="o">&gt;</span>
+  <span class="no">Insert</span> <span class="n">your</span> <span class="n">question</span> <span class="n">details</span> <span class="n">here</span><span class="p">.</span>
+<span class="nf">&lt;</span><span class="o">/</span><span class="n">textarea</span><span class="o">&gt;</span>
+<span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+</code></pre>
+<p>现在我们可以在view层任何地方用这段代码了。只需要页面上有一个带有wysihtml5这个class的textarea，刚才的那段js就会被执行。</p>
+
+<p><strong>注意：</strong>这只是个简单的范例，实际应用时需要考虑是否需要把你的JavaScript拆分成若干小的文件，并通过application.js来加载这些文件。另外，如果你使用的是CoffeeScript而非JavaScript，请坚持不要把CoffeeScript与普通JavaScript在一起混写。</p>
+
+<h3>调用方法时把另一个方法的调用作为参数</h3>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="c1"># app/services/find_or_create_topic.rb</span>
+<span class="k">class</span> <span class="nc">FindOrCreateTopic</span>
+  <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+  <span class="nf">def</span> <span class="nb">self</span><span class="p">.</span><span class="nf">perform</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+    <span class="n">find</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">sluggify</span><span class="p">(</span><span class="nb">name</span><span class="p">))</span> <span class="o">||</span> <span class="n">create</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+<span class="nf">end</span>
+</code></pre>
+<p>这段代码里调用了find方法并传入了2个参数，首参数为user，第二个参数则是直接调用了sluggify这个方法并把name作为参数传给sluggify。你也许会有疑问，这么写有什么问题吗？我明明完全能够看懂这段代码呀。是的，代码也许不难理解，但是每次到这里你都需要自己做一点脑筋转换，而这正是我一直极力想要避免的。</p>
+
+<p><strong>好的</strong></p>
+
+<p>避免需要脑筋转换的一个比较有效的办法就是：使用有意义的变量名。</p>
+<pre class="highlight ruby"><code><span class="c1"># app/services/find_or_create_topic.rb</span>
+<span class="k">class</span> <span class="nc">FindOrCreateTopic</span>
+  <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+  <span class="nf">def</span> <span class="nb">self</span><span class="p">.</span><span class="nf">perform</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">sluggify</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+    <span class="n">find</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">slug</span><span class="p">)</span> <span class="o">||</span> <span class="n">create</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="nb">name</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+<span class="nf">end</span>
+</code></pre>
+<p>这样做可以避免脑筋转换。换用含义明确的变量名之后，每当你再调用find方法，就会知道find接受一个user和一个slug做参数。</p>
+
+<h3>没有使用类来隔离Rake Tasks</h3>
+
+<p><strong>不好的</strong></p>
+<pre class="highlight ruby"><code><span class="c1"># lib/tasks/recalculate_badges_for_users.rake</span>
+<span class="n">namespace</span> <span class="ss">:users</span> <span class="k">do</span>
+
+  <span class="n">desc</span> <span class="s2">"Recalculates Badges for Users"</span>
+  <span class="n">task</span> <span class="ss">recalculate_badges: :environment</span> <span class="k">do</span>
+    <span class="n">user_count</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">count</span>
+
+    <span class="no">User</span><span class="p">.</span><span class="nf">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+      <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">index</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">user_count</span><span class="si">}</span><span class="s2"> Recalculating Badges for: </span><span class="si">#{</span><span class="n">user</span><span class="p">.</span><span class="nf">email</span><span class="si">}</span><span class="s2">"</span>
+
+      <span class="k">if</span> <span class="n">user</span><span class="p">.</span><span class="nf">questions_with_negative_votes</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">user</span><span class="p">.</span><span class="nf">answers_with_negative_votes</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+        <span class="n">user</span><span class="p">.</span><span class="nf">grant_badge</span><span class="p">(</span><span class="s1">'Critic'</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="n">user</span><span class="p">.</span><span class="nf">answers</span><span class="p">.</span><span class="nf">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">answer</span><span class="o">|</span>
+        <span class="n">question</span>   <span class="o">=</span> <span class="n">answer</span><span class="p">.</span><span class="nf">question</span>
+        <span class="k">next</span> <span class="k">unless</span> <span class="n">answer</span> <span class="o">&amp;&amp;</span> <span class="n">question</span>
+
+        <span class="n">days</span>       <span class="o">=</span> <span class="n">answer</span><span class="p">.</span><span class="nf">created_at</span> <span class="o">-</span> <span class="n">question</span><span class="p">.</span><span class="nf">created_at</span>
+        <span class="n">days_count</span> <span class="o">=</span> <span class="p">(</span><span class="n">days</span> <span class="o">/</span> <span class="mi">1</span><span class="p">.</span><span class="nf">day</span><span class="p">).</span><span class="nf">round</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">days_count</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">question</span><span class="p">.</span><span class="nf">vote_count</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span>
+          <span class="n">grant_badge</span><span class="p">(</span><span class="s1">'Necromancer'</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">return</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>这个rake task有问题多多。最主要的问题是，这个rake太长了而且不好测试。代码写的初一看也很难理解。你只好相信这个task的确是为用户重新计算奖章系统的，因为它上面描述就这么写的。</p>
+
+<p><strong>好的</strong></p>
+
+<p>解决这个问题最好的办法就是，把业务逻辑挪到一个特定的类里面。所以，让我们新建个类来搞定它吧。</p>
+<pre class="highlight ruby"><code><span class="c1"># app/services/recalculate_badge.rb</span>
+<span class="k">class</span> <span class="nc">RecalculateBadge</span>
+  <span class="kp">attr_reader</span> <span class="ss">:user</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">grant_citric</span>
+    <span class="k">if</span> <span class="n">grant_citric?</span>
+      <span class="n">user</span><span class="p">.</span><span class="nf">grant_badge</span><span class="p">(</span><span class="s1">'Critic'</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">grant_necromancer</span>
+    <span class="n">user</span><span class="p">.</span><span class="nf">answers</span><span class="p">.</span><span class="nf">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">answer</span><span class="o">|</span>
+      <span class="n">question</span> <span class="o">=</span> <span class="n">answer</span><span class="p">.</span><span class="nf">question</span>
+      <span class="k">next</span> <span class="k">unless</span> <span class="n">answer</span> <span class="o">&amp;&amp;</span> <span class="n">question</span>
+
+      <span class="k">if</span> <span class="n">grant_necromancer?</span><span class="p">(</span><span class="n">answer</span><span class="p">,</span> <span class="n">question</span><span class="p">)</span>
+        <span class="n">grant_badge</span><span class="p">(</span><span class="s1">'Necromancer'</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">return</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="kp">protected</span>
+
+    <span class="k">def</span> <span class="nf">grant_citric?</span>
+      <span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">questions_with_negative_votes</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">||</span>
+      <span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">answers_with_negative_votes</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">days_count</span><span class="p">(</span><span class="n">answer</span><span class="p">,</span> <span class="n">question</span><span class="p">)</span>
+      <span class="n">days</span> <span class="o">=</span> <span class="n">answer</span><span class="p">.</span><span class="nf">created_at</span> <span class="o">-</span> <span class="n">question</span><span class="p">.</span><span class="nf">created_at</span>
+      <span class="p">(</span><span class="n">days</span> <span class="o">/</span> <span class="mi">1</span><span class="p">.</span><span class="nf">day</span><span class="p">).</span><span class="nf">round</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">grant_necromancer?</span><span class="p">(</span><span class="n">answer</span><span class="p">,</span> <span class="n">question</span><span class="p">)</span>
+      <span class="p">(</span><span class="n">days_count</span><span class="p">(</span><span class="n">answer</span><span class="p">,</span><span class="n">question</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+      <span class="p">(</span><span class="n">question</span><span class="p">.</span><span class="nf">vote_count</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre><pre class="highlight ruby"><code><span class="c1"># lib/tasks/recalculate_badges_for_users.rake</span>
+<span class="n">namespace</span> <span class="ss">:users</span> <span class="k">do</span>
+
+  <span class="n">desc</span> <span class="s2">"Recalculates Badges for Users"</span>
+  <span class="n">task</span> <span class="ss">recalculate_badges: :environment</span> <span class="k">do</span>
+    <span class="n">user_count</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">count</span>
+
+    <span class="no">User</span><span class="p">.</span><span class="nf">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+      <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">index</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">user_count</span><span class="si">}</span><span class="s2"> Recalculating Badges for: </span><span class="si">#{</span><span class="n">user</span><span class="p">.</span><span class="nf">email</span><span class="si">}</span><span class="s2">"</span>
+      <span class="n">task</span> <span class="o">=</span> <span class="no">RecalculateBadge</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+      <span class="n">task</span><span class="p">.</span><span class="nf">grant_citric</span>
+      <span class="n">task</span><span class="p">.</span><span class="nf">grant_necromancer</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+</code></pre>
+<p>如你所见，现在这个rake task可读性要好的多，而且还可以单独测试每一种批准徽章的方法。除此以外我么也可以在有需要时复用这个类。当然这段代码只是点到即止，诸位可以再做进一步优化。</p>
+
+<h3>没有遵循 Sandi Metz 的规则</h3>
+
+<ol>
+<li>每个类代码不可以超过100行</li>
+<li>每个方法代码不可以超过5行</li>
+<li>方法参数不可以超过4个，hash项也包括在内</li>
+<li>控制器之可以初始化一个对象。而且视图层只可以使用一个实例变量，并且只可以在这个对象上调用方法（@object.collaborator.value这种是不可以的）。</li>
+</ol>
+
+<p>更多关于Sandi Metz的规则请移步至<a href="http://robots.thoughtbot.com/">thoughtbot</a>,参阅<a href="http://robots.thoughtbot.com/sandi-metz-rules-for-developers">Sandi Metz&#39; Rules For Developers</a>这篇博文。</p>
+</div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><p>提升价值，而非估值</p><div class="links"><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">关于我们</a><a href="https://www.jiandanxinli.com">简单心理</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>

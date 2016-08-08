@@ -16,7 +16,7 @@ html lang="zh-CN"
         a.github href="https://github.com/jiandanxinli" github.com/jiandanxinli
       .subheader.container
         - blog.tags.sort { |a, b| b[1].count <=> a[1].count }.each do |tag, articles|
-          = link_to tag, tag_path(tag), class: ('active' if defined?(tagname) && tagname == tag)
+          = link_to tag, tag_path(tag), class: ('active' if current_article.tags.include?(tag))
         a href='https://www.jiandanxinli.com/pages/37' Join Us
     .animated_container
       .content.container.animated.fadeIn.delay

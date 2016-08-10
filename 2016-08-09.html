@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>Express - 简单介绍 Express · 简单心理技术团队</title><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div><div class="subheader container"><a href="/tags/ruby.html">Ruby</a><a href="/tags/web.html" class="active">Web</a><a href="/tags/api.html">API</a><a href="/tags/ubuntu.html">Ubuntu</a><a href="/tags/nginx.html">Nginx</a><a href="/tags/ipv6.html">IPv6</a><a href="/tags/node.html" class="active">Node</a><a href="/tags/ios.html">iOS</a><a href="https://www.jiandanxinli.com/pages/37">Join Us</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>Express - 简单介绍 Express</h2><div class="meta"><span class="date">2016-08-09</span><span class="author">lei.wang</span></div><p>express 是 <strong>Node.js</strong> 上最流行的 Web 开发框架，使用它我们可以快速的开发一个 Web 应用。</p>
+
+<p>安装 express 命令行工具，使用它我们可以初始化一个 express 项目。</p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/6661673/17502822/ba3929ca-5e1d-11e6-9aae-ed48653b03cc.jpg" alt="express" /></p>
+
+<h2>新建一个项目</h2>
+
+<p>执行 <code>express -e blog</code></p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/6661673/17502876/137642d4-5e1e-11e6-8df1-08b609f7d670.jpg" alt="new-express" /></p>
+
+<p>进入项目目录后执行 <code>npm install</code></p>
+
+<p>安装完成后 执行 <code>DEBUG=blog:* npm start</code></p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/6661673/17507925/da030858-5e44-11e6-847a-984bf7a1fbf4.png" alt="image" /></p>
+
+<p>在浏览器里访问 <code>localhost:3000</code></p>
+
+<p>你会发现一个简单 web 应用已经搭建起来了</p>
+
+<h2>目录结构</h2>
+
+<p>你可以在第一步执行 <code>express -e blog</code> 后看到代码目录结构</p>
+
+<ul>
+<li>app.js：启动文件，或者说入口文件</li>
+<li>package.json：存储着工程的信息及模块依赖，当在 dependencies 中添加依赖的模块时，运行npm install，npm 会检查当前目录下的 package.json，并自动安装所有指定的模块</li>
+<li>node_modules：存放 package.json 中安装的模块，当你在 package.json 添加依赖的模块并安装后，存放在这个文件夹下</li>
+<li>public：存放 image、css、js 等文件</li>
+<li>routes：存放路由文件</li>
+<li>views：存放视图文件或者说模版文件</li>
+<li>bin：存放可执行文件</li>
+</ul>
+
+<h3>app.js 中的代码</h3>
+
+<p><img src="https://cloud.githubusercontent.com/assets/6661673/17502825/bf2e99ce-5e1d-11e6-81fb-8a92b605e3a6.jpg" alt="app" /></p>
+
+<p>在app.js中我们通过require()加载了express、path 等模块,以及 routes 文件夹下的index. js和 users.js 路由文件。</p>
+
+<ul>
+<li>var app = express()：生成一个express实例 app。</li>
+<li>app.set(&#39;views&#39;, path.join(<strong>dirname, &#39;views’))：设置 views 文件夹为存放view文件的目录, 即存放模板文件的地方,</strong>dirname 为全局变量,存储当前正在执行的脚本所在的目录。</li>
+<li>app.set(&#39;view engine&#39;, &#39;ejs’)：设置视图模板引擎为 ejs。</li>
+<li>app.use(bodyParser.json())：加载解析json的中间件。</li>
+<li>app.use(bodyParser.urlencoded({ extended: false }))：加载解析urlencoded请求体的中间件。</li>
+<li>app.use(cookieParser())：加载解析cookie的中间件。</li>
+<li>app.use(express.static(path.join(__dirname, &#39;public&#39;)))：设置public文件夹为存放静态文件的目录。</li>
+<li>app.use(&#39;/&#39;, routes);和app.use(&#39;/users&#39;, users)：路由控制器。</li>
+<li>捕获404错误，并转发到错误处理器。
+*</li>
+</ul>
+<pre class="highlight javascript"><code>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">err</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">'Not Found'</span><span class="p">);</span>
+    <span class="nx">err</span><span class="p">.</span><span class="nx">status</span> <span class="o">=</span> <span class="mi">404</span><span class="p">;</span>
+    <span class="nx">next</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">});</span>
+</code></pre>
+<ul>
+<li>开发环境下的错误处理器。
+*</li>
+</ul>
+<pre class="highlight javascript"><code>  <span class="k">if</span> <span class="p">(</span><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'env'</span><span class="p">)</span> <span class="o">===</span> <span class="s1">'development'</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+       <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">status</span> <span class="o">||</span> <span class="mi">500</span><span class="p">);</span>
+       <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="p">{</span>
+           <span class="na">message</span><span class="p">:</span> <span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">,</span>
+           <span class="na">error</span><span class="p">:</span> <span class="nx">err</span>
+       <span class="p">});</span>
+   <span class="p">});</span>
+  <span class="p">}</span>
+</code></pre>
+<ul>
+<li>生产环境下的错误处理器。
+*</li>
+</ul>
+<pre class="highlight javascript"><code>  <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">status</span> <span class="o">||</span> <span class="mi">500</span><span class="p">);</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">message</span><span class="p">:</span> <span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">,</span>
+        <span class="na">error</span><span class="p">:</span> <span class="p">{}</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+</code></pre>
+<ul>
+<li>module.exports = app ：导出app实例供其他模块调用。</li>
+</ul>
+
+<h2>路由规则</h2>
+
+<p>express 封装了多种 http 请求方式，我们主要只使用 <code>get</code> 和 <code>post</code> 两种，即 <code>app.get()</code> 和 <code>app.post()</code> 。</p>
+
+<p><code>app.get()</code> 和 <code>app.post()</code> 的第一个参数都为请求的路径，第二个参数为处理请求的回调函数，回调函数有两个参数分别是 <code>req</code> 和 <code>res</code>，代表请求信息和响应信息。路径请求及对应的获取路径有以下几种形式：
+  * <code>req.query</code>： 处理 <code>get</code> 请求，获取 <code>get</code> 请求参数
+  * <code>req.params</code>： 处理 <code>/:xxx</code> 形式的 <code>get</code> 或 <code>post</code> 请求，获取请求参数
+  * <code>req.body</code>： 处理 <code>post</code> 请求，获取 <code>post</code> 请求体
+  * <code>req.param()</code>： 处理 <code>get</code> 和 <code>post</code> 请求，但查找优先级由高到低为 <code>req.params</code>→<code>req.body</code>→<code>req.query</code></p>
+<pre class="highlight javascript"><code>  <span class="cm">/* GET home page. */</span>
+  <span class="nx">router</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ?name=111&amp;phone=111</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">)</span>
+    <span class="c1">// =&gt; { name: '111', phone: '111' }</span>
+
+    <span class="c1">// ?name=111&amp;user[phone]=111</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">)</span>
+    <span class="c1">// =&gt; { name: '111', user: { phone: '111' } }</span>
+
+    <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">'index'</span><span class="p">,</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'Express'</span> <span class="p">});</span>
+  <span class="p">});</span>
+
+  <span class="nx">router</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">'/post'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// post name=1111&amp;phone=1111</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">)</span>
+    <span class="c1">// =&gt; { name: '1111', phone: '1111' }</span>
+
+    <span class="c1">// post user[name]=1111&amp;user[phone]=1111</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">user</span><span class="p">)</span>
+    <span class="c1">// =&gt; { user: { name : '1111', phone: '1111' } }</span>
+
+    <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">'index'</span><span class="p">,</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'Express'</span> <span class="p">});</span>
+  <span class="p">});</span>
+</code></pre>
+<h2>模版引擎</h2>
+
+<h3>什么是模板引擎</h3>
+
+<p>模板引擎（Template Engine）是一个将页面模板和要显示的数据结合起来生成 HTML 页面的工具。
+如果说上面讲到的 express 中的路由控制方法相当于 MVC 中的控制器的话，那模板引擎就相当于 MVC 中的视图。</p>
+
+<p>什么是 ejs ?</p>
+
+<p>ejs 是模板引擎的一种，因为它使用起来十分简单，而且与 express 集成良好。</p>
+
+<h3>使用模板引擎</h3>
+
+<p>通过以下两行代码设置了模板文件的存储位置和使用的模板引擎：</p>
+<pre class="highlight javascript"><code><span class="nx">app</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'views'</span><span class="p">,</span> <span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">'/views'</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'view engine'</span><span class="p">,</span> <span class="s1">'ejs'</span><span class="p">);</span>
+</code></pre>
+<p>我们通过 <code>express -e blog</code> 只是初始化了一个使用 <code>ejs</code> 模板引擎的工程而已，比如 <code>node_modules</code> 下添加了 <code>ejs</code> 模块，<code>views</code> 文件夹下有 <code>index.ejs</code> 。并不是说强制该工程只能使用 <code>ejs</code> 不能使用其他的模板引擎比如 <code>jade</code>，真正指定使用哪个模板引擎的是 <code>app.set(&#39;view engine&#39;, &#39;ejs&#39;);</code> 。</p>
+
+<p>在 <code>routes/index.js</code> 中通过调用 <code>res.render()</code> 渲染模版，并将其产生的页面直接返回给客户端。它接受两个参数，第一个是模板的名称，即 <code>views</code> 目录下的模板文件名，扩展名 <code>.ejs</code> 可选。第二个参数是传递给模板的数据对象，用于模板翻译。</p>
+
+<p>ejs 的标签系统非常简单，它只有以下三种标签：</p>
+
+<ul>
+<li>&lt;% code %&gt;：JavaScript 代码。</li>
+<li>&lt;%= code %&gt;：显示替换过 HTML 特殊字符的内容。</li>
+<li>&lt;%- code %&gt;：显示原始 HTML 内容。</li>
+</ul>
+
+<p><code>&lt;%= code %&gt;</code> 和 <code>&lt;%- code %&gt;</code> 的区别，当变量 code 为普通字符串时，两者没有区别。当 <code>code</code> 比如为 <code>&lt;h1&gt;hello&lt;/h1&gt;</code> 这种字符串时，<code>&lt;%= code %&gt;</code> 会原样输出 <code>&lt;h1&gt;hello&lt;/h1&gt;</code>，而 <code>&lt;%- code %&gt;</code> 则会显示 H1 大的 hello 字符串。</p>
+
+<p>我们可以在 <code>&lt;% %&gt;</code> 内使用 JavaScript 代码</p>
+<pre class="highlight javascript"><code> <span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+ <span class="o">&lt;%</span> <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">supplies</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span><span class="o">%&gt;</span>
+    <span class="o">&lt;</span><span class="nx">li</span><span class="o">&gt;&lt;%=</span> <span class="nx">supplies</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">%&gt;&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span> <span class="o">&lt;%</span> <span class="p">}</span> <span class="o">%&gt;</span>
+ <span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+</span></code></pre></div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><p>提升价值，而非估值</p><div class="links"><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">关于我们</a><a href="https://www.jiandanxinli.com">简单心理</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>

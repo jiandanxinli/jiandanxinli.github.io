@@ -5,10 +5,182 @@
   <id>https://jiandanxinli.github.io/</id>
   <link href="https://jiandanxinli.github.io/"/>
   <link href="https://jiandanxinli.github.io/feed.xml" rel="self"/>
-  <updated>2016-08-06T08:00:00+08:00</updated>
+  <updated>2016-08-09T08:00:00+08:00</updated>
   <author>
     <name>北京竹间科技有限公司</name>
   </author>
+  <entry>
+    <title>Express - 简单介绍 Express</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-09.html"/>
+    <id>https://jiandanxinli.github.io/2016-08-09.html</id>
+    <published>2016-08-09T08:00:00+08:00</published>
+    <updated>2016-08-10T10:40:30+08:00</updated>
+    <author>
+      <name>lei.wang</name>
+    </author>
+    <content type="html">&lt;p&gt;express 是 &lt;strong&gt;Node.js&lt;/strong&gt; 上最流行的 Web 开发框架，使用它我们可以快速的开发一个 Web 应用。&lt;/p&gt;
+
+&lt;p&gt;安装 express 命令行工具，使用它我们可以初始化一个 express 项目。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://cloud.githubusercontent.com/assets/6661673/17502822/ba3929ca-5e1d-11e6-9aae-ed48653b03cc.jpg" alt="express" /&gt;&lt;/p&gt;
+
+&lt;h2&gt;新建一个项目&lt;/h2&gt;
+
+&lt;p&gt;执行 &lt;code&gt;express -e blog&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://cloud.githubusercontent.com/assets/6661673/17502876/137642d4-5e1e-11e6-8df1-08b609f7d670.jpg" alt="new-express" /&gt;&lt;/p&gt;
+
+&lt;p&gt;进入项目目录后执行 &lt;code&gt;npm install&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;安装完成后 执行 &lt;code&gt;DEBUG=blog:* npm start&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://cloud.githubusercontent.com/assets/6661673/17507925/da030858-5e44-11e6-847a-984bf7a1fbf4.png" alt="image" /&gt;&lt;/p&gt;
+
+&lt;p&gt;在浏览器里访问 &lt;code&gt;localhost:3000&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;你会发现一个简单 web 应用已经搭建起来了&lt;/p&gt;
+
+&lt;h2&gt;目录结构&lt;/h2&gt;
+
+&lt;p&gt;你可以在第一步执行 &lt;code&gt;express -e blog&lt;/code&gt; 后看到代码目录结构&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;app.js：启动文件，或者说入口文件&lt;/li&gt;
+&lt;li&gt;package.json：存储着工程的信息及模块依赖，当在 dependencies 中添加依赖的模块时，运行npm install，npm 会检查当前目录下的 package.json，并自动安装所有指定的模块&lt;/li&gt;
+&lt;li&gt;node_modules：存放 package.json 中安装的模块，当你在 package.json 添加依赖的模块并安装后，存放在这个文件夹下&lt;/li&gt;
+&lt;li&gt;public：存放 image、css、js 等文件&lt;/li&gt;
+&lt;li&gt;routes：存放路由文件&lt;/li&gt;
+&lt;li&gt;views：存放视图文件或者说模版文件&lt;/li&gt;
+&lt;li&gt;bin：存放可执行文件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;app.js 中的代码&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src="https://cloud.githubusercontent.com/assets/6661673/17502825/bf2e99ce-5e1d-11e6-81fb-8a92b605e3a6.jpg" alt="app" /&gt;&lt;/p&gt;
+
+&lt;p&gt;在app.js中我们通过require()加载了express、path 等模块,以及 routes 文件夹下的index. js和 users.js 路由文件。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;var app = express()：生成一个express实例 app。&lt;/li&gt;
+&lt;li&gt;app.set(&amp;#39;views&amp;#39;, path.join(&lt;strong&gt;dirname, &amp;#39;views’))：设置 views 文件夹为存放view文件的目录, 即存放模板文件的地方,&lt;/strong&gt;dirname 为全局变量,存储当前正在执行的脚本所在的目录。&lt;/li&gt;
+&lt;li&gt;app.set(&amp;#39;view engine&amp;#39;, &amp;#39;ejs’)：设置视图模板引擎为 ejs。&lt;/li&gt;
+&lt;li&gt;app.use(bodyParser.json())：加载解析json的中间件。&lt;/li&gt;
+&lt;li&gt;app.use(bodyParser.urlencoded({ extended: false }))：加载解析urlencoded请求体的中间件。&lt;/li&gt;
+&lt;li&gt;app.use(cookieParser())：加载解析cookie的中间件。&lt;/li&gt;
+&lt;li&gt;app.use(express.static(path.join(__dirname, &amp;#39;public&amp;#39;)))：设置public文件夹为存放静态文件的目录。&lt;/li&gt;
+&lt;li&gt;app.use(&amp;#39;/&amp;#39;, routes);和app.use(&amp;#39;/users&amp;#39;, users)：路由控制器。&lt;/li&gt;
+&lt;li&gt;捕获404错误，并转发到错误处理器。
+*&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;  &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;err&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'Not Found'&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;404&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;开发环境下的错误处理器。
+*&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'env'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;===&lt;/span&gt; &lt;span class="s1"&gt;'development'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+   &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+       &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="mi"&gt;500&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+       &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'error'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+           &lt;span class="na"&gt;message&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;message&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+           &lt;span class="na"&gt;error&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;err&lt;/span&gt;
+       &lt;span class="p"&gt;});&lt;/span&gt;
+   &lt;span class="p"&gt;});&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;生产环境下的错误处理器。
+*&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;  &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="mi"&gt;500&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'error'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="na"&gt;message&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;message&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="na"&gt;error&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+    &lt;span class="p"&gt;});&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;module.exports = app ：导出app实例供其他模块调用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;路由规则&lt;/h2&gt;
+
+&lt;p&gt;express 封装了多种 http 请求方式，我们主要只使用 &lt;code&gt;get&lt;/code&gt; 和 &lt;code&gt;post&lt;/code&gt; 两种，即 &lt;code&gt;app.get()&lt;/code&gt; 和 &lt;code&gt;app.post()&lt;/code&gt; 。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;app.get()&lt;/code&gt; 和 &lt;code&gt;app.post()&lt;/code&gt; 的第一个参数都为请求的路径，第二个参数为处理请求的回调函数，回调函数有两个参数分别是 &lt;code&gt;req&lt;/code&gt; 和 &lt;code&gt;res&lt;/code&gt;，代表请求信息和响应信息。路径请求及对应的获取路径有以下几种形式：
+  * &lt;code&gt;req.query&lt;/code&gt;： 处理 &lt;code&gt;get&lt;/code&gt; 请求，获取 &lt;code&gt;get&lt;/code&gt; 请求参数
+  * &lt;code&gt;req.params&lt;/code&gt;： 处理 &lt;code&gt;/:xxx&lt;/code&gt; 形式的 &lt;code&gt;get&lt;/code&gt; 或 &lt;code&gt;post&lt;/code&gt; 请求，获取请求参数
+  * &lt;code&gt;req.body&lt;/code&gt;： 处理 &lt;code&gt;post&lt;/code&gt; 请求，获取 &lt;code&gt;post&lt;/code&gt; 请求体
+  * &lt;code&gt;req.param()&lt;/code&gt;： 处理 &lt;code&gt;get&lt;/code&gt; 和 &lt;code&gt;post&lt;/code&gt; 请求，但查找优先级由高到低为 &lt;code&gt;req.params&lt;/code&gt;→&lt;code&gt;req.body&lt;/code&gt;→&lt;code&gt;req.query&lt;/code&gt;&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;  &lt;span class="cm"&gt;/* GET home page. */&lt;/span&gt;
+  &lt;span class="nx"&gt;router&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;// ?name=111&amp;amp;phone=111&lt;/span&gt;
+    &lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;query&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;// =&amp;gt; { name: '111', phone: '111' }&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// ?name=111&amp;amp;user[phone]=111&lt;/span&gt;
+    &lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;query&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;// =&amp;gt; { name: '111', user: { phone: '111' } }&lt;/span&gt;
+
+    &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'index'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Express'&lt;/span&gt; &lt;span class="p"&gt;});&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+
+  &lt;span class="nx"&gt;router&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/post'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;// post name=1111&amp;amp;phone=1111&lt;/span&gt;
+    &lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;body&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;// =&amp;gt; { name: '1111', phone: '1111' }&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// post user[name]=1111&amp;amp;user[phone]=1111&lt;/span&gt;
+    &lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;body&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;// =&amp;gt; { user: { name : '1111', phone: '1111' } }&lt;/span&gt;
+
+    &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'index'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Express'&lt;/span&gt; &lt;span class="p"&gt;});&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;模版引擎&lt;/h2&gt;
+
+&lt;h3&gt;什么是模板引擎&lt;/h3&gt;
+
+&lt;p&gt;模板引擎（Template Engine）是一个将页面模板和要显示的数据结合起来生成 HTML 页面的工具。
+如果说上面讲到的 express 中的路由控制方法相当于 MVC 中的控制器的话，那模板引擎就相当于 MVC 中的视图。&lt;/p&gt;
+
+&lt;p&gt;什么是 ejs ?&lt;/p&gt;
+
+&lt;p&gt;ejs 是模板引擎的一种，因为它使用起来十分简单，而且与 express 集成良好。&lt;/p&gt;
+
+&lt;h3&gt;使用模板引擎&lt;/h3&gt;
+
+&lt;p&gt;通过以下两行代码设置了模板文件的存储位置和使用的模板引擎：&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'views'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;__dirname&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;'/views'&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'view engine'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'ejs'&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们通过 &lt;code&gt;express -e blog&lt;/code&gt; 只是初始化了一个使用 &lt;code&gt;ejs&lt;/code&gt; 模板引擎的工程而已，比如 &lt;code&gt;node_modules&lt;/code&gt; 下添加了 &lt;code&gt;ejs&lt;/code&gt; 模块，&lt;code&gt;views&lt;/code&gt; 文件夹下有 &lt;code&gt;index.ejs&lt;/code&gt; 。并不是说强制该工程只能使用 &lt;code&gt;ejs&lt;/code&gt; 不能使用其他的模板引擎比如 &lt;code&gt;jade&lt;/code&gt;，真正指定使用哪个模板引擎的是 &lt;code&gt;app.set(&amp;#39;view engine&amp;#39;, &amp;#39;ejs&amp;#39;);&lt;/code&gt; 。&lt;/p&gt;
+
+&lt;p&gt;在 &lt;code&gt;routes/index.js&lt;/code&gt; 中通过调用 &lt;code&gt;res.render()&lt;/code&gt; 渲染模版，并将其产生的页面直接返回给客户端。它接受两个参数，第一个是模板的名称，即 &lt;code&gt;views&lt;/code&gt; 目录下的模板文件名，扩展名 &lt;code&gt;.ejs&lt;/code&gt; 可选。第二个参数是传递给模板的数据对象，用于模板翻译。&lt;/p&gt;
+
+&lt;p&gt;ejs 的标签系统非常简单，它只有以下三种标签：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&amp;lt;% code %&amp;gt;：JavaScript 代码。&lt;/li&gt;
+&lt;li&gt;&amp;lt;%= code %&amp;gt;：显示替换过 HTML 特殊字符的内容。&lt;/li&gt;
+&lt;li&gt;&amp;lt;%- code %&amp;gt;：显示原始 HTML 内容。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;&amp;lt;%= code %&amp;gt;&lt;/code&gt; 和 &lt;code&gt;&amp;lt;%- code %&amp;gt;&lt;/code&gt; 的区别，当变量 code 为普通字符串时，两者没有区别。当 &lt;code&gt;code&lt;/code&gt; 比如为 &lt;code&gt;&amp;lt;h1&amp;gt;hello&amp;lt;/h1&amp;gt;&lt;/code&gt; 这种字符串时，&lt;code&gt;&amp;lt;%= code %&amp;gt;&lt;/code&gt; 会原样输出 &lt;code&gt;&amp;lt;h1&amp;gt;hello&amp;lt;/h1&amp;gt;&lt;/code&gt;，而 &lt;code&gt;&amp;lt;%- code %&amp;gt;&lt;/code&gt; 则会显示 H1 大的 hello 字符串。&lt;/p&gt;
+
+&lt;p&gt;我们可以在 &lt;code&gt;&amp;lt;% %&amp;gt;&lt;/code&gt; 内使用 JavaScript 代码&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;ul&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+ &lt;span class="o"&gt;&amp;lt;%&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;supplies&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;length&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&amp;gt;&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;li&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;lt;%=&lt;/span&gt; &lt;span class="nx"&gt;supplies&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;%&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class="sr"&gt;/li&lt;/span&gt;&lt;span class="err"&gt;&amp;gt;
+&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;%&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;%&amp;gt;&lt;/span&gt;
+ &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="sr"&gt;/ul&lt;/span&gt;&lt;span class="err"&gt;&amp;gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</content>
+  </entry>
   <entry>
     <title>阿里云 Ubuntu 支持 IPv6 的完整步骤</title>
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-06.html"/>

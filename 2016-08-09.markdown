@@ -1,3 +1,11 @@
+---
+title: Express - 简单介绍 Express
+date: 2015-09-08
+tags: Node,Web
+author: lei.wang
+summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们可以快速的开发一个 Web 应用。
+---
+
 ## Express - 简单介绍 Express
 
 express 是 **Node.js** 上最流行的 Web 开发框架，使用它我们可以快速的开发一个 Web 应用。

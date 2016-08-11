@@ -1,7 +1,7 @@
 ---
 title: CSS 命名规范总结
 date: 2016-08-11
-tags: CSS,命名,规范
+tags: CSS
 author: zangbianxuegu
 summary: BEM 命名给 CSS 以及 html 提供清晰结构，命名空间提供更多信息，模块化提高代码的重用，以达到 CSS 命名语义化、可重用性高、后期维护容易、加载渲染快的要求。
 ---

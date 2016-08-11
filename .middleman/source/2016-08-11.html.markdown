@@ -18,7 +18,7 @@ CSS 很容易写，但是维护它却很难，因为 CSS 声明属性的性质�
 
 曾经我们这样定义选择器：
 
-```css
+```sass
 .fl
   float: left
 
@@ -40,7 +40,7 @@ CSS 很容易写，但是维护它却很难，因为 CSS 声明属性的性质�
 
 在 html 中添加选择器：
 
-```html
+```sass
 .fl.pb10.highlight
 ```
 
@@ -55,7 +55,7 @@ CSS 很容易写，但是维护它却很难，因为 CSS 声明属性的性质�
 
 html：
 
-```html
+```slim
 .container
   .actions
     .card_wrapper
@@ -68,25 +68,25 @@ html：
 
 CSS：
 
-```css
+```sass
 body.events,
 body.aaa,
 body.bbb
-  
+
   .actions
-    
+
     .card_wrapper
-      
+
       .card
-        
+
         .title
-          
+
         .content
-          
+
           .list
-            
+
             .fa
-             
+
     .another
 
 ```
@@ -99,7 +99,7 @@ body.bbb
 
 html：
 
-```html
+```slim
 .main-news-box
   h2.news-title
   ul.main-news-list
@@ -111,7 +111,7 @@ html：
 
 CSS：
 
-```css
+```sass
 .main-news-box
 
 .main-news-box .news-title
@@ -142,7 +142,7 @@ BEM 是一种真正消除不确定性的命名方式，它使得结构样式更�
 
 例如：
 
-```html
+```slim
 .user-home-nav
   .user-home-nav-item.user-home-nav-item--small
     .user-home-nav-item__icon
@@ -151,9 +151,9 @@ BEM 是一种真正消除不确定性的命名方式，它使得结构样式更�
 
 CSS 中这样写：
 
-```css
+```sass
 .user-home-nav
-  
+
   &-item
 
     &--small
@@ -169,7 +169,7 @@ CSS 中这样写：
 - 语义化，此处的语义化不是指 html 标签的语义化，对 SEO 可能也没有任何意义，但是这是一种人阅读的语义化。语义化的重要意义：宁可增加 html 大小，力图使维护变得轻松。
 - 减少层层嵌套，有利于渲染效率。以上 sass 解析之后就是：
 
-```css
+```sass
 .user-home-nav
 
 .user-home-nav-item
@@ -191,9 +191,9 @@ CSS 中这样写：
 
 但是 BEM 最大的问题却是这个：如何给 modifier 下的 element 定义规则呢？
 
-```css
+```sass
 .user-home-nav
-  
+
   &-item
 
     &--small
@@ -233,7 +233,7 @@ CSS 中这样写：
 
 例如一个圆形头像组件：
 
-```css
+```sass
 .c-avatar-circle
 
   &__img
@@ -254,7 +254,7 @@ CSS 中这样写：
 
 html：
 
-```html
+```slim
 a.pull-right.media-photo-badge.card-profile-picture.card-profile-picture-offset.is-superhost
   .media-photo.media-round
     img
@@ -262,7 +262,7 @@ a.pull-right.media-photo-badge.card-profile-picture.card-profile-picture-offset.
 
 CSS：
 
-```css
+```sass
 .card-profile-picture
   width: 60px
   height: 60px

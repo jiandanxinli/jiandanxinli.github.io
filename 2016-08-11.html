@@ -1,0 +1,283 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>CSS 命名规范总结 · 简单心理技术团队</title><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div><div class="subheader container"><a href="/tags/ruby.html">Ruby</a><a href="/tags/web.html">Web</a><a href="/tags/api.html">API</a><a href="/tags/ubuntu.html">Ubuntu</a><a href="/tags/nginx.html">Nginx</a><a href="/tags/ipv6.html">IPv6</a><a href="/tags/node.html">Node</a><a href="/tags/css.html" class="active">CSS</a><a href="/tags/ios.html">iOS</a><a href="https://www.jiandanxinli.com/pages/37">Join Us</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>CSS 命名规范总结</h2><div class="meta"><span class="date">2016-08-11</span><span class="author">zangbianxuegu</span></div><p>首先，这是一篇仅对 CSS 命名的总结，更多 CSS 规范请参考规范文档。其次 CSS 命名并无对错之分，只是不同的命名方式和代码的优雅程度与后期维护有着密切关系。</p>
+
+<blockquote class="twitter-tweet" data-lang="zh-cn"><p lang="und" dir="ltr"><a href="https://twitter.com/iamdevloper">@iamdevloper</a> <a href="https://t.co/4SRgVDDaiC">pic.twitter.com/4SRgVDDaiC</a></p>&mdash; Saeed Prez (@SaeedPrez) <a href="https://twitter.com/SaeedPrez/status/753731421525700608">2016年7月14日</a></blockquote>
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>CSS 很容易写，但是维护它却很难，因为 CSS 声明属性的性质不具备编程语言流程控制的特点，CSS(Cascading Style Sheets)也可以层叠生效，不同地方的 classes 相互影响。CSS 命名是规范中最重要的部分，它几乎就是 CSS 规范的全部，我们也就是依赖它完成对 CSS 的控制。</p>
+
+<h2>分离</h2>
+
+<p>曾经我们这样定义选择器：</p>
+<pre class="highlight sass"><code><span class="nc">.fl</span>
+  <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span>
+
+<span class="nc">.fr</span>
+  <span class="nl">float</span><span class="p">:</span> <span class="nb">right</span>
+
+<span class="nc">.mr10</span>
+  <span class="nl">margin-right</span><span class="p">:</span> <span class="m">10px</span>
+
+<span class="nc">.pb10</span>
+  <span class="nl">padding-bottom</span><span class="p">:</span> <span class="m">10px</span>
+
+<span class="nc">.hidden</span>
+  <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span>
+
+<span class="nc">.highlight</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="nv">$green</span>
+</code></pre>
+<p>在 html 中添加选择器：</p>
+<pre class="highlight sass"><code><span class="nc">.fl.pb10.highlight</span>
+</code></pre>
+<p>这就是规则分离的做法，将一些确定值的 CSS 规则单独定义选择器，这样做的目的是提高代码的重用，但是也有很多缺点：</p>
+
+<ul>
+<li>可供分离的属性有限，还有很多不确定值的属性，比如 width、color，而且现实布局的多样性使 mr10 这样的分离也很少用到，因此无法做到彻底分离；</li>
+<li>分离之后导致 html 中 class 特别多，而且不具有语义化；</li>
+</ul>
+
+<p>既然还是需要添加语义化的 class 来定义一部分样式，那么分离一部分出去也没有意义，操作上缺点远远大于优点。吸取这种命名的优点，现在依然会使用它，但是只保留了少数语义化且常用的，例如：<code>.hidden</code>、<code>.highlight</code>。</p>
+
+<h2>不好的写法</h2>
+
+<p>html：</p>
+<pre class="highlight slim"><code><span class="nc">.container</span>
+  <span class="nc">.actions</span>
+    <span class="nc">.card_wrapper</span>
+      <span class="nc">.card</span>
+        <span class="nc">.title.light</span>
+        <span class="nc">.content</span>
+          <span class="nc">.list</span>
+            <span class="nt">i</span><span class="nc">.fa.fa-cog</span>
+</code></pre>
+<p>CSS：</p>
+<pre class="highlight sass"><code><span class="nt">body</span><span class="nc">.events</span><span class="o">,</span>
+<span class="nt">body</span><span class="nc">.aaa</span><span class="o">,</span>
+<span class="nt">body</span><span class="nc">.bbb</span>
+
+  <span class="nc">.actions</span>
+
+    <span class="nc">.card_wrapper</span>
+
+      <span class="nc">.card</span>
+
+        <span class="nc">.title</span>
+
+        <span class="nc">.content</span>
+
+          <span class="nc">.list</span>
+
+            <span class="nc">.fa</span>
+
+    <span class="nc">.another</span>
+
+</code></pre>
+<p>以上是我们现在常见的写法，但是是需要绝对避免的，虽然 class 有一定语义了，但是并不能真正的重用。class 命名太通用了，我们不知道还有什么地方用到 <code>.title</code> <code>.content</code> 这样的命名，就不敢直接使用，一方面层层嵌套防止冲突，一方面想要重用时就在顶层添加 <code>body.aaa</code> 这样的东西，导致很多样式用不到，写的乱七八糟。</p>
+
+<p>这样一直写下去，旧的 CSS 我们永远不会删，只敷衍写出效果，如此往复循环，最终就会像上面的窗帘，让人忍无可忍。每个页面都有 <code>.content</code> 甚至每个模块都有 <code>.content</code>，<code>.content</code> 就毫无意义（.content 不是抽象化的全局共用模块）。深层次的嵌套也会降低渲染效率。</p>
+
+<p>另一种常见的：</p>
+
+<p>html：</p>
+<pre class="highlight slim"><code><span class="nc">.main-news-box</span>
+  <span class="nt">h2</span><span class="nc">.news-title</span>
+  <span class="nt">ul</span><span class="nc">.main-news-list</span>
+    <span class="nt">li</span>
+      <span class="nt">a</span>
+        <span class="nt">span</span>
+        <span class="nt">span</span>
+</code></pre>
+<p>CSS：</p>
+<pre class="highlight sass"><code><span class="nc">.main-news-box</span>
+
+<span class="nc">.main-news-box</span> <span class="nc">.news-title</span>
+
+<span class="nc">.main-news-list</span>
+
+<span class="nc">.main-news-list</span> <span class="nt">li</span>
+
+<span class="nc">.main-news-list</span> <span class="nt">a</span>
+
+<span class="nc">.main-news-list</span> <span class="nt">span</span>
+
+</code></pre>
+<p>这种写法的问题：</p>
+
+<ul>
+<li><code>.news-title</code> 在别的地方有没有定义？能不能单独使用？其他地方定义的 <code>.news-title</code> 会相互影响，父级更深层次的 <code>li</code>、<code>a</code> 也会覆盖现有的定义。</li>
+<li>这种命名也有性能问题，CSS 从右向左渲染，例如 <code>.main-news-list a</code>，先渲染页面所有的 a，再渲染 .main-news-list。</li>
+</ul>
+
+<h2>BEM 命名</h2>
+
+<p>BEM 是一种真正消除不确定性的命名方式，它使得结构样式更加清晰，我们有足够的信心做任何修改。</p>
+
+<ul>
+<li>block：模块，名字单词间用 <code>-</code> 连接</li>
+<li>element：元素，模块的子元素，以 <code>__</code> 与 block 连接</li>
+<li>modifier：修饰，模块的变体，定义特殊模块，以 <code>--</code> 与 block 连接</li>
+</ul>
+
+<p>例如：</p>
+<pre class="highlight slim"><code><span class="nc">.user-home-nav</span>
+  <span class="nc">.user-home-nav-item.user-home-nav-item--small</span>
+    <span class="nc">.user-home-nav-item__icon</span>
+    <span class="nc">.user-home-nav-item__text</span>
+</code></pre>
+<p>CSS 中这样写：</p>
+<pre class="highlight sass"><code><span class="nc">.user-home-nav</span>
+
+  <span class="k">&amp;</span><span class="nt">-item</span>
+
+    <span class="k">&amp;</span><span class="nt">--small</span>
+
+    <span class="k">&amp;</span><span class="nt">__icon</span>
+
+    <span class="k">&amp;</span><span class="nt">__text</span>
+
+</code></pre>
+<p>这样命名的好处：</p>
+
+<ul>
+<li>语义化，此处的语义化不是指 html 标签的语义化，对 SEO 可能也没有任何意义，但是这是一种人阅读的语义化。语义化的重要意义：宁可增加 html 大小，力图使维护变得轻松。</li>
+<li>减少层层嵌套，有利于渲染效率。以上 sass 解析之后就是：</li>
+</ul>
+<pre class="highlight sass"><code><span class="nc">.user-home-nav</span>
+
+<span class="nc">.user-home-nav-item</span>
+
+<span class="nc">.user-home-nav-item__icon</span>
+
+<span class="nc">.user-home-nav-item__text</span>
+
+<span class="nc">.user-home-nav-item--small</span>
+
+</code></pre>
+<p>缺点？</p>
+
+<ul>
+<li>有人说又是 <code>__</code> 又是 <code>--</code>，什么乱七八糟的符号，我并不觉得有任何问题，这种命名让结构十分清晰，只看 html 或 CSS 就能看出它对应的模块或者模块的元素或者不同类型的模块，后期维护的增删也十分确定。</li>
+<li>长长的 class 名增加了 html 的字节。从加载速度上来说，当然是名字越短越好。但是这个对应的就是语义化，取舍上我更倾向于语义化。</li>
+</ul>
+
+<h2>BEM 的问题</h2>
+
+<p>但是 BEM 最大的问题却是这个：如何给 modifier 下的 element 定义规则呢？</p>
+<pre class="highlight sass"><code><span class="nc">.user-home-nav</span>
+
+  <span class="k">&amp;</span><span class="nt">-item</span>
+
+    <span class="k">&amp;</span><span class="nt">--small</span>
+
+      <span class="nc">.user-home-nav__icon</span>
+
+      <span class="nc">.user-home-nav__text</span>
+
+    <span class="k">&amp;</span><span class="nt">__icon</span>
+
+    <span class="k">&amp;</span><span class="nt">__text</span>
+
+</code></pre>
+<p>这样做太不优雅了，太违背 sass 的优雅性质了。或许是我没有找到更好的写法？</p>
+
+<p>还能产生更多的写法，例如 <code>.user-home-nav-item--small__icon</code> 、<code>.user-home-nav-item__icon--small</code>，但是或多或少会存在问题，还是尽量保持简单。</p>
+
+<p>其他问题：</p>
+
+<ul>
+<li>如何确定一个 block？就像上面 <code>.user-home-nav-item</code> 也可以写成 <code>.user-home-nav__item</code>，如果 item 下有 title，那么就是 <code>.user-home-nav__title</code>，以避免写成 <code>.user-home-nav__item__title</code>，但是如果 nav 已有 title <code>.user-home-nav__title</code> 了，或许我们要把 item 下的 title 写成 <code>.user-home-nav__item-title</code>，总之为了使 BEM 也不至于复杂化，命名上也许还是要纠结一番。所以我最终写成了 <code>.user-home-nav-item</code>，也许可以这么写下去，没有 B 和 M，trello 貌似就是这样，例如：<code>.attachment-thumbnail-details-options-item-text</code>。</li>
+<li>BEM 导致 CSS 规则重用性降低，如果重用尽量考虑写成通用模块.</li>
+</ul>
+
+<h2>BEM + 命名空间</h2>
+
+<p>命名空间定义 block 间的关系，这种方式网站上还没有大范围使用，最常见的如 <code>.js－</code> 表示定义 JavaScript 钩子，不用于定义样式。常见命名空间：</p>
+
+<ul>
+<li>o-：表示一个对象（Object），如 <code>.o-layout</code>。</li>
+<li>c-：表示一个组件（Component），指一个具体的、特定实现的 UI。如 <code>.c-avatar</code>。</li>
+<li>u-：表示一个通用工具（Utility），如 <code>.u-hidden</code>。</li>
+<li>t-：表示一个主题（Theme），如 <code>.t-light</code>。</li>
+<li>s-：表示一个上下文或作用域（Scope），如 <code>.s-cms-content</code>。</li>
+<li>is-，has-：表示一种状态或条件样式。如 <code>.is-active</code></li>
+<li><em>：表示一个 hack，如 `.</em>important`。</li>
+<li>js-：表示一个 JavaScript 钩子。如 <code>.js-modal</code>。</li>
+<li>qa-：表示测试钩子。</li>
+</ul>
+
+<p>例如一个圆形头像组件：</p>
+<pre class="highlight sass"><code><span class="nc">.c-avatar-circle</span>
+
+  <span class="k">&amp;</span><span class="nt">__img</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nb">block</span>
+    <span class="nl">vertical-align</span><span class="p">:</span> <span class="nb">top</span>
+    <span class="nl">max-width</span><span class="p">:</span> <span class="m">100%</span>
+    <span class="nl">border-radius</span><span class="p">:</span> <span class="m">100%</span>
+
+  <span class="k">&amp;</span><span class="nt">__name</span>
+    <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span>
+</code></pre>
+<p>以上，BEM 产生的重用性问题还是没有解决，如何解决？</p>
+
+<h2>模块</h2>
+
+<p>模块化类似于分离的概念，也是分离进化的结果，我们从分离中提取出 <code>.hidden {overflow: hidden}</code> 这样的命名，进而扩展 <code>.avatar {}</code> 这样的命名，不再只包含一条规则。看一下 airbnb 的圆形头像写法：</p>
+
+<p>html：</p>
+<pre class="highlight slim"><code><span class="nt">a</span><span class="nc">.pull-right.media-photo-badge.card-profile-picture.card-profile-picture-offset.is-superhost</span>
+  <span class="nc">.media-photo.media-round</span>
+    <span class="nt">img</span>
+</code></pre>
+<p>CSS：</p>
+<pre class="highlight sass"><code><span class="nc">.card-profile-picture</span>
+  <span class="nl">width</span><span class="p">:</span> <span class="m">60px</span>
+  <span class="nl">height</span><span class="p">:</span> <span class="m">60px</span>
+
+  <span class="k">&amp;</span><span class="nt">-offset</span>
+    <span class="nl">position</span><span class="p">:</span> <span class="nb">relative</span>
+    <span class="nl">top</span><span class="p">:</span> <span class="m">-40px</span>
+    <span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">-40px</span>
+
+  <span class="k">&amp;</span><span class="nc">.is-superhost</span>
+    <span class="nl">position</span><span class="p">:</span> <span class="nb">relative</span>
+
+  <span class="nt">img</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">56px</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="m">56px</span>
+
+<span class="nc">.media-photo</span>
+  <span class="nl">backface-visibility</span><span class="p">:</span> <span class="nb">hidden</span>
+  <span class="nl">position</span><span class="p">:</span> <span class="nb">relative</span>
+  <span class="nl">display</span><span class="p">:</span> <span class="n">inline-block</span>
+  <span class="nl">vertical-align</span><span class="p">:</span> <span class="nb">bottom</span>
+  <span class="nl">overflow</span><span class="p">:</span> <span class="nb">hidden</span>
+  <span class="nl">background-color</span><span class="p">:</span> <span class="mh">#bbb</span>
+
+<span class="nc">.media-round</span>
+  <span class="nl">border-radius</span><span class="p">:</span> <span class="m">50%</span>
+  <span class="nl">border</span><span class="p">:</span> <span class="m">2px</span> <span class="nb">solid</span> <span class="mh">#fff</span>
+</code></pre>
+<p>这个是比较复杂，相对特例的。<code>.media-photo</code> 和 <code>.media-round</code> 是典型的抽象出来的模块，一个定义照片的基本属性，一个定义圆形属性。<code>.card-profile-picture</code> 是特定的命名定义特定具体的值。</p>
+
+<h2>总结</h2>
+
+<ul>
+<li>基本：以英文单词命名，避免无意义的缩写，以 <code>-</code> 连接。</li>
+<li>我在一开始使用 BEM 的时候，也有很多疑惑，而且现在也不确定它完备的用法。</li>
+<li>BEM 不是万能的，但是无论如何 BEM 是应该使用的方法。</li>
+<li>命名空间给 CSS 命名提供更多信息。</li>
+<li>定义模块提高代码的重用。</li>
+<li>CSS 命名要求：语义化易于理解，可重用性高，后期维护容易，加载渲染快。</li>
+</ul>
+
+<h2>参考文章</h2>
+
+<ul>
+<li><a href="http://www.zhangxinxu.com/wordpress/2010/09/%E7%B2%BE%E7%AE%80%E9%AB%98%E6%95%88%E7%9A%84css%E5%91%BD%E5%90%8D%E5%87%86%E5%88%99%E6%96%B9%E6%B3%95/">精简高效的CSS命名准则/方法</a></li>
+<li><a href="http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/">MindBEMding – getting your head ’round BEM syntax</a></li>
+<li><a href="http://csswizardry.com/2015/03/more-transparent-ui-code-with-namespaces/">More Transparent UI Code with Namespaces</a></li>
+<li><a href="https://css-tricks.com/bem-101/">BEM 101</a></li>
+<li><a href="http://cssguidelin.es/">CSS Guidelines</a></li>
+</ul>
+</div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><p>提升价值，而非估值</p><div class="links"><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">关于我们</a><a href="https://www.jiandanxinli.com">简单心理</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>

@@ -1,0 +1,25 @@
+---
+title: 选择 jsonapi-resources 的理由
+date: 2016-07-30
+tags: Ruby,API
+author: Ben
+summary: jsonapi-resources 是一个方便的用于构建 API 的 gem，包含了 controller 和 resource。
+---
+
+Rails 5 发布时的官方日志里，推荐了三种用于构建 API 的 gem，分别是 [Jbuilder](https://github.com/rails/jbuilder)、[Active Model Serializers](https://github.com/rails-api/active_model_serializers) 和 [JSONAPI::Resources](https://github.com/cerebris/jsonapi-resources)，其中前两种需要配合 rails-api 来使用，只有 jsonapi-resources 提供了 JSONAPI::ResourceController。
+
+我们最终选择了 jsonapi-resources 主要基于以下原因：
+
+1. 它的 resource 语法与 active_model_serializers 相近，而我们之前使用的是 active_model_serializers
+2. active_model_serializers 不支持 abstract 特性，必须基于某个 model，而我们有些 resource 并非基于 model
+3. jsonapi-resources 内置了 fields 选项，可以方便的在请求端指定返回的字段，而不必返回全部字段
+4. 返回的数据结构符合 [jsonapi 规范](http://jsonapi.org/)
+5. JSONAPI::ResourceController 提供了 RESTful 的封装，可以省去不少代码
+
+以上的原因只是对目前项目来说最需要的特性，更多特性可以去看官方文档。
+
+参考链接：
+
+jsonapi-resources： https://github.com/cerebris/jsonapi-resources
+
+jsonapi：http://jsonapi.org

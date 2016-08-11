@@ -1,12 +1,10 @@
 ---
 title: Express - 简单介绍 Express
-date: 2015-09-08
+date: 2016-08-09
 tags: Node,Web
 author: lei.wang
 summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们可以快速的开发一个 Web 应用。
 ---
-
-## Express - 简单介绍 Express
 
 express 是 **Node.js** 上最流行的 Web 开发框架，使用它我们可以快速的开发一个 Web 应用。
 
@@ -29,7 +27,7 @@ express 是 **Node.js** 上最流行的 Web 开发框架，使用它我们可以
 
 在浏览器里访问 `localhost:3000`
 
-你会发现一个简单web 应用已经搭建起来了
+你会发现一个简单 web 应用已经搭建起来了
 
 ## 目录结构
 
@@ -58,9 +56,9 @@ express 是 **Node.js** 上最流行的 Web 开发框架，使用它我们可以
   * app.use(express.static(path.join(__dirname, 'public')))：设置public文件夹为存放静态文件的目录。
   * app.use('/', routes);和app.use('/users', users)：路由控制器。
   * 捕获404错误，并转发到错误处理器。
-  * 
-  
-  ```
+  *
+
+  ```javascript
   app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
@@ -68,9 +66,9 @@ express 是 **Node.js** 上最流行的 Web 开发框架，使用它我们可以
   });
   ```
   * 开发环境下的错误处理器。
-  * 
-  
-  ```
+  *
+
+  ```javascript
   if (app.get('env') === 'development') {
    app.use(function(err, req, res, next) {
        res.status(err.status || 500);
@@ -82,9 +80,9 @@ express 是 **Node.js** 上最流行的 Web 开发框架，使用它我们可以
   }
   ```
   * 生产环境下的错误处理器。
-  * 
-  
-  ```
+  *
+
+  ```javascript
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
@@ -104,34 +102,34 @@ express 封装了多种 http 请求方式，我们主要只使用 `get` 和 `pos
   * `req.params`： 处理 `/:xxx` 形式的 `get` 或 `post` 请求，获取请求参数
   * `req.body`： 处理 `post` 请求，获取 `post` 请求体
   * `req.param()`： 处理 `get` 和 `post` 请求，但查找优先级由高到低为 `req.params`→`req.body`→`req.query`
-  
-  ```node
+
+  ```javascript
   /* GET home page. */
   router.get('/', function(req, res, next) {
     // ?name=111&phone=111
     console.log(req.query)
     // => { name: '111', phone: '111' }
-  
+
     // ?name=111&user[phone]=111
     console.log(req.query)
     // => { name: '111', user: { phone: '111' } }
-  
+
     res.render('index', { title: 'Express' });
   });
-  
+
   router.post('/post', function(req, res, next) {
     // post name=1111&phone=1111
     console.log(req.body)
     // => { name: '1111', phone: '1111' }
-  
+
     // post user[name]=1111&user[phone]=1111
     console.log(req.body.user)
     // => { user: { name : '1111', phone: '1111' } }
-  
+
     res.render('index', { title: 'Express' });
   });
   ```
-  
+
 ## 模版引擎
 
 ### 什么是模板引擎
@@ -147,7 +145,7 @@ ejs 是模板引擎的一种，因为它使用起来十分简单，而且与 exp
 
 通过以下两行代码设置了模板文件的存储位置和使用的模板引擎：
 
-```
+```javascript
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 ```
@@ -165,7 +163,7 @@ ejs 的标签系统非常简单，它只有以下三种标签：
 
 我们可以在 `<% %>` 内使用 JavaScript 代码
 
- ```
+ ```javascript
  <ul>
  <% for(var i=0; i<supplies.length; i++) {%>
     <li><%= supplies[i] %></li>

@@ -48,7 +48,7 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
   </LinearLayout>
   ```
   
-  接着在你的Activity的onCreate方法里写入如下代码：
+  然后在你的Activity的onCreate方法里写入如下代码：
   ```Java
   String url = "https://www.google.com";
   WebView webView = (WebView) findViewById(R.id.web_view);
@@ -58,9 +58,11 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
   ```XML
   <uses-permission android:name="android.permission.INTERNET"/>
   ```
-  然后就完事了~
-  这时你运行你的app，他已经可以访问你指定地址的网页了。对了，上面提到了WebView继承自AbsoluteLayout，所以可以在其中放入一些子View，那也顺手来这么一下。
-  Layout文件改为（最终）：
+  就，完事了~
+  这时运行app，它已经可以访问指定地址的网页了。
+  
+  上面提到了WebView继承自AbsoluteLayout，可以在其中放入一些子View，那也顺手来一下。
+  Layout文件改为：
   ```XML
   <?xml version="1.0" encoding="utf-8"?>
   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

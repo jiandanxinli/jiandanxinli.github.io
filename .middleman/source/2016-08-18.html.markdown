@@ -33,7 +33,7 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
 ##WebView基本使用
   
   下面简单介绍下WebView的基本使用：
-  首先新建一个工程，然后在你的layout文件里放入一个WebView控件（当然也可以通过Java代码动态放入，这里不演示了）
+  首先新建一个工程，在layout文件里放入一个WebView控件（当然也可以通过Java代码动态放入，这里不演示了）
   
   ```XML
   <?xml version="1.0" encoding="utf-8"?>
@@ -48,19 +48,19 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
   </LinearLayout>
   ```
   
-  然后在你的Activity的onCreate方法里写入如下代码：
+  然后在Activity的onCreate方法里写入如下代码：
   ```Java
   String url = "https://www.google.com";
   WebView webView = (WebView) findViewById(R.id.web_view);
   webView.loadUrl(url);
   ```
-  接着在你的AndroidManifest声明访问网络的权限：
+  接着在AndroidManifest声明访问网络的权限：
   ```XML
   <uses-permission android:name="android.permission.INTERNET"/>
   ```
   就，完事了~
   这时运行app，它已经可以访问指定地址的网页了。
-  
+  <br><br>
   上面提到了WebView继承自AbsoluteLayout，可以在其中放入一些子View，那也顺手来一下。
   Layout文件改为：
   ```XML
@@ -96,7 +96,7 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
     }
   });
   ```
-  这时，运行app，里面就会多出一个Button~ 但如果你真的运行的话，你会发现，app会自动跳到浏览器并打开指定的网页，而并非在app内展示网页，那这就与我们的初衷背道而驰了，那么要如何实现网页在App内打开呢?这就引出了下一小节会提到的东西：WebViewClient。我先将代码贴出，具体实现原理留到下节说明。
+  这时，运行app，里面就会多出一个Button~ 但如果你真的运行的话，你就会发现，app会自动跳到浏览器并打开指定的网页，而并非在app内展示网页，那这就与我们的初衷背道而驰了，那么要如何实现网页在App内打开呢?这就引出了下一小节会提到的东西：WebViewClient。我先将代码贴出，具体实现原理留到下节说明。
   
   最终XML布局就如上面那样，Java代码（最终）如下：
   ```Java

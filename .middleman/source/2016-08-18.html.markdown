@@ -1,0 +1,24 @@
+---
+title: WebView·开车指南
+date: 2016-08-18
+tags: Android·Bug
+author: BugDev
+summary: 北京市东城区首席Bug布道师凌某开山之作，一整月交通事故血泪经验，教你如何快速成为‘伪’老司机，开启WebView飙车之旅。
+---
+
+##目录
+  1. 前言
+  2. WebView简介
+  3. WebViewClient
+  4. WebChromeClient
+
+## 前言
+  喝酒不开车，开车不喝酒。
+  
+## WebView简介
+  
+  A View that displays web pages. 
+  This class is the basis upon which you can roll your own web browser
+  or simply display some online content within your Activity. 
+  It uses the WebKit rendering engine to display web pages and includes methods 
+  to navigate forward and backward through a history, zoom in and out, perform text searches and more.

@@ -5,11 +5,15 @@ tags: Android·Bug
 author: BugDev
 summary: 北京市东城区首席Bug布道师开山之作，一整月交通事故血泪经验，教你如何快速成为‘伪’老司机，开启WebView飙车之旅。
 ---
-
+<br><br><br>
+#WebView·开车指南
+<br>
+  
 ## 前言
 
   喝酒不开车，开车不喝酒。
 
+<br>
 ## 目录
 
   1. WebView简介
@@ -17,13 +21,14 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
   3. WebViewClient
   4. WebChromeClient
 
-  
+<br>  
 ## WebView简介
   
   为了方便开发者实现在app内展示网页并与网页交互的需求，Android SDK提供了WebView组件。从Android 4.4（KitKat）开始，原本基于WebKit的WebView开始基于Chromium内核，这一改动大大提升了WebView组件的性能以及对HTML5,CSS3,JavaScript的支持。不过它的API却没有很大的改动，在兼容低版本的同时只引进了少部分新的API，并不需要你做很大的改动。
 不过有几点改变需要注意，但我尝试着翻译了下，发现还是英文原文说得好，所以我贴链接吧~~~
 [Migrating to WebView in Android 4.4](https://developer.android.com/guide/webapps/migrating.html)
 
+<br>
 ##WebView基本使用
   
   下面简单介绍下WebView的基本使用，

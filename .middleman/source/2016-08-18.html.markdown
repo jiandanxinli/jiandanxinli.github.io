@@ -133,6 +133,13 @@ public class MainActivity extends AppCompatActivity {
   ```
   
   效果图：
+  <br>
+  <img src="https://cloud.githubusercontent.com/assets/12692071/17649176/5ffb5b44-6260-11e6-84dc-2ac41be1b858.gif" width="300" height="550" />
+  <br>
+  <br>
+##WebViewClient
+
+  WebViewClient
   
 
 

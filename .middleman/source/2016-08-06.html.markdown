@@ -38,7 +38,7 @@ summary: 使用 Hurricane Electric Free IPv6 Tunnel Broker 来让阿里云服务
   net.ipv6.conf.lo.disable_ipv6 = 0
   ```
 
-2. 在`/etc/network/interface`底部加上以下内容（注：下面大写的<IPV6>处，需要替换成你在 HE 得到的`Server IPv6 Address`，但不包括最后的`::1/64`，如：`2001:470:100:100`）
+2. 在`/etc/network/interfaces`底部加上以下内容（注：下面大写的<IPV6>处，需要替换成你在 HE 得到的`Server IPv6 Address`，但不包括最后的`::1/64`，如：`2001:470:100:100`）
 
   ```config
   auto he-ipv6

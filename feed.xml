@@ -479,7 +479,7 @@
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-06.html"/>
     <id>https://jiandanxinli.github.io/2016-08-06.html</id>
     <published>2016-08-06T08:00:00+08:00</published>
-    <updated>2016-08-07T17:57:49+08:00</updated>
+    <updated>2016-08-16T07:21:15+08:00</updated>
     <author>
       <name>Ben</name>
     </author>
@@ -521,7 +521,7 @@
   &lt;span class="n"&gt;net&lt;/span&gt;.&lt;span class="n"&gt;ipv6&lt;/span&gt;.&lt;span class="n"&gt;conf&lt;/span&gt;.&lt;span class="n"&gt;lo&lt;/span&gt;.&lt;span class="n"&gt;disable_ipv6&lt;/span&gt; = &lt;span class="m"&gt;0&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ol&gt;
-&lt;li&gt;在&lt;code&gt;/etc/network/interface&lt;/code&gt;底部加上以下内容（注：下面大写的&lt;IPV6&gt;处，需要替换成你在 HE 得到的&lt;code&gt;Server IPv6 Address&lt;/code&gt;，但不包括最后的&lt;code&gt;::1/64&lt;/code&gt;，如：&lt;code&gt;2001:470:100:100&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;在&lt;code&gt;/etc/network/interfaces&lt;/code&gt;底部加上以下内容（注：下面大写的&lt;IPV6&gt;处，需要替换成你在 HE 得到的&lt;code&gt;Server IPv6 Address&lt;/code&gt;，但不包括最后的&lt;code&gt;::1/64&lt;/code&gt;，如：&lt;code&gt;2001:470:100:100&lt;/code&gt;）&lt;/li&gt;
 &lt;/ol&gt;
 &lt;pre class="highlight conf"&gt;&lt;code&gt;  &lt;span class="n"&gt;auto&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt;
   &lt;span class="n"&gt;iface&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt; &lt;span class="n"&gt;inet6&lt;/span&gt; &lt;span class="n"&gt;v4tunnel&lt;/span&gt;

@@ -26,10 +26,10 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
   
   为了方便开发者实现在app内展示网页并与网页交互的需求，Android SDK提供了WebView组件。<br>它继承自AbsoluteLayout，展示网页的同时，也可以在其中放入其他的子View。<br>
   从Android 4.4（KitKat）开始，原本基于WebKit的WebView开始基于Chromium内核，这一改动大大提升了WebView组件的性能以及对HTML5,CSS3,JavaScript的支持。不过它的API却没有很大的改动，在兼容低版本的同时只引进了少部分新的API，并不需要你做很大的改动。<br>
-不过有几点改变需要注意，但我尝试着翻译了下，发现还是英文原文说得好，所以我贴链接吧~~~<br>
-[Migrating to WebView in Android 4.4](https://developer.android.com/guide/webapps/migrating.html)
-
-<br>
+  不过有几点改变需要注意，但我尝试着翻译了下，发现还是英文原文说得好，所以我贴链接吧~~~<br>
+  [Migrating to WebView in Android 4.4](https://developer.android.com/guide/webapps/migrating.html)<br><br>
+  在WebView中，有几个地方是我们可以使用来定制我们的WebView各种行为的，分别是：WebChromeClient、WebViewClient、WebSettings以及JavaScriptInterface。这些我都会在接下来的文章中一一介绍。
+<br><br>
 ##WebView基本使用
   
   下面简单介绍下WebView的基本使用：
@@ -98,7 +98,7 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
         }
     });
   ```
-  这时，运行app，里面就会多出一个Button~ 但如果你真的运行的话，你就会发现，app会自动跳到浏览器并打开指定的网页，而并非在app内展示网页，那这就与我们的初衷背道而驰了，那么要如何实现网页在App内打开呢?这就引出了下一小节会提到的东西：WebViewClient。我先将代码贴出，具体实现原理留到下节说明。
+  这时，运行app，里面就会多出一个Button~ 但如果你真的运行的话，你就会发现，app会自动跳到浏览器并打开指定的网页，而并非在app内展示网页，那这就与我们的初衷背道而驰了，那么要如何实现网页在App内打开呢?这就引出了下面的章节会提到的东西：WebViewClient。我先将代码贴出，具体实现原理留到下节说明。
   
   最终XML布局就如上面那样，Java代码（最终）如下：
   ```Java
@@ -137,9 +137,12 @@ public class MainActivity extends AppCompatActivity {
   <img src="https://cloud.githubusercontent.com/assets/12692071/17649176/5ffb5b44-6260-11e6-84dc-2ac41be1b858.gif" width="300" height="550" />
   <br>
   <br>
-##WebViewClient
+  
+  
+##WebSettings
 
-  WebViewClient
+  WebSettings是用来管理WebView配置的类。当WebView第一次创建时，内部会包含一个默认配置的集合。若我们想更改这些配置，便可以通过WebSettings里的方法来进行设置。
+  WebSettings对象可以通过**WebView.getSettings()**获得，它的生命周期是与它的WebView本身息息相关的，如果WebView被销毁了，那么任何由WebSettings调用的方法也同样不能使用。
   
 
 

@@ -18,17 +18,20 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
 
   1. WebView简介
   2. WebView基本使用
-  3. WebViewClient
-  4. WebChromeClient
+  3. WebSettings
+  4. WebViewClient
+  5. WebChromeClient
+  6. WebView加载优化
+  7. 上路
 
 <br>  
 ## WebView简介
   
   为了方便开发者实现在app内展示网页并与网页交互的需求，Android SDK提供了WebView组件。<br>它继承自AbsoluteLayout，展示网页的同时，也可以在其中放入其他的子View。<br>
-  从Android 4.4（KitKat）开始，原本基于WebKit的WebView开始基于Chromium内核，这一改动大大提升了WebView组件的性能以及对HTML5,CSS3,JavaScript的支持。不过它的API却没有很大的改动，在兼容低版本的同时只引进了少部分新的API，并不需要你做很大的改动。<br>
+  现如今，Hybrid应用似乎占据的APP的主流类型，那么关于WebView的使用就变得越发的重要。<br>从Android 4.4（KitKat）开始，原本基于WebKit的WebView开始基于Chromium内核，这一改动大大提升了WebView组件的性能以及对HTML5,CSS3,JavaScript的支持。不过它的API却没有很大的改动，在兼容低版本的同时只引进了少部分新的API，并不需要你做很大的改动。<br>
   不过有几点改变需要注意，但我尝试着翻译了下，发现还是英文原文说得好，所以我贴链接吧~~~<br>
   [Migrating to WebView in Android 4.4](https://developer.android.com/guide/webapps/migrating.html)<br><br>
-  在WebView中，有几个地方是我们可以使用来定制我们的WebView各种行为的，分别是：**WebChromeClient**、**WebViewClient**、**WebSettings**以及**JavaScriptInterface**。这些我都会在接下来的文章中一一介绍。
+  在WebView中，有几个地方是我们可以使用来定制我们的WebView各种行为的，分别是：**WebSettings**、**JavaScriptInterface**、**WebViewClient**以及**WebChromeClient**。这些我都会在接下来的文章中一一介绍。
 <br><br>
 ##WebView基本使用
   
@@ -153,66 +156,55 @@ public class MainActivity extends AppCompatActivity {
 ###WebSettings常用方法
 （几乎所有的set方法都有相应的get方法，这里就只介绍set了）
 
-  - **setJavaScriptEnabled(boolean flag)**:设置WebView是否可以运行JavaScript。
-  - **setJavaScriptCanOpenWindowsAutomatically(boolean flag)**:设置WebView是否可以由JavaScript自动打开窗口，默认为false，通常与JavaScript的***window.open()***配合使用。
-  <br><br>
-  
-  - **setAllowFileAccess(boolean allow)**:启用或禁用WebView访问文件数据。
-  - **setBlockNetworkImage(boolean flag)**:禁止或允许WebView从网络上加载图片。需要注意的是，如果设置是从禁止到允许的转变的话，图片数据并不会在设置改变后立刻去获取，而是在WebView调用reload()的时候才会生效。<br>这个时候，需要确保这个app拥有访问Internet的权限，否则会抛出安全异常。<br>通常没有禁止图片加载的需求的时候，完全不用管这个方法，因为当我们的app拥有访问Internet的权限时，这个flag的默认值就是false。
-  - **setBuiltInZoomControls(boolean enabled)**:显示或不显示缩放按钮（wap网页不支持）。
-  <br><br>
-  
-  - **setCacheMode(int mode)**:**用来设置WebView的缓存模式。**当我们加载页面或从上一个页面返回的时候，会按照设置的缓存模式去检查并使用（或不使用）缓存。
+  - **setJavaScriptEnabled(boolean flag)**：设置WebView是否可以运行JavaScript。
+  - **setJavaScriptCanOpenWindowsAutomatically(boolean flag)**：设置WebView是否可以由JavaScript自动打开窗口，默认为false，通常与JavaScript的***window.open()***配合使用。
+  <br>
+  <br>
+  - **setAllowFileAccess(boolean allow)**：启用或禁用WebView访问文件数据。
+  - **setBlockNetworkImage(boolean flag)**：禁止或允许WebView从网络上加载图片。需要注意的是，如果设置是从禁止到允许的转变的话，图片数据并不会在设置改变后立刻去获取，而是在WebView调用reload()的时候才会生效。<br>这个时候，需要确保这个app拥有访问Internet的权限，否则会抛出安全异常。<br>通常没有禁止图片加载的需求的时候，完全不用管这个方法，因为当我们的app拥有访问Internet的权限时，这个flag的默认值就是false。
+  - **setSupportZoom(boolean support)**：设置是否支持缩放。
+  - **setBuiltInZoomControls(boolean enabled)**：显示或不显示缩放按钮（wap网页不支持）。
+  - **setSupportMultipleWindows(boolean support)**：设置WebView是否支持多窗口。
+  - **setLayoutAlgorithm(WebSettings.LayoutAlgorithm l)**：
+  - **setNeedInitialFocus(boolean flag)**：
+  <br>
+  <br>
+  - **setAppCacheEnabled(boolean flag)**：启用或禁用应用缓存。
+  - **setAppCachePath(String appCachePath)**：设置应用缓存路径，这个路径必须是可以让app写入文件的。该方法应该只被调用一次，重复调用会被无视~
+  - **setCacheMode(int mode)**：**用来设置WebView的缓存模式。**当我们加载页面或从上一个页面返回的时候，会按照设置的缓存模式去检查并使用（或不使用）缓存。
   <br>
     缓存模式有四种：
       <br>
-      1. **LOAD_DEFAULT**:默认的缓存使用模式。在进行页面前进或后退的操作时，如果缓存可用并未过期就优先使用缓存，否则从网络上加载数据。
+      1. **LOAD_DEFAULT**：默认的缓存使用模式。在进行页面前进或后退的操作时，如果缓存可用并未过期就优先加载缓存，否则从网络上加载数据。这样可以减少页面的网络请求次数。
       <br>
-      2. **LOAD_CACHE_ELSE_NETWORK**:只要缓存可用就使用缓存，哪怕它们已经过期失效。如果缓存不可用就从网络上加载数据。
+      2. **LOAD_CACHE_ELSE_NETWORK**：只要缓存可用就加载缓存，哪怕它们已经过期失效。如果缓存不可用就从网络上加载数据。
       <br>
-      3. **LOAD_NO_CACHE**:不使用缓存，只从网络加载数据。
+      3. **LOAD_NO_CACHE**：不加载缓存，只从网络加载数据。
       <br>
-      4. **LOAD_CACHE_ONLY**:不从网络加载数据，只从缓存加载数据。
+      4. **LOAD_CACHE_ONLY**：不从网络加载数据，只从缓存加载数据。
   <br>
-  - dadjaj
-  - 
-  //支持获取手势焦点
-        webView.requestFocusFromTouch();
-        //支持JS
-        settings.setJavaScriptEnabled(true);
-        //支持插件
-        settings.setPluginState(WebSettings.PluginState.ON);
-        //设置适应屏幕
-        settings.setUseWideViewPort(true);
-        settings.setLoadWithOverviewMode(true);
-        //支持缩放
-        settings.setSupportZoom(false);
-        //隐藏原生的缩放控件
-        settings.setDisplayZoomControls(false);
-        //支持内容重新布局
-        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        settings.supportMultipleWindows();
-        settings.setSupportMultipleWindows(true);
-        //设置缓存模式
-        settings.setDomStorageEnabled(true);
-        settings.setDatabaseEnabled(true);
-        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        settings.setAppCacheEnabled(true);
-        settings.setAppCachePath(webView.getContext().getCacheDir().getAbsolutePath());
-
-        //设置可访问文件
-        settings.setAllowFileAccess(true);
-        //当webview调用requestFocus时为webview设置节点
-        settings.setNeedInitialFocus(true);
-        //支持自动加载图片
-        if (Build.VERSION.SDK_INT >= 19) {
-            settings.setLoadsImagesAutomatically(true);
-        } else {
-            settings.setLoadsImagesAutomatically(false);
-        }
-        settings.setNeedInitialFocus(true);
-        //设置编码格式
-        settings.setDefaultTextEncodingName("UTF-8");
+  通常我们可以根据网络情况将这几种模式结合使用，比如有网的时候使用LOAD_DEFAULT，离线时使用LOAD_CACHE_ONLY、LOAD_CACHE_ELSE_NETWORK，让用户不至于在离线时啥都看不到。
+  <br>
+  - **setDatabaseEnabled(boolean flag)**：启用或禁用数据库缓存。
+  - **setDomStorageEnabled(boolean flag)**：启用或禁用DOM缓存。
+  <br>
+  <br>
+  - **setUserAgentString(String ua)**：设置WebView的UserAgent值。
+  - **setDefaultEncodingName(String encoding)**：设置编码格式，通常都设为“UTF-8”。
+  <br>
+  <br>
+  - setCursiveFontFamily
+  - **setDefaultFixedFontSize(int size)**：
+  - **setDefaultFontSize(int size)**：
+  - setFantasyFontFamily
+  - setFixedFontFamily
+  - setMinimumFontSize
+  - setMinimumLogicalFontSize
+  - setSansSerifFontFamily
+  - setSerifFontFamily
+  - setStandardFontFamily
+  <br>
+  <br>
 
 
 

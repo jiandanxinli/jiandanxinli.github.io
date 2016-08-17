@@ -7,6 +7,7 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
 ---
 <br><br><br>
 #WebView·开车指南
+**Tips**:由于WebView的用法实在太多，如果读者只是想查询某个功能的使用建议Ctrl+F（Commad+F）在本页面搜索关键字查找。
 <br>
   
 ## 前言
@@ -165,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
   - **setSupportZoom(boolean support)**：设置是否支持缩放。
   - **setBuiltInZoomControls(boolean enabled)**：显示或不显示缩放按钮（wap网页不支持）。
   - **setSupportMultipleWindows(boolean support)**：设置WebView是否支持多窗口。
-  - **setLayoutAlgorithm(WebSettings.LayoutAlgorithm l)**：
-  - **setNeedInitialFocus(boolean flag)**：
+  - **setLayoutAlgorithm(WebSettings.LayoutAlgorithm l)**：指定WebView的页面布局显示形式，调用该方法会引起页面重绘。默认值为LayoutAlgorithm#NARROW_COLUMNS。
+  - **setNeedInitialFocus(boolean flag)**：通知WebView是否需要设置一个节点获取焦点当WebView#requestFocus(int,android.graphics.Rect)被调用时，默认为true。
   <br>
   <br>
   - **setAppCacheEnabled(boolean flag)**：启用或禁用应用缓存。
@@ -193,18 +194,25 @@ public class MainActivity extends AppCompatActivity {
   - **setDefaultEncodingName(String encoding)**：设置编码格式，通常都设为“UTF-8”。
   <br>
   <br>
-  - setCursiveFontFamily
-  - **setDefaultFixedFontSize(int size)**：
-  - **setDefaultFontSize(int size)**：
-  - setFantasyFontFamily
-  - setFixedFontFamily
-  - setMinimumFontSize
-  - setMinimumLogicalFontSize
-  - setSansSerifFontFamily
-  - setSerifFontFamily
-  - setStandardFontFamily
+  - **setStandardFontFamily(String font)**：设置标准的字体族，默认“sans-serif”。
+  - **setCursiveFontFamily**：设置草书字体族，默认“cursive”。
+  - **setFantasyFontFamily**：设置CursiveFont字体族，默认“cursive”。
+  - **setFixedFontFamily**：设置混合字体族，默认“monospace”。
+  - **setSansSerifFontFamily**：设置梵文字体族，默认“sans-serif”。
+  - **setSerifFontFamily**：设置衬线字体族，默认“sans-serif” 
+  - **setDefaultFixedFontSize(int size)**：设置默认填充字体大小，默认16，取值区间为[1-72]，超过范围，使用其上限值。
+  - **setDefaultFontSize(int size)**：设置默认字体大小，默认16，取值区间[1-72]，超过范围，使用其上限值。
+  - **setMinimumFontSize**：设置最小字体，默认8. 取值区间[1-72]，超过范围，使用其上限值。 
+  - **setMinimumLogicalFontSize**：设置最小逻辑字体，默认8. 取值区间[1-72]，超过范围，使用其上限值。 
   <br>
   <br>
+以上就是一些WebSettings的常用方法，具体的使用以及一些缓存的问题会在接下来的代码以及文章中有更加直观的说明。
 
+<br>
+<br>
+<br>
+##WebViewClient
+  
+  WebViewClient是
 
 

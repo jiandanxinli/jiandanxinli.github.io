@@ -157,22 +157,22 @@ public class MainActivity extends AppCompatActivity {
 ###WebSettings常用方法
 （几乎所有的set方法都有相应的get方法，这里就只介绍set了）
 
-  - **setJavaScriptEnabled(boolean flag)**：设置WebView是否可以运行JavaScript。
-  - **setJavaScriptCanOpenWindowsAutomatically(boolean flag)**：设置WebView是否可以由JavaScript自动打开窗口，默认为false，通常与JavaScript的***window.open()***配合使用。
+  - **void setJavaScriptEnabled(boolean flag)**：设置WebView是否可以运行JavaScript。
+  - **void setJavaScriptCanOpenWindowsAutomatically(boolean flag)**：设置WebView是否可以由JavaScript自动打开窗口，默认为false，通常与JavaScript的***window.open()***配合使用。
   <br>
   <br>
-  - **setAllowFileAccess(boolean allow)**：启用或禁用WebView访问文件数据。
-  - **setBlockNetworkImage(boolean flag)**：禁止或允许WebView从网络上加载图片。需要注意的是，如果设置是从禁止到允许的转变的话，图片数据并不会在设置改变后立刻去获取，而是在WebView调用reload()的时候才会生效。<br>这个时候，需要确保这个app拥有访问Internet的权限，否则会抛出安全异常。<br>通常没有禁止图片加载的需求的时候，完全不用管这个方法，因为当我们的app拥有访问Internet的权限时，这个flag的默认值就是false。
-  - **setSupportZoom(boolean support)**：设置是否支持缩放。
-  - **setBuiltInZoomControls(boolean enabled)**：显示或不显示缩放按钮（wap网页不支持）。
-  - **setSupportMultipleWindows(boolean support)**：设置WebView是否支持多窗口。
-  - **setLayoutAlgorithm(WebSettings.LayoutAlgorithm l)**：指定WebView的页面布局显示形式，调用该方法会引起页面重绘。默认值为LayoutAlgorithm#NARROW_COLUMNS。
-  - **setNeedInitialFocus(boolean flag)**：通知WebView是否需要设置一个节点获取焦点当WebView#requestFocus(int,android.graphics.Rect)被调用时，默认为true。
+  - **void setAllowFileAccess(boolean allow)**：启用或禁用WebView访问文件数据。
+  - **void setBlockNetworkImage(boolean flag)**：禁止或允许WebView从网络上加载图片。需要注意的是，如果设置是从禁止到允许的转变的话，图片数据并不会在设置改变后立刻去获取，而是在WebView调用reload()的时候才会生效。<br>这个时候，需要确保这个app拥有访问Internet的权限，否则会抛出安全异常。<br>通常没有禁止图片加载的需求的时候，完全不用管这个方法，因为当我们的app拥有访问Internet的权限时，这个flag的默认值就是false。
+  - **void setSupportZoom(boolean support)**：设置是否支持缩放。
+  - **void setBuiltInZoomControls(boolean enabled)**：显示或不显示缩放按钮（wap网页不支持）。
+  - **void setSupportMultipleWindows(boolean support)**：设置WebView是否支持多窗口。
+  - **void setLayoutAlgorithm(WebSettings.LayoutAlgorithm l)**：指定WebView的页面布局显示形式，调用该方法会引起页面重绘。默认值为LayoutAlgorithm#NARROW_COLUMNS。
+  - **void setNeedInitialFocus(boolean flag)**：通知WebView是否需要设置一个节点获取焦点当WebView#requestFocus(int,android.graphics.Rect)被调用时，默认为true。
   <br>
   <br>
-  - **setAppCacheEnabled(boolean flag)**：启用或禁用应用缓存。
-  - **setAppCachePath(String appCachePath)**：设置应用缓存路径，这个路径必须是可以让app写入文件的。该方法应该只被调用一次，重复调用会被无视~
-  - **setCacheMode(int mode)**：**用来设置WebView的缓存模式。**当我们加载页面或从上一个页面返回的时候，会按照设置的缓存模式去检查并使用（或不使用）缓存。
+  - **void setAppCacheEnabled(boolean flag)**：启用或禁用应用缓存。
+  - **void setAppCachePath(String appCachePath)**：设置应用缓存路径，这个路径必须是可以让app写入文件的。该方法应该只被调用一次，重复调用会被无视~
+  - **void setCacheMode(int mode)**：**用来设置WebView的缓存模式。**当我们加载页面或从上一个页面返回的时候，会按照设置的缓存模式去检查并使用（或不使用）缓存。
   <br>
     缓存模式有四种：
       <br>
@@ -186,24 +186,24 @@ public class MainActivity extends AppCompatActivity {
   <br>
   通常我们可以根据网络情况将这几种模式结合使用，比如有网的时候使用LOAD_DEFAULT，离线时使用LOAD_CACHE_ONLY、LOAD_CACHE_ELSE_NETWORK，让用户不至于在离线时啥都看不到。
   <br>
-  - **setDatabaseEnabled(boolean flag)**：启用或禁用数据库缓存。
-  - **setDomStorageEnabled(boolean flag)**：启用或禁用DOM缓存。
+  - **void setDatabaseEnabled(boolean flag)**：启用或禁用数据库缓存。
+  - **void setDomStorageEnabled(boolean flag)**：启用或禁用DOM缓存。
   <br>
   <br>
-  - **setUserAgentString(String ua)**：设置WebView的UserAgent值。
-  - **setDefaultEncodingName(String encoding)**：设置编码格式，通常都设为“UTF-8”。
+  - **void setUserAgentString(String ua)**：设置WebView的UserAgent值。
+  - **void setDefaultEncodingName(String encoding)**：设置编码格式，通常都设为“UTF-8”。
   <br>
   <br>
-  - **setStandardFontFamily(String font)**：设置标准的字体族，默认“sans-serif”。
-  - **setCursiveFontFamily**：设置草书字体族，默认“cursive”。
-  - **setFantasyFontFamily**：设置CursiveFont字体族，默认“cursive”。
-  - **setFixedFontFamily**：设置混合字体族，默认“monospace”。
-  - **setSansSerifFontFamily**：设置梵文字体族，默认“sans-serif”。
-  - **setSerifFontFamily**：设置衬线字体族，默认“sans-serif” 
-  - **setDefaultFixedFontSize(int size)**：设置默认填充字体大小，默认16，取值区间为[1-72]，超过范围，使用其上限值。
-  - **setDefaultFontSize(int size)**：设置默认字体大小，默认16，取值区间[1-72]，超过范围，使用其上限值。
-  - **setMinimumFontSize**：设置最小字体，默认8. 取值区间[1-72]，超过范围，使用其上限值。 
-  - **setMinimumLogicalFontSize**：设置最小逻辑字体，默认8. 取值区间[1-72]，超过范围，使用其上限值。 
+  - **void setStandardFontFamily(String font)**：设置标准的字体族，默认“sans-serif”。
+  - **void setCursiveFontFamily**：设置草书字体族，默认“cursive”。
+  - **void setFantasyFontFamily**：设置CursiveFont字体族，默认“cursive”。
+  - **void setFixedFontFamily**：设置混合字体族，默认“monospace”。
+  - **void setSansSerifFontFamily**：设置梵文字体族，默认“sans-serif”。
+  - **void setSerifFontFamily**：设置衬线字体族，默认“sans-serif” 
+  - **void setDefaultFixedFontSize(int size)**：设置默认填充字体大小，默认16，取值区间为[1-72]，超过范围，使用其上限值。
+  - **void setDefaultFontSize(int size)**：设置默认字体大小，默认16，取值区间[1-72]，超过范围，使用其上限值。
+  - **void setMinimumFontSize**：设置最小字体，默认8. 取值区间[1-72]，超过范围，使用其上限值。 
+  - **void setMinimumLogicalFontSize**：设置最小逻辑字体，默认8. 取值区间[1-72]，超过范围，使用其上限值。 
   <br>
   <br>
 以上就是一些WebSettings的常用方法，具体的使用以及一些缓存的问题会在接下来的代码以及文章中有更加直观的说明。
@@ -213,6 +213,23 @@ public class MainActivity extends AppCompatActivity {
 <br>
 ##WebViewClient
   
-  WebViewClient是
+  从名字上不难理解，这个类就像WebView的委托人一样，是帮助WebView处理各种通知和请求事件的。
+
+
+void onLoadResource(WebView view, String url)
+
+void onPageStarted(WebView view, String url, Bitmap favicon)
+void onPageFinished(WebView view, String url)
+void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)
+void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse)
+void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)
+WebResourceResponse	shouldInterceptRequest(WebView view, WebResourceRequest request)
+boolean	shouldOverrideUrlLoading(WebView view, WebResourceRequest request)
+
+void onPageCommitVisible(WebView view, String url)
+void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm)
+void onReceivedLoginRequest(WebView view, String realm, String account, String args)
+void onScaleChanged(WebView view, float oldScale, float newScale)
+boolean	shouldOverrideKeyEvent(WebView view, KeyEvent event)
 
 

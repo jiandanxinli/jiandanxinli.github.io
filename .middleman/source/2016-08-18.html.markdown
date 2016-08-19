@@ -157,16 +157,16 @@ public class MainActivity extends AppCompatActivity {
 ###WebSettings常用方法
 （几乎所有的set方法都有相应的get方法，这里就只介绍set了）
 
-  - **void setJavaScriptEnabled(boolean flag)**：设置WebView是否可以运行JavaScript。
-  - **void setJavaScriptCanOpenWindowsAutomatically(boolean flag)**：设置WebView是否可以由JavaScript自动打开窗口，默认为false，通常与JavaScript的***window.open()***配合使用。
+  - void **setJavaScriptEnabled**(boolean flag)：设置WebView是否可以运行JavaScript。
+  - void **setJavaScriptCanOpenWindowsAutomatically**(boolean flag)：设置WebView是否可以由JavaScript自动打开窗口，默认为false，通常与JavaScript的***window.open()***配合使用。
   <br>
   <br>
-  - **void setAllowFileAccess(boolean allow)**：启用或禁用WebView访问文件数据。
-  - **void setBlockNetworkImage(boolean flag)**：禁止或允许WebView从网络上加载图片。需要注意的是，如果设置是从禁止到允许的转变的话，图片数据并不会在设置改变后立刻去获取，而是在WebView调用reload()的时候才会生效。<br>这个时候，需要确保这个app拥有访问Internet的权限，否则会抛出安全异常。<br>通常没有禁止图片加载的需求的时候，完全不用管这个方法，因为当我们的app拥有访问Internet的权限时，这个flag的默认值就是false。
-  - **void setSupportZoom(boolean support)**：设置是否支持缩放。
-  - **void setBuiltInZoomControls(boolean enabled)**：显示或不显示缩放按钮（wap网页不支持）。
-  - **void setSupportMultipleWindows(boolean support)**：设置WebView是否支持多窗口。
-  - **void setLayoutAlgorithm(WebSettings.LayoutAlgorithm l)**：指定WebView的页面布局显示形式，调用该方法会引起页面重绘。默认值为LayoutAlgorithm#NARROW_COLUMNS。
+  - void **setAllowFileAccess**(boolean allow)：启用或禁用WebView访问文件数据。
+  - void **setBlockNetworkImage**(boolean flag)：禁止或允许WebView从网络上加载图片。需要注意的是，如果设置是从禁止到允许的转变的话，图片数据并不会在设置改变后立刻去获取，而是在WebView调用reload()的时候才会生效。<br>这个时候，需要确保这个app拥有访问Internet的权限，否则会抛出安全异常。<br>通常没有禁止图片加载的需求的时候，完全不用管这个方法，因为当我们的app拥有访问Internet的权限时，这个flag的默认值就是false。
+  - void **setSupportZoom**(boolean support)：设置是否支持缩放。
+  - void **setBuiltInZoomControls**(boolean enabled)：显示或不显示缩放按钮（wap网页不支持）。
+  - void **setSupportMultipleWindows**(boolean support)：设置WebView是否支持多窗口。
+  - void **setLayoutAlgorithm**(WebSettings.LayoutAlgorithm l)：指定WebView的页面布局显示形式，调用该方法会引起页面重绘。默认值为LayoutAlgorithm#NARROW_COLUMNS。
   - **void setNeedInitialFocus(boolean flag)**：通知WebView是否需要设置一个节点获取焦点当WebView#requestFocus(int,android.graphics.Rect)被调用时，默认为true。
   <br>
   <br>

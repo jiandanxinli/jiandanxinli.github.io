@@ -216,20 +216,20 @@ public class MainActivity extends AppCompatActivity {
   从名字上不难理解，这个类就像WebView的委托人一样，是帮助WebView处理各种通知和请求事件的。
 
 
-void onLoadResource(WebView view, String url)
+  - **void onLoadResource(WebView view, String url)**：该方法在加载页面资源时会回调，每一个资源（比如图片）的加载都会调用一次。
 
-void onPageStarted(WebView view, String url, Bitmap favicon)
-void onPageFinished(WebView view, String url)
-void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)
-void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse)
-void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)
-WebResourceResponse	shouldInterceptRequest(WebView view, WebResourceRequest request)
-boolean	shouldOverrideUrlLoading(WebView view, WebResourceRequest request)
+  - **void onPageStarted(WebView view, String url, Bitmap favicon)**：该方法在页面开始加载时回调，可以在这个时候设定一个加载的动画，告诉用户程序在等待网络的响应。
+  - **void onPageFinished(WebView view, String url)**：该方法在页面加载结束时调用，**理论上**可以在此时关闭加载动画，进行其他操作。___（这里有一坑，后面会进一步介绍）___
+  - **void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)**：
+  - **void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse)**：
+  - **void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)**：
+  - **WebResourceResponse	shouldInterceptRequest(WebView view, WebResourceRequest request)**：
+  - **boolean	shouldOverrideUrlLoading(WebView view, WebResourceRequest request)**：
 
-void onPageCommitVisible(WebView view, String url)
-void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm)
-void onReceivedLoginRequest(WebView view, String realm, String account, String args)
-void onScaleChanged(WebView view, float oldScale, float newScale)
-boolean	shouldOverrideKeyEvent(WebView view, KeyEvent event)
+  - **void onPageCommitVisible(WebView view, String url)**：
+  - **void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm)**：
+  - **void onReceivedLoginRequest(WebView view, String realm, String account, String args)**：
+  - **void onScaleChanged(WebView view, float oldScale, float newScale)**：
+  - **boolean	shouldOverrideKeyEvent(WebView view, KeyEvent event)**：
 
 

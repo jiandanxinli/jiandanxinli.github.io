@@ -36,7 +36,7 @@
   <span class="n">net</span>.<span class="n">ipv6</span>.<span class="n">conf</span>.<span class="n">lo</span>.<span class="n">disable_ipv6</span> = <span class="m">0</span>
 </code></pre>
 <ol>
-<li>在<code>/etc/network/interface</code>底部加上以下内容（注：下面大写的<IPV6>处，需要替换成你在 HE 得到的<code>Server IPv6 Address</code>，但不包括最后的<code>::1/64</code>，如：<code>2001:470:100:100</code>）</li>
+<li>在<code>/etc/network/interfaces</code>底部加上以下内容（注：下面大写的<IPV6>处，需要替换成你在 HE 得到的<code>Server IPv6 Address</code>，但不包括最后的<code>::1/64</code>，如：<code>2001:470:100:100</code>）</li>
 </ol>
 <pre class="highlight conf"><code>  <span class="n">auto</span> <span class="n">he</span>-<span class="n">ipv6</span>
   <span class="n">iface</span> <span class="n">he</span>-<span class="n">ipv6</span> <span class="n">inet6</span> <span class="n">v4tunnel</span>

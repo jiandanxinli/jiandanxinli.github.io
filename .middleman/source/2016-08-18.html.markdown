@@ -158,20 +158,41 @@ public class MainActivity extends AppCompatActivity {
 （几乎所有的set方法都有相应的get方法，这里就只介绍set了。**另，所有未写方法返回值类型的皆为空类型**）
 
   - **setJavaScriptEnabled**(boolean flag)：设置WebView是否可以运行JavaScript。
+  <br>
+  <br>
   - **setJavaScriptCanOpenWindowsAutomatically**(boolean flag)：设置WebView是否可以由JavaScript自动打开窗口，默认为false，通常与JavaScript的***window.open()***配合使用。
   <br>
   <br>
+  <br>
+***
   - **setAllowFileAccess**(boolean allow)：启用或禁用WebView访问文件数据。
+  <br>
+  <br>
   - **setBlockNetworkImage**(boolean flag)：禁止或允许WebView从网络上加载图片。需要注意的是，如果设置是从禁止到允许的转变的话，图片数据并不会在设置改变后立刻去获取，而是在WebView调用reload()的时候才会生效。<br>这个时候，需要确保这个app拥有访问Internet的权限，否则会抛出安全异常。<br>通常没有禁止图片加载的需求的时候，完全不用管这个方法，因为当我们的app拥有访问Internet的权限时，这个flag的默认值就是false。
+  <br>
+  <br>
   - **setSupportZoom**(boolean support)：设置是否支持缩放。
+  <br>
+  <br>
   - **setBuiltInZoomControls**(boolean enabled)：显示或不显示缩放按钮（wap网页不支持）。
+  <br>
+  <br>
   - **setSupportMultipleWindows**(boolean support)：设置WebView是否支持多窗口。
+  <br>
+  <br>
   - **setLayoutAlgorithm**(WebSettings.LayoutAlgorithm l)：指定WebView的页面布局显示形式，调用该方法会引起页面重绘。默认值为LayoutAlgorithm#NARROW_COLUMNS。
+  <br>
+  <br>
   - **setNeedInitialFocus(boolean flag)**：通知WebView是否需要设置一个节点获取焦点当WebView#requestFocus(int,android.graphics.Rect)被调用时，默认为true。
   <br>
   <br>
+  <br>
   - **setAppCacheEnabled(boolean flag)**：启用或禁用应用缓存。
+  <br>
+  <br>
   - **setAppCachePath(String appCachePath)**：设置应用缓存路径，这个路径必须是可以让app写入文件的。该方法应该只被调用一次，重复调用会被无视~
+  <br>
+  <br>
   - **setCacheMode(int mode)**：**用来设置WebView的缓存模式。**当我们加载页面或从上一个页面返回的时候，会按照设置的缓存模式去检查并使用（或不使用）缓存。
   <br>
     缓存模式有四种：
@@ -187,23 +208,48 @@ public class MainActivity extends AppCompatActivity {
   通常我们可以根据网络情况将这几种模式结合使用，比如有网的时候使用LOAD_DEFAULT，离线时使用LOAD_CACHE_ONLY、LOAD_CACHE_ELSE_NETWORK，让用户不至于在离线时啥都看不到。
   <br>
   - **setDatabaseEnabled(boolean flag)**：启用或禁用数据库缓存。
+  <br>
+  <br>
   - **setDomStorageEnabled(boolean flag)**：启用或禁用DOM缓存。
   <br>
   <br>
+  <br>
   - **setUserAgentString(String ua)**：设置WebView的UserAgent值。
+  <br>
+  <br>
   - **setDefaultEncodingName(String encoding)**：设置编码格式，通常都设为“UTF-8”。
   <br>
   <br>
+  <br>
   - **setStandardFontFamily(String font)**：设置标准的字体族，默认“sans-serif”。
+  <br>
+  <br>
   - **setCursiveFontFamily**：设置草书字体族，默认“cursive”。
+  <br>
+  <br>
   - **setFantasyFontFamily**：设置CursiveFont字体族，默认“cursive”。
+  <br>
+  <br>
   - **setFixedFontFamily**：设置混合字体族，默认“monospace”。
+  <br>
+  <br>
   - **setSansSerifFontFamily**：设置梵文字体族，默认“sans-serif”。
+  <br>
+  <br>
   - **setSerifFontFamily**：设置衬线字体族，默认“sans-serif” 
+  <br>
+  <br>
   - **setDefaultFixedFontSize(int size)**：设置默认填充字体大小，默认16，取值区间为[1-72]，超过范围，使用其上限值。
+  <br>
+  <br>
   - **setDefaultFontSize(int size)**：设置默认字体大小，默认16，取值区间[1-72]，超过范围，使用其上限值。
+  <br>
+  <br>
   - **setMinimumFontSize**：设置最小字体，默认8. 取值区间[1-72]，超过范围，使用其上限值。 
+  <br>
+  <br>
   - **setMinimumLogicalFontSize**：设置最小逻辑字体，默认8. 取值区间[1-72]，超过范围，使用其上限值。 
+  <br>
   <br>
   <br>
 以上就是一些WebSettings的常用方法，具体的使用以及一些缓存的问题会在接下来的代码以及文章中有更加直观的说明。
@@ -217,19 +263,42 @@ public class MainActivity extends AppCompatActivity {
 
 
   - **onLoadResource(WebView view, String url)**：该方法在加载页面资源时会回调，每一个资源（比如图片）的加载都会调用一次。
-
+  <br>
+  <br>
   - **onPageStarted(WebView view, String url, Bitmap favicon)**：该方法在页面开始加载时回调，可以在这个时候设定一个加载的动画，告诉用户程序在等待网络的响应。
+  <br>
+  <br>
   - **onPageFinished(WebView view, String url)**：该方法在页面加载结束时调用，**理论上**可以在此时关闭加载动画，进行其他操作。___（这里有一坑，后面会进一步介绍）___
+  <br>
+  <br>
   - **onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)**：
+  <br>
+  <br>
   - **onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse)**：
+  <br>
+  <br>
   - **onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)**：
+  <br>
+  <br>
   - **WebResourceResponse	shouldInterceptRequest(WebView view, WebResourceRequest request)**：
+  <br>
   - **boolean	shouldOverrideUrlLoading(WebView view, WebResourceRequest request)**：
-
+  <br>
+  <br>
   - **onPageCommitVisible(WebView view, String url)**：
+  <br>
+  <br>
   - **onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm)**：
+  <br>
+  <br>
   - **onReceivedLoginRequest(WebView view, String realm, String account, String args)**：
+  <br>
+  <br>
   - **onScaleChanged(WebView view, float oldScale, float newScale)**：
+  <br>
+  <br>
   - **boolean	shouldOverrideKeyEvent(WebView view, KeyEvent event)**：
+  <br>
+  <br>
 
 

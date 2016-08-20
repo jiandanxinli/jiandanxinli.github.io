@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
   <br>
   <br>
   <br>
-***
+  <br>
   - **setAllowFileAccess**(boolean allow)：启用或禁用WebView访问文件数据。
   <br>
   <br>
@@ -184,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
   <br>
   <br>
   - **setNeedInitialFocus(boolean flag)**：通知WebView是否需要设置一个节点获取焦点当WebView#requestFocus(int,android.graphics.Rect)被调用时，默认为true。
+  <br>
   <br>
   <br>
   <br>
@@ -214,10 +215,12 @@ public class MainActivity extends AppCompatActivity {
   <br>
   <br>
   <br>
+  <br>
   - **setUserAgentString(String ua)**：设置WebView的UserAgent值。
   <br>
   <br>
   - **setDefaultEncodingName(String encoding)**：设置编码格式，通常都设为“UTF-8”。
+  <br>
   <br>
   <br>
   <br>
@@ -252,8 +255,10 @@ public class MainActivity extends AppCompatActivity {
   <br>
   <br>
   <br>
+  <br>
 以上就是一些WebSettings的常用方法，具体的使用以及一些缓存的问题会在接下来的代码以及文章中有更加直观的说明。
 
+<br>
 <br>
 <br>
 <br>

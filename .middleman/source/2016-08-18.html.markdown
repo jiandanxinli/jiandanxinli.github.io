@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
 <br>
 ##WebViewClient
   
-  从名字上不难理解，这个类就像WebView的委托人一样，是帮助WebView处理各种通知和请求事件的，我们可以称他为WebView的内政大臣。
+  从名字上不难理解，这个类就像WebView的委托人一样，是帮助WebView处理各种通知和请求事件的，我们可以称他为WebView的“内政大臣”。
 
 
   - **onLoadResource(WebView view, String url)**：该方法在加载页面资源时会回调，每一个资源（比如图片）的加载都会调用一次。
@@ -327,79 +327,71 @@ public class MainActivity extends AppCompatActivity {
 
 ##WebChromeClient
 
-  如果说WebViewClient是帮助WebView处理各种通知、请求事件的内政大臣的话，那么WebChromeClient就是辅助WebView处理Javascript的对话框，网站图标，网站title，加载进度等偏宏观和外部的外交大臣。
+  如果说WebViewClient是帮助WebView处理各种通知、请求事件的“内政大臣”的话，那么WebChromeClient就是辅助WebView处理Javascript的对话框，网站图标，网站title，加载进度等偏外部事件的“外交大臣”。
   
   
-  - onProgressChanged(WebView view, int newProgress)
+  - onProgressChanged(WebView view, int newProgress)：当页面加载的进度发生改变时回调，用来告知主程序当前页面的加载进度。
   <br>
   <br>
   <br>
   <br>
-  - onReceivedIcon(WebView view, Bitmap icon)
+  - onReceivedIcon(WebView view, Bitmap icon)：用来接收web页面的icon，我们可以在这里将该页面的icon设置到Toolbar。
   <br>
   <br>
-  - onReceivedTitle(WebView view, String title)
-  <br>
-  <br>
-  - onRequestFocus(WebView view)
+  - onReceivedTitle(WebView view, String title)：用来接收web页面的title，我们可以在这里将页面的title设置到Toolbar。
   <br>
   <br>
   <br>
   <br>
-  - onShowCustomView(View view, WebChromeClient.CustomViewCallback callback)
+以下两个方法是为了支持web页面进入全屏模式而存在的（比如播放视频），如果不实现这两个方法，该web上的内容便不能进入全屏模式。<br>
+  - onShowCustomView(View view, WebChromeClient.CustomViewCallback callback)：该方法在当前页面进入全屏模式时回调，主程序必须提供一个包含当前web内容（视频 or Something）的自定义的View。
   <br>
   <br>
-  - onHideCustomView()
-  <br>
-  <br>
-  <br>
-  <br>
-  - Bitmap getDefaultVideoPoster()
-  <br>
-  <br>
-  - View getVideoLoadingProgressView()
+  - onHideCustomView()：该方法在当前页面退出全屏模式时回调，主程序应在这时隐藏之前show出来的View。
   <br>
   <br>
   <br>
   <br>
-  - onCloseWindow(WebView window)
+  - Bitmap getDefaultVideoPoster()：当我们的Web页面包含视频时，我们可以在HTML里为它设置一个预览图，WebView会在绘制页面时根据它的宽高为它布局。而当我们处于弱网状态下时，我们没有比较快的获取该图片，那WebView绘制页面时的gitWidth()方法就会报出空指针异常~ 于是app就crash了。。<br>
+  这时我们就需要重写该方法，在我们尚未获取web页面上的video预览图时，给予它一个本地的图片，避免空指针的发生。
+  <br>
+  <br>
+  - View getVideoLoadingProgressView()：重写该方法可以在视频loading时给予一个自定义的View，可以是加载圆环 or something。
   <br>
   <br>
   <br>
   <br>
-  - boolean	onConsoleMessage(ConsoleMessage consoleMessage)
+  - boolean	onJsAlert(WebView view, String url, String message, JsResult result)：处理Javascript中的Alert对话框。
+  <br>
+  <br>
+  - boolean	onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result)：处理Javascript中的Prompt对话框。
+  <br>
+  <br>
+  - boolean	onJsBeforeUnload(WebView view, String url, String message, JsResult result)：待斟酌
+  <br>
+  <br>
+  - boolean	onJsConfirm(WebView view, String url, String message, JsResult result)：处理Javascript中的Confirm对话框
   <br>
   <br>
   <br>
   <br>
-  - boolean	onJsAlert(WebView view, String url, String message, JsResult result)
-  <br>
-  <br>
-  - boolean	onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result)
-  <br>
-  <br>
-  - boolean	onJsBeforeUnload(WebView view, String url, String message, JsResult result)
-  <br>
-  <br>
-  - boolean	onJsConfirm(WebView view, String url, String message, JsResult result)
+  - boolean	onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams)：
   <br>
   <br>
   <br>
   <br>
-  - boolean	onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams)
+  - onPermissionRequest(PermissionRequest request)：
   <br>
   <br>
-  <br>
-  <br>
-  - onPermissionRequest(PermissionRequest request)
-  <br>
-  <br>
-  - onPermissionRequestCanceled(PermissionRequest request)
+  - onPermissionRequestCanceled(PermissionRequest request)：
   <br>
   <br>
   <br>
   <br>
   
+##Js与WebView交互
+
+  js与webview
 
 
 

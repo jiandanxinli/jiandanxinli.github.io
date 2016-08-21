@@ -279,35 +279,43 @@ public class MainActivity extends AppCompatActivity {
   - **onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)**：该方法在web页面加载错误时回调，这些错误通常都是由无法与服务器正常连接引起的，最常见的就是网络问题。
   <br>这个方法有两个地方需要注意：
   <br>
-  1.这个方法只在与服务器无法正常连接时调用，类似于服务器返回错误码的那种错误，该方法是不会回调的，因为你已经和服务器正常连接上了（全怪官方文档(︶^︶)）；<br>
+  1.这个方法只在与服务器无法正常连接时调用，类似于服务器返回错误码的那种错误（即**HTTP ERROR**），该方法是不会回调的，因为你已经和服务器正常连接上了（全怪官方文档(︶^︶)）；<br>
   2.这个方法是新版本的onReceivedError()方法，从API23开始引进，与旧方法onReceivedError(WebView view,int errorCode,String description,String failingUrl)不同的是，新方法在页面局部加载发生错误时也会被调用（比如页面里两个子Tab或者一张图片）。这就意味着该方法的调用频率可能会更加频繁，所以我们应该在该方法里执行尽量少的操作。
   <br>
   <br>
-  - **onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse)**：上一个方法曾说到
+  - **onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse)**：上一个方法提到onReceivedError并不会在服务器返回错误码时被回调，那么当我们需要捕捉HTTP ERROR并进行相应操作时应该怎么办呢？**API23**便引入了该方法。当服务器返回一个HTTP ERROR并且它的status code>=400时，该方法便会回调。这个方法的作用域并不局限于Main Frame，任何资源的加载引发HTTP ERROR都会引起该方法的回调，所以我们也应该在该方法里执行尽量少的操作，只进行非常必要的错误处理等。
   <br>
   <br>
-  - **onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)**：
+  - **onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)**：当WebView加载某个资源引发SSL错误时会回调该方法，这时WebView要么执行handler.cancel()取消加载，要么执行handler.proceed()方法继续加载（默认为cancel）。需要注意的是，这个决定可能会被保留并在将来再次遇到SSL错误时执行同样的操作。
   <br>
   <br>
-  - **WebResourceResponse	shouldInterceptRequest(WebView view, WebResourceRequest request)**：
+  - **WebResourceResponse	shouldInterceptRequest(WebView view, WebResourceRequest request)**：当WebView需要请求某个数据时，这个方法可以拦截该请求来告知app并且允许app本身返回一个数据来替代我们原本要加载的数据。
   <br>
-  - **boolean	shouldOverrideUrlLoading(WebView view, WebResourceRequest request)**：
-  <br>
-  <br>
-  - **onPageCommitVisible(WebView view, String url)**：
+  比如你对web的某个js做了本地缓存，希望在加载该js时不再去请求服务器而是可以直接读取本地缓存的js，这个方法就可以帮助你完成这个需求。你可以写一些逻辑检测这个request，并返回相应的数据，你返回的数据就会被WebView使用，如果你返回null，WebView会继续向服务器请求。
   <br>
   <br>
-  - **onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm)**：
+  - **boolean	shouldOverrideUrlLoading(WebView view, WebResourceRequest request)**：哈~ 终于到了这个方法，在最开始的基础演示时我们用到了这个方法。从实践中我们知道，当我们没有给WebView提供WebViewClient时，WebView如果要加载一个url会向ActivityManager寻求一个适合的处理者来加载该url（比如系统自带的浏览器），这通常是我们不想看到的。于是我们需要给WebView提供一个WebViewClient，并重写该方法返回true来告知WebView url的加载就在app中进行。这时便可以实现在app内访问网页。
   <br>
   <br>
-  - **onReceivedLoginRequest(WebView view, String realm, String account, String args)**：
+  <br>
+  - **onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm)**：待斟酌。
   <br>
   <br>
-  - **onScaleChanged(WebView view, float oldScale, float newScale)**：
+  - **onReceivedLoginRequest(WebView view, String realm, String account, String args)**：待斟酌。
   <br>
   <br>
-  - **boolean	shouldOverrideKeyEvent(WebView view, KeyEvent event)**：
+  - **onScaleChanged(WebView view, float oldScale, float newScale)**：当WebView得页面Scale值发生改变时回调。
   <br>
   <br>
+  - **boolean	shouldOverrideKeyEvent(WebView view, KeyEvent event)**：默认值为false，重写此方法并return true可以让我们在WebView内处理按键事件。
+  <br>
+  <br>
+  <br>
+  <br>
+
+##WebChromeClient
+
+  WebChromeClient是一个
+
 
 

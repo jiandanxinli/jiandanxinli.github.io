@@ -7,7 +7,7 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
 ---
 <br><br><br>
 #WebView·开车指南
-**Tips**:由于WebView的用法实在太多，如果读者只是想查询某个功能的使用建议Ctrl+F（Commad+F）在本页面搜索关键字查找。
+**Tips**:由于WebView的用法实在太多，如果您只是想查询某个功能的使用——建议Ctrl+F（Commad+F）在本页面搜索关键字查找。Thanks for reading~！٩(♡ε♡ )۶
 <br>
   
 ## 前言
@@ -270,13 +270,16 @@ public class MainActivity extends AppCompatActivity {
   - **onLoadResource(WebView view, String url)**：该方法在加载页面资源时会回调，每一个资源（比如图片）的加载都会调用一次。
   <br>
   <br>
-  - **onPageStarted(WebView view, String url, Bitmap favicon)**：该方法在页面开始加载时回调，可以在这个时候设定一个加载的动画，告诉用户程序在等待网络的响应。
+  - **onPageStarted(WebView view, String url, Bitmap favicon)**：该方法在WebView开始加载页面且仅在***Main frame loading***（即***整页加载***）时回调，一个页面只调用一次。我们可以在这个方法里设定开启一个加载的动画，告诉用户程序在等待网络的响应。
   <br>
   <br>
-  - **onPageFinished(WebView view, String url)**：该方法在页面加载结束时调用，**理论上**可以在此时关闭加载动画，进行其他操作。___（这里有一坑，后面会进一步介绍）___
+  - **onPageFinished(WebView view, String url)**：该方法在WebView加载一个页面结束时调用（同样也只在***main frame loading***时调用），**理论上**可以在此时关闭加载动画，进行其他操作。___（这里有一坑，后面会进一步介绍）___
   <br>
   <br>
-  - **onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)**：
+  - **onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)**：该方法在web页面加载错误时回调，这些错误通常都是由无法与服务器正常连接引起的，最常见的就是网络问题。
+  <br>这个方法有两个地方需要注意：
+  <br>1. 这个方法只在与服务器无法正常连接时调用，类似于服务器返回错误码的那种错误，该方法是不会回调的，因为你已经和服务器正常连接上了（全怪官方文档(︶^︶)）；
+  <br>2. 这个方法是新版本的onReceivedError()方法，从API23开始引进，与旧方法onReceivedError(WebView view,int errorCode,String description,String failingUrl)不同的是，新方法在页面局部加载发生错误时也会被调用（比如页面里两个子Tab或者一张图片）。这就意味着该方法的调用频率可能会更加频繁，所以我们应该在该方法里执行尽量少的操作。
   <br>
   <br>
   - **onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse)**：

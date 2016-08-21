@@ -7,7 +7,16 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
 ---
 <br><br><br>
 #WebView·开车指南
-**Tips**:由于WebView的用法实在太多，如果您只是想查询某个功能的使用——建议Ctrl+F（Commad+F）在本页面搜索关键字查找。Thanks for reading~！٩(♡ε♡ )۶
+**Tips**
+  1. 由于WebView的用法实在太多，如果您只是想查询某个功能的使用——建议Ctrl+F（Commad+F）在本页面搜索关键字查找。<br>
+  2. 文章给前半部分大多是方法的介绍，若嫌琐碎可直接拖到最后看代码演示。
+<br>
+<br>
+<br>
+**Thanks for reading~！**٩(♡ε♡ )۶
+<br>
+<br>
+<br>
 <br>
   
 ## 前言
@@ -208,6 +217,8 @@ public class MainActivity extends AppCompatActivity {
   <br>
   通常我们可以根据网络情况将这几种模式结合使用，比如有网的时候使用LOAD_DEFAULT，离线时使用LOAD_CACHE_ONLY、LOAD_CACHE_ELSE_NETWORK，让用户不至于在离线时啥都看不到。
   <br>
+  <br>
+  <br>
   - **setDatabaseEnabled(boolean flag)**：启用或禁用数据库缓存。
   <br>
   <br>
@@ -264,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
 <br>
 ##WebViewClient
   
-  从名字上不难理解，这个类就像WebView的委托人一样，是帮助WebView处理各种通知和请求事件的。
+  从名字上不难理解，这个类就像WebView的委托人一样，是帮助WebView处理各种通知和请求事件的，我们可以称他为WebView的内政大臣。
 
 
   - **onLoadResource(WebView view, String url)**：该方法在加载页面资源时会回调，每一个资源（比如图片）的加载都会调用一次。
@@ -298,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
   <br>
   <br>
   <br>
+  <br>
   - **onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm)**：待斟酌。
   <br>
   <br>
@@ -315,7 +327,79 @@ public class MainActivity extends AppCompatActivity {
 
 ##WebChromeClient
 
-  WebChromeClient是一个
+  如果说WebViewClient是帮助WebView处理各种通知、请求事件的内政大臣的话，那么WebChromeClient就是辅助WebView处理Javascript的对话框，网站图标，网站title，加载进度等偏宏观和外部的外交大臣。
+  
+  
+  - onProgressChanged(WebView view, int newProgress)
+  <br>
+  <br>
+  <br>
+  <br>
+  - onReceivedIcon(WebView view, Bitmap icon)
+  <br>
+  <br>
+  - onReceivedTitle(WebView view, String title)
+  <br>
+  <br>
+  - onRequestFocus(WebView view)
+  <br>
+  <br>
+  <br>
+  <br>
+  - onShowCustomView(View view, WebChromeClient.CustomViewCallback callback)
+  <br>
+  <br>
+  - onHideCustomView()
+  <br>
+  <br>
+  <br>
+  <br>
+  - Bitmap getDefaultVideoPoster()
+  <br>
+  <br>
+  - View getVideoLoadingProgressView()
+  <br>
+  <br>
+  <br>
+  <br>
+  - onCloseWindow(WebView window)
+  <br>
+  <br>
+  <br>
+  <br>
+  - boolean	onConsoleMessage(ConsoleMessage consoleMessage)
+  <br>
+  <br>
+  <br>
+  <br>
+  - boolean	onJsAlert(WebView view, String url, String message, JsResult result)
+  <br>
+  <br>
+  - boolean	onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result)
+  <br>
+  <br>
+  - boolean	onJsBeforeUnload(WebView view, String url, String message, JsResult result)
+  <br>
+  <br>
+  - boolean	onJsConfirm(WebView view, String url, String message, JsResult result)
+  <br>
+  <br>
+  <br>
+  <br>
+  - boolean	onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams)
+  <br>
+  <br>
+  <br>
+  <br>
+  - onPermissionRequest(PermissionRequest request)
+  <br>
+  <br>
+  - onPermissionRequestCanceled(PermissionRequest request)
+  <br>
+  <br>
+  <br>
+  <br>
+  
 
 
 

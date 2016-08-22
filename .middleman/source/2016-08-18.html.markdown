@@ -31,8 +31,9 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
   3. WebSettings
   4. WebViewClient
   5. WebChromeClient
-  6. WebView加载优化
-  7. 上路
+  6. JavaScript与WebView交互
+  7. WebView加载优化
+  8. 上路
 
 <br>  
 ## WebView简介
@@ -391,7 +392,68 @@ public class MainActivity extends AppCompatActivity {
   
 ##Js与WebVipew交互
 
-  js与webview
+  既然嗨鸟应用大行其道，那么毫无疑问Android与JavaScript的交互我们也必须了解清楚，下面来介绍一下JavaScript与Android是如何互相调用的。
+  <br>
+  <br>
+  
+###利用WebView调用网页上的JavaScript代码
+  
+  在WebView中调用Js的基本格式为**webView.loadUrl("javascript:methodName(parameterValues)");**
+  <br>
+  <br>
+  **现有以下这段JavaScript代码**
+  ```JavaScript
+  <script type="text/javascript">
+      function readyToGo() {
+          alert("Hello")
+      }
+  
+      function alertMessage(message) {
+          alert(message)
+      }
+  
+      function getYourCar(){
+          return "Car";
+      }
+  </script>
+  ```
+  <br>
+####1. WebView调用JavaScript无参无返回值函数
+
+  ```Java
+  String call = "javascript:readyToGo()";
+  webView.loadUrl(call);
+  ```
+  <br>
+####2. WebView调用JavScript有参无返回值函数
+
+  ```Java
+  String call = "javascript:alertMessage(\"" + "content" + "\")";
+  webView.loadUrl(call);
+  ```
+  <br>
+####3. WebView调用JavaScript有参数有返回值的函数
+  
+  ```Java
+  @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void evaluateJavaScript(WebView webView){
+        webView.evaluateJavascript("getYourCar()", new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String s) {
+                Log.d("findCar",s);
+            }
+        });
+    }
+  ```
+  
+  <br>
+  <br>
+
+
+###JavaScript通过WebView调用Java代码
+
+  快快快快快快快
+
 
 
 

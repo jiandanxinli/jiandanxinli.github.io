@@ -436,14 +436,14 @@ public class MainActivity extends AppCompatActivity {
   
   ```Java
   @TargetApi(Build.VERSION_CODES.KITKAT)
-    private void evaluateJavaScript(WebView webView){
-        webView.evaluateJavascript("getYourCar()", new ValueCallback<String>() {
-            @Override
-            public void onReceiveValue(String s) {
-                Log.d("findCar",s);
-            }
-        });
-    }
+  private void evaluateJavaScript(WebView webView){
+      webView.evaluateJavascript("getYourCar()", new ValueCallback<String>() {
+          @Override
+          public void onReceiveValue(String s) {
+              Log.d("findCar",s);
+          }
+      });
+  }
   ```
   
   <br>
@@ -452,8 +452,32 @@ public class MainActivity extends AppCompatActivity {
 
 ###JavaScript通过WebView调用Java代码
 
-  快快快快快快快
+  从API19开始，Android提供了@JavascriptInterface对象注解的方式来建立起Javascript对象和Android原生对象的绑定，提供给JavScript调用的函数必须带有@JavascriptInterface。
 
-
-
-
+  **演示一 JavaScript调用Android Toast方法**
+  
+  **1. 编写Java原生方法并用使用@JavascriptInterface注解**
+  ```Java
+  @JavascriptInterface
+  public void show(String s){
+      Toast.makeText(getApplication(), s, Toast.LENGTH_SHORT).show();
+  }
+  ```
+  <br>
+  **2.注册JavaScriptInterface**
+  ```Java
+  webView.addJavascriptInterface(this, "android");
+  ```
+  **addJavascriptInterface的作用是把this所代表的类映射为JavaScript中的android对象。**
+  
+  <br>
+  **3.编写JavaScript代码**
+  ```JavaScript
+  function toastClick(){
+      window.android.show("JavaScript called~!");
+  }
+  ```
+<br>
+<br>
+  演示二 JavaS
+  

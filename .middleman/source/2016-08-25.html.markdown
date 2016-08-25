@@ -51,7 +51,7 @@ Rebase其实比较复杂，单独写一篇文章都未必讲的清楚明白, 当
 
  	> Merge remote-tracking branch 'origin/master'
 
-这时rebase就是更好的选择，`git pull --rebase`, git 会先从remote获取最新的嗲吗，然后在push本地的改动，不会有merge产生.
+这时rebase就是更好的选择，`git pull --rebase`, git 会先从remote获取最新的代码，然后在push本地的改动，不会有merge产生.
 
 ##修改上一个Commit
 

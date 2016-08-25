@@ -5,16 +5,725 @@
   <id>https://jiandanxinli.github.io/</id>
   <link href="https://jiandanxinli.github.io/"/>
   <link href="https://jiandanxinli.github.io/feed.xml" rel="self"/>
-  <updated>2016-07-30T08:00:00+08:00</updated>
+  <updated>2016-08-11T08:00:00+08:00</updated>
   <author>
     <name>北京竹间科技有限公司</name>
   </author>
+  <entry>
+    <title>CSS 命名规范总结</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-11.html"/>
+    <id>https://jiandanxinli.github.io/2016-08-11.html</id>
+    <published>2016-08-11T08:00:00+08:00</published>
+    <updated>2016-08-11T20:05:39+08:00</updated>
+    <author>
+      <name>zangbianxuegu</name>
+    </author>
+    <content type="html">&lt;p&gt;首先，这是一篇仅对 CSS 命名的总结，更多 CSS 规范请参考规范文档。其次 CSS 命名并无对错之分，只是不同的命名方式和代码的优雅程度与后期维护有着密切关系。&lt;/p&gt;
+
+&lt;blockquote class="twitter-tweet" data-lang="zh-cn"&gt;&lt;p lang="und" dir="ltr"&gt;&lt;a href="https://twitter.com/iamdevloper"&gt;@iamdevloper&lt;/a&gt; &lt;a href="https://t.co/4SRgVDDaiC"&gt;pic.twitter.com/4SRgVDDaiC&lt;/a&gt;&lt;/p&gt;&amp;mdash; Saeed Prez (@SaeedPrez) &lt;a href="https://twitter.com/SaeedPrez/status/753731421525700608"&gt;2016年7月14日&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;script async src="//platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt;
+
+&lt;p&gt;CSS 很容易写，但是维护它却很难，因为 CSS 声明属性的性质不具备编程语言流程控制的特点，CSS(Cascading Style Sheets)也可以层叠生效，不同地方的 classes 相互影响。CSS 命名是规范中最重要的部分，它几乎就是 CSS 规范的全部，我们也就是依赖它完成对 CSS 的控制。&lt;/p&gt;
+
+&lt;h2&gt;分离&lt;/h2&gt;
+
+&lt;p&gt;曾经我们这样定义选择器：&lt;/p&gt;
+&lt;pre class="highlight sass"&gt;&lt;code&gt;&lt;span class="nc"&gt;.fl&lt;/span&gt;
+  &lt;span class="nl"&gt;float&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;left&lt;/span&gt;
+
+&lt;span class="nc"&gt;.fr&lt;/span&gt;
+  &lt;span class="nl"&gt;float&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;right&lt;/span&gt;
+
+&lt;span class="nc"&gt;.mr10&lt;/span&gt;
+  &lt;span class="nl"&gt;margin-right&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;10px&lt;/span&gt;
+
+&lt;span class="nc"&gt;.pb10&lt;/span&gt;
+  &lt;span class="nl"&gt;padding-bottom&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;10px&lt;/span&gt;
+
+&lt;span class="nc"&gt;.hidden&lt;/span&gt;
+  &lt;span class="nl"&gt;overflow&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;hidden&lt;/span&gt;
+
+&lt;span class="nc"&gt;.highlight&lt;/span&gt;
+  &lt;span class="nl"&gt;color&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nv"&gt;$green&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在 html 中添加选择器：&lt;/p&gt;
+&lt;pre class="highlight sass"&gt;&lt;code&gt;&lt;span class="nc"&gt;.fl.pb10.highlight&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这就是规则分离的做法，将一些确定值的 CSS 规则单独定义选择器，这样做的目的是提高代码的重用，但是也有很多缺点：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;可供分离的属性有限，还有很多不确定值的属性，比如 width、color，而且现实布局的多样性使 mr10 这样的分离也很少用到，因此无法做到彻底分离；&lt;/li&gt;
+&lt;li&gt;分离之后导致 html 中 class 特别多，而且不具有语义化；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;既然还是需要添加语义化的 class 来定义一部分样式，那么分离一部分出去也没有意义，操作上缺点远远大于优点。吸取这种命名的优点，现在依然会使用它，但是只保留了少数语义化且常用的，例如：&lt;code&gt;.hidden&lt;/code&gt;、&lt;code&gt;.highlight&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h2&gt;不好的写法&lt;/h2&gt;
+
+&lt;p&gt;html：&lt;/p&gt;
+&lt;pre class="highlight slim"&gt;&lt;code&gt;&lt;span class="nc"&gt;.container&lt;/span&gt;
+  &lt;span class="nc"&gt;.actions&lt;/span&gt;
+    &lt;span class="nc"&gt;.card_wrapper&lt;/span&gt;
+      &lt;span class="nc"&gt;.card&lt;/span&gt;
+        &lt;span class="nc"&gt;.title.light&lt;/span&gt;
+        &lt;span class="nc"&gt;.content&lt;/span&gt;
+          &lt;span class="nc"&gt;.list&lt;/span&gt;
+            &lt;span class="nt"&gt;i&lt;/span&gt;&lt;span class="nc"&gt;.fa.fa-cog&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;CSS：&lt;/p&gt;
+&lt;pre class="highlight sass"&gt;&lt;code&gt;&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="nc"&gt;.events&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="nc"&gt;.aaa&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="nc"&gt;.bbb&lt;/span&gt;
+
+  &lt;span class="nc"&gt;.actions&lt;/span&gt;
+
+    &lt;span class="nc"&gt;.card_wrapper&lt;/span&gt;
+
+      &lt;span class="nc"&gt;.card&lt;/span&gt;
+
+        &lt;span class="nc"&gt;.title&lt;/span&gt;
+
+        &lt;span class="nc"&gt;.content&lt;/span&gt;
+
+          &lt;span class="nc"&gt;.list&lt;/span&gt;
+
+            &lt;span class="nc"&gt;.fa&lt;/span&gt;
+
+    &lt;span class="nc"&gt;.another&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以上是我们现在常见的写法，但是是需要绝对避免的，虽然 class 有一定语义了，但是并不能真正的重用。class 命名太通用了，我们不知道还有什么地方用到 &lt;code&gt;.title&lt;/code&gt; &lt;code&gt;.content&lt;/code&gt; 这样的命名，就不敢直接使用，一方面层层嵌套防止冲突，一方面想要重用时就在顶层添加 &lt;code&gt;body.aaa&lt;/code&gt; 这样的东西，导致很多样式用不到，写的乱七八糟。&lt;/p&gt;
+
+&lt;p&gt;这样一直写下去，旧的 CSS 我们永远不会删，只敷衍写出效果，如此往复循环，最终就会像上面的窗帘，让人忍无可忍。每个页面都有 &lt;code&gt;.content&lt;/code&gt; 甚至每个模块都有 &lt;code&gt;.content&lt;/code&gt;，&lt;code&gt;.content&lt;/code&gt; 就毫无意义（.content 不是抽象化的全局共用模块）。深层次的嵌套也会降低渲染效率。&lt;/p&gt;
+
+&lt;p&gt;另一种常见的：&lt;/p&gt;
+
+&lt;p&gt;html：&lt;/p&gt;
+&lt;pre class="highlight slim"&gt;&lt;code&gt;&lt;span class="nc"&gt;.main-news-box&lt;/span&gt;
+  &lt;span class="nt"&gt;h2&lt;/span&gt;&lt;span class="nc"&gt;.news-title&lt;/span&gt;
+  &lt;span class="nt"&gt;ul&lt;/span&gt;&lt;span class="nc"&gt;.main-news-list&lt;/span&gt;
+    &lt;span class="nt"&gt;li&lt;/span&gt;
+      &lt;span class="nt"&gt;a&lt;/span&gt;
+        &lt;span class="nt"&gt;span&lt;/span&gt;
+        &lt;span class="nt"&gt;span&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;CSS：&lt;/p&gt;
+&lt;pre class="highlight sass"&gt;&lt;code&gt;&lt;span class="nc"&gt;.main-news-box&lt;/span&gt;
+
+&lt;span class="nc"&gt;.main-news-box&lt;/span&gt; &lt;span class="nc"&gt;.news-title&lt;/span&gt;
+
+&lt;span class="nc"&gt;.main-news-list&lt;/span&gt;
+
+&lt;span class="nc"&gt;.main-news-list&lt;/span&gt; &lt;span class="nt"&gt;li&lt;/span&gt;
+
+&lt;span class="nc"&gt;.main-news-list&lt;/span&gt; &lt;span class="nt"&gt;a&lt;/span&gt;
+
+&lt;span class="nc"&gt;.main-news-list&lt;/span&gt; &lt;span class="nt"&gt;span&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这种写法的问题：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;.news-title&lt;/code&gt; 在别的地方有没有定义？能不能单独使用？其他地方定义的 &lt;code&gt;.news-title&lt;/code&gt; 会相互影响，父级更深层次的 &lt;code&gt;li&lt;/code&gt;、&lt;code&gt;a&lt;/code&gt; 也会覆盖现有的定义。&lt;/li&gt;
+&lt;li&gt;这种命名也有性能问题，CSS 从右向左渲染，例如 &lt;code&gt;.main-news-list a&lt;/code&gt;，先渲染页面所有的 a，再渲染 .main-news-list。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;BEM 命名&lt;/h2&gt;
+
+&lt;p&gt;BEM 是一种真正消除不确定性的命名方式，它使得结构样式更加清晰，我们有足够的信心做任何修改。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;block：模块，名字单词间用 &lt;code&gt;-&lt;/code&gt; 连接&lt;/li&gt;
+&lt;li&gt;element：元素，模块的子元素，以 &lt;code&gt;__&lt;/code&gt; 与 block 连接&lt;/li&gt;
+&lt;li&gt;modifier：修饰，模块的变体，定义特殊模块，以 &lt;code&gt;--&lt;/code&gt; 与 block 连接&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;例如：&lt;/p&gt;
+&lt;pre class="highlight slim"&gt;&lt;code&gt;&lt;span class="nc"&gt;.user-home-nav&lt;/span&gt;
+  &lt;span class="nc"&gt;.user-home-nav-item.user-home-nav-item--small&lt;/span&gt;
+    &lt;span class="nc"&gt;.user-home-nav-item__icon&lt;/span&gt;
+    &lt;span class="nc"&gt;.user-home-nav-item__text&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;CSS 中这样写：&lt;/p&gt;
+&lt;pre class="highlight sass"&gt;&lt;code&gt;&lt;span class="nc"&gt;.user-home-nav&lt;/span&gt;
+
+  &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nt"&gt;-item&lt;/span&gt;
+
+    &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nt"&gt;--small&lt;/span&gt;
+
+    &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nt"&gt;__icon&lt;/span&gt;
+
+    &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nt"&gt;__text&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样命名的好处：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;语义化，此处的语义化不是指 html 标签的语义化，对 SEO 可能也没有任何意义，但是这是一种人阅读的语义化。语义化的重要意义：宁可增加 html 大小，力图使维护变得轻松。&lt;/li&gt;
+&lt;li&gt;减少层层嵌套，有利于渲染效率。以上 sass 解析之后就是：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="highlight sass"&gt;&lt;code&gt;&lt;span class="nc"&gt;.user-home-nav&lt;/span&gt;
+
+&lt;span class="nc"&gt;.user-home-nav-item&lt;/span&gt;
+
+&lt;span class="nc"&gt;.user-home-nav-item__icon&lt;/span&gt;
+
+&lt;span class="nc"&gt;.user-home-nav-item__text&lt;/span&gt;
+
+&lt;span class="nc"&gt;.user-home-nav-item--small&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;缺点？&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;有人说又是 &lt;code&gt;__&lt;/code&gt; 又是 &lt;code&gt;--&lt;/code&gt;，什么乱七八糟的符号，我并不觉得有任何问题，这种命名让结构十分清晰，只看 html 或 CSS 就能看出它对应的模块或者模块的元素或者不同类型的模块，后期维护的增删也十分确定。&lt;/li&gt;
+&lt;li&gt;长长的 class 名增加了 html 的字节。从加载速度上来说，当然是名字越短越好。但是这个对应的就是语义化，取舍上我更倾向于语义化。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;BEM 的问题&lt;/h2&gt;
+
+&lt;p&gt;但是 BEM 最大的问题却是这个：如何给 modifier 下的 element 定义规则呢？&lt;/p&gt;
+&lt;pre class="highlight sass"&gt;&lt;code&gt;&lt;span class="nc"&gt;.user-home-nav&lt;/span&gt;
+
+  &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nt"&gt;-item&lt;/span&gt;
+
+    &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nt"&gt;--small&lt;/span&gt;
+
+      &lt;span class="nc"&gt;.user-home-nav__icon&lt;/span&gt;
+
+      &lt;span class="nc"&gt;.user-home-nav__text&lt;/span&gt;
+
+    &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nt"&gt;__icon&lt;/span&gt;
+
+    &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nt"&gt;__text&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样做太不优雅了，太违背 sass 的优雅性质了。或许是我没有找到更好的写法？&lt;/p&gt;
+
+&lt;p&gt;还能产生更多的写法，例如 &lt;code&gt;.user-home-nav-item--small__icon&lt;/code&gt; 、&lt;code&gt;.user-home-nav-item__icon--small&lt;/code&gt;，但是或多或少会存在问题，还是尽量保持简单。&lt;/p&gt;
+
+&lt;p&gt;其他问题：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如何确定一个 block？就像上面 &lt;code&gt;.user-home-nav-item&lt;/code&gt; 也可以写成 &lt;code&gt;.user-home-nav__item&lt;/code&gt;，如果 item 下有 title，那么就是 &lt;code&gt;.user-home-nav__title&lt;/code&gt;，以避免写成 &lt;code&gt;.user-home-nav__item__title&lt;/code&gt;，但是如果 nav 已有 title &lt;code&gt;.user-home-nav__title&lt;/code&gt; 了，或许我们要把 item 下的 title 写成 &lt;code&gt;.user-home-nav__item-title&lt;/code&gt;，总之为了使 BEM 也不至于复杂化，命名上也许还是要纠结一番。所以我最终写成了 &lt;code&gt;.user-home-nav-item&lt;/code&gt;，也许可以这么写下去，没有 B 和 M，trello 貌似就是这样，例如：&lt;code&gt;.attachment-thumbnail-details-options-item-text&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;BEM 导致 CSS 规则重用性降低，如果重用尽量考虑写成通用模块.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;BEM + 命名空间&lt;/h2&gt;
+
+&lt;p&gt;命名空间定义 block 间的关系，这种方式网站上还没有大范围使用，最常见的如 &lt;code&gt;.js－&lt;/code&gt; 表示定义 JavaScript 钩子，不用于定义样式。常见命名空间：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;o-：表示一个对象（Object），如 &lt;code&gt;.o-layout&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;c-：表示一个组件（Component），指一个具体的、特定实现的 UI。如 &lt;code&gt;.c-avatar&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;u-：表示一个通用工具（Utility），如 &lt;code&gt;.u-hidden&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;t-：表示一个主题（Theme），如 &lt;code&gt;.t-light&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;s-：表示一个上下文或作用域（Scope），如 &lt;code&gt;.s-cms-content&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;is-，has-：表示一种状态或条件样式。如 &lt;code&gt;.is-active&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;：表示一个 hack，如 `.&lt;/em&gt;important`。&lt;/li&gt;
+&lt;li&gt;js-：表示一个 JavaScript 钩子。如 &lt;code&gt;.js-modal&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;qa-：表示测试钩子。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;例如一个圆形头像组件：&lt;/p&gt;
+&lt;pre class="highlight sass"&gt;&lt;code&gt;&lt;span class="nc"&gt;.c-avatar-circle&lt;/span&gt;
+
+  &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nt"&gt;__img&lt;/span&gt;
+    &lt;span class="nl"&gt;display&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;block&lt;/span&gt;
+    &lt;span class="nl"&gt;vertical-align&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;top&lt;/span&gt;
+    &lt;span class="nl"&gt;max-width&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;100%&lt;/span&gt;
+    &lt;span class="nl"&gt;border-radius&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;100%&lt;/span&gt;
+
+  &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nt"&gt;__name&lt;/span&gt;
+    &lt;span class="nl"&gt;text-align&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;center&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以上，BEM 产生的重用性问题还是没有解决，如何解决？&lt;/p&gt;
+
+&lt;h2&gt;模块&lt;/h2&gt;
+
+&lt;p&gt;模块化类似于分离的概念，也是分离进化的结果，我们从分离中提取出 &lt;code&gt;.hidden {overflow: hidden}&lt;/code&gt; 这样的命名，进而扩展 &lt;code&gt;.avatar {}&lt;/code&gt; 这样的命名，不再只包含一条规则。看一下 airbnb 的圆形头像写法：&lt;/p&gt;
+
+&lt;p&gt;html：&lt;/p&gt;
+&lt;pre class="highlight slim"&gt;&lt;code&gt;&lt;span class="nt"&gt;a&lt;/span&gt;&lt;span class="nc"&gt;.pull-right.media-photo-badge.card-profile-picture.card-profile-picture-offset.is-superhost&lt;/span&gt;
+  &lt;span class="nc"&gt;.media-photo.media-round&lt;/span&gt;
+    &lt;span class="nt"&gt;img&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;CSS：&lt;/p&gt;
+&lt;pre class="highlight sass"&gt;&lt;code&gt;&lt;span class="nc"&gt;.card-profile-picture&lt;/span&gt;
+  &lt;span class="nl"&gt;width&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;60px&lt;/span&gt;
+  &lt;span class="nl"&gt;height&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;60px&lt;/span&gt;
+
+  &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nt"&gt;-offset&lt;/span&gt;
+    &lt;span class="nl"&gt;position&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;relative&lt;/span&gt;
+    &lt;span class="nl"&gt;top&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;-40px&lt;/span&gt;
+    &lt;span class="nl"&gt;margin-bottom&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;-40px&lt;/span&gt;
+
+  &lt;span class="k"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nc"&gt;.is-superhost&lt;/span&gt;
+    &lt;span class="nl"&gt;position&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;relative&lt;/span&gt;
+
+  &lt;span class="nt"&gt;img&lt;/span&gt;
+    &lt;span class="nl"&gt;width&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;56px&lt;/span&gt;
+    &lt;span class="nl"&gt;height&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;56px&lt;/span&gt;
+
+&lt;span class="nc"&gt;.media-photo&lt;/span&gt;
+  &lt;span class="nl"&gt;backface-visibility&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;hidden&lt;/span&gt;
+  &lt;span class="nl"&gt;position&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;relative&lt;/span&gt;
+  &lt;span class="nl"&gt;display&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;inline-block&lt;/span&gt;
+  &lt;span class="nl"&gt;vertical-align&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;bottom&lt;/span&gt;
+  &lt;span class="nl"&gt;overflow&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;hidden&lt;/span&gt;
+  &lt;span class="nl"&gt;background-color&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mh"&gt;#bbb&lt;/span&gt;
+
+&lt;span class="nc"&gt;.media-round&lt;/span&gt;
+  &lt;span class="nl"&gt;border-radius&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;50%&lt;/span&gt;
+  &lt;span class="nl"&gt;border&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;2px&lt;/span&gt; &lt;span class="nb"&gt;solid&lt;/span&gt; &lt;span class="mh"&gt;#fff&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个是比较复杂，相对特例的。&lt;code&gt;.media-photo&lt;/code&gt; 和 &lt;code&gt;.media-round&lt;/code&gt; 是典型的抽象出来的模块，一个定义照片的基本属性，一个定义圆形属性。&lt;code&gt;.card-profile-picture&lt;/code&gt; 是特定的命名定义特定具体的值。&lt;/p&gt;
+
+&lt;h2&gt;总结&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;基本：以英文单词命名，避免无意义的缩写，以 &lt;code&gt;-&lt;/code&gt; 连接。&lt;/li&gt;
+&lt;li&gt;我在一开始使用 BEM 的时候，也有很多疑惑，而且现在也不确定它完备的用法。&lt;/li&gt;
+&lt;li&gt;BEM 不是万能的，但是无论如何 BEM 是应该使用的方法。&lt;/li&gt;
+&lt;li&gt;命名空间给 CSS 命名提供更多信息。&lt;/li&gt;
+&lt;li&gt;定义模块提高代码的重用。&lt;/li&gt;
+&lt;li&gt;CSS 命名要求：语义化易于理解，可重用性高，后期维护容易，加载渲染快。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;参考文章&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://www.zhangxinxu.com/wordpress/2010/09/%E7%B2%BE%E7%AE%80%E9%AB%98%E6%95%88%E7%9A%84css%E5%91%BD%E5%90%8D%E5%87%86%E5%88%99%E6%96%B9%E6%B3%95/"&gt;精简高效的CSS命名准则/方法&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/"&gt;MindBEMding – getting your head ’round BEM syntax&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://csswizardry.com/2015/03/more-transparent-ui-code-with-namespaces/"&gt;More Transparent UI Code with Namespaces&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://css-tricks.com/bem-101/"&gt;BEM 101&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://cssguidelin.es/"&gt;CSS Guidelines&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Express - 简单介绍 Express</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-09.html"/>
+    <id>https://jiandanxinli.github.io/2016-08-09.html</id>
+    <published>2016-08-09T08:00:00+08:00</published>
+    <updated>2016-08-10T10:40:30+08:00</updated>
+    <author>
+      <name>lei.wang</name>
+    </author>
+    <content type="html">&lt;p&gt;express 是 &lt;strong&gt;Node.js&lt;/strong&gt; 上最流行的 Web 开发框架，使用它我们可以快速的开发一个 Web 应用。&lt;/p&gt;
+
+&lt;p&gt;安装 express 命令行工具，使用它我们可以初始化一个 express 项目。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://cloud.githubusercontent.com/assets/6661673/17502822/ba3929ca-5e1d-11e6-9aae-ed48653b03cc.jpg" alt="express" /&gt;&lt;/p&gt;
+
+&lt;h2&gt;新建一个项目&lt;/h2&gt;
+
+&lt;p&gt;执行 &lt;code&gt;express -e blog&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://cloud.githubusercontent.com/assets/6661673/17502876/137642d4-5e1e-11e6-8df1-08b609f7d670.jpg" alt="new-express" /&gt;&lt;/p&gt;
+
+&lt;p&gt;进入项目目录后执行 &lt;code&gt;npm install&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;安装完成后 执行 &lt;code&gt;DEBUG=blog:* npm start&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://cloud.githubusercontent.com/assets/6661673/17507925/da030858-5e44-11e6-847a-984bf7a1fbf4.png" alt="image" /&gt;&lt;/p&gt;
+
+&lt;p&gt;在浏览器里访问 &lt;code&gt;localhost:3000&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;你会发现一个简单 web 应用已经搭建起来了&lt;/p&gt;
+
+&lt;h2&gt;目录结构&lt;/h2&gt;
+
+&lt;p&gt;你可以在第一步执行 &lt;code&gt;express -e blog&lt;/code&gt; 后看到代码目录结构&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;app.js：启动文件，或者说入口文件&lt;/li&gt;
+&lt;li&gt;package.json：存储着工程的信息及模块依赖，当在 dependencies 中添加依赖的模块时，运行npm install，npm 会检查当前目录下的 package.json，并自动安装所有指定的模块&lt;/li&gt;
+&lt;li&gt;node_modules：存放 package.json 中安装的模块，当你在 package.json 添加依赖的模块并安装后，存放在这个文件夹下&lt;/li&gt;
+&lt;li&gt;public：存放 image、css、js 等文件&lt;/li&gt;
+&lt;li&gt;routes：存放路由文件&lt;/li&gt;
+&lt;li&gt;views：存放视图文件或者说模版文件&lt;/li&gt;
+&lt;li&gt;bin：存放可执行文件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;app.js 中的代码&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src="https://cloud.githubusercontent.com/assets/6661673/17502825/bf2e99ce-5e1d-11e6-81fb-8a92b605e3a6.jpg" alt="app" /&gt;&lt;/p&gt;
+
+&lt;p&gt;在app.js中我们通过require()加载了express、path 等模块,以及 routes 文件夹下的index. js和 users.js 路由文件。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;var app = express()：生成一个express实例 app。&lt;/li&gt;
+&lt;li&gt;app.set(&amp;#39;views&amp;#39;, path.join(&lt;strong&gt;dirname, &amp;#39;views’))：设置 views 文件夹为存放view文件的目录, 即存放模板文件的地方,&lt;/strong&gt;dirname 为全局变量,存储当前正在执行的脚本所在的目录。&lt;/li&gt;
+&lt;li&gt;app.set(&amp;#39;view engine&amp;#39;, &amp;#39;ejs’)：设置视图模板引擎为 ejs。&lt;/li&gt;
+&lt;li&gt;app.use(bodyParser.json())：加载解析json的中间件。&lt;/li&gt;
+&lt;li&gt;app.use(bodyParser.urlencoded({ extended: false }))：加载解析urlencoded请求体的中间件。&lt;/li&gt;
+&lt;li&gt;app.use(cookieParser())：加载解析cookie的中间件。&lt;/li&gt;
+&lt;li&gt;app.use(express.static(path.join(__dirname, &amp;#39;public&amp;#39;)))：设置public文件夹为存放静态文件的目录。&lt;/li&gt;
+&lt;li&gt;app.use(&amp;#39;/&amp;#39;, routes);和app.use(&amp;#39;/users&amp;#39;, users)：路由控制器。&lt;/li&gt;
+&lt;li&gt;捕获404错误，并转发到错误处理器。
+*&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;  &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;err&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'Not Found'&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;404&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;开发环境下的错误处理器。
+*&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'env'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;===&lt;/span&gt; &lt;span class="s1"&gt;'development'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+   &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+       &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="mi"&gt;500&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+       &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'error'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+           &lt;span class="na"&gt;message&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;message&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+           &lt;span class="na"&gt;error&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;err&lt;/span&gt;
+       &lt;span class="p"&gt;});&lt;/span&gt;
+   &lt;span class="p"&gt;});&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;生产环境下的错误处理器。
+*&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;  &lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="mi"&gt;500&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'error'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="na"&gt;message&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;err&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;message&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="na"&gt;error&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+    &lt;span class="p"&gt;});&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;module.exports = app ：导出app实例供其他模块调用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;路由规则&lt;/h2&gt;
+
+&lt;p&gt;express 封装了多种 http 请求方式，我们主要只使用 &lt;code&gt;get&lt;/code&gt; 和 &lt;code&gt;post&lt;/code&gt; 两种，即 &lt;code&gt;app.get()&lt;/code&gt; 和 &lt;code&gt;app.post()&lt;/code&gt; 。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;app.get()&lt;/code&gt; 和 &lt;code&gt;app.post()&lt;/code&gt; 的第一个参数都为请求的路径，第二个参数为处理请求的回调函数，回调函数有两个参数分别是 &lt;code&gt;req&lt;/code&gt; 和 &lt;code&gt;res&lt;/code&gt;，代表请求信息和响应信息。路径请求及对应的获取路径有以下几种形式：
+  * &lt;code&gt;req.query&lt;/code&gt;： 处理 &lt;code&gt;get&lt;/code&gt; 请求，获取 &lt;code&gt;get&lt;/code&gt; 请求参数
+  * &lt;code&gt;req.params&lt;/code&gt;： 处理 &lt;code&gt;/:xxx&lt;/code&gt; 形式的 &lt;code&gt;get&lt;/code&gt; 或 &lt;code&gt;post&lt;/code&gt; 请求，获取请求参数
+  * &lt;code&gt;req.body&lt;/code&gt;： 处理 &lt;code&gt;post&lt;/code&gt; 请求，获取 &lt;code&gt;post&lt;/code&gt; 请求体
+  * &lt;code&gt;req.param()&lt;/code&gt;： 处理 &lt;code&gt;get&lt;/code&gt; 和 &lt;code&gt;post&lt;/code&gt; 请求，但查找优先级由高到低为 &lt;code&gt;req.params&lt;/code&gt;→&lt;code&gt;req.body&lt;/code&gt;→&lt;code&gt;req.query&lt;/code&gt;&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;  &lt;span class="cm"&gt;/* GET home page. */&lt;/span&gt;
+  &lt;span class="nx"&gt;router&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;// ?name=111&amp;amp;phone=111&lt;/span&gt;
+    &lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;query&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;// =&amp;gt; { name: '111', phone: '111' }&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// ?name=111&amp;amp;user[phone]=111&lt;/span&gt;
+    &lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;query&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;// =&amp;gt; { name: '111', user: { phone: '111' } }&lt;/span&gt;
+
+    &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'index'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Express'&lt;/span&gt; &lt;span class="p"&gt;});&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+
+  &lt;span class="nx"&gt;router&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/post'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;// post name=1111&amp;amp;phone=1111&lt;/span&gt;
+    &lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;body&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;// =&amp;gt; { name: '1111', phone: '1111' }&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// post user[name]=1111&amp;amp;user[phone]=1111&lt;/span&gt;
+    &lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;req&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;body&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;// =&amp;gt; { user: { name : '1111', phone: '1111' } }&lt;/span&gt;
+
+    &lt;span class="nx"&gt;res&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'index'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Express'&lt;/span&gt; &lt;span class="p"&gt;});&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;模版引擎&lt;/h2&gt;
+
+&lt;h3&gt;什么是模板引擎&lt;/h3&gt;
+
+&lt;p&gt;模板引擎（Template Engine）是一个将页面模板和要显示的数据结合起来生成 HTML 页面的工具。
+如果说上面讲到的 express 中的路由控制方法相当于 MVC 中的控制器的话，那模板引擎就相当于 MVC 中的视图。&lt;/p&gt;
+
+&lt;p&gt;什么是 ejs ?&lt;/p&gt;
+
+&lt;p&gt;ejs 是模板引擎的一种，因为它使用起来十分简单，而且与 express 集成良好。&lt;/p&gt;
+
+&lt;h3&gt;使用模板引擎&lt;/h3&gt;
+
+&lt;p&gt;通过以下两行代码设置了模板文件的存储位置和使用的模板引擎：&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'views'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;__dirname&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;'/views'&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="nx"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'view engine'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'ejs'&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们通过 &lt;code&gt;express -e blog&lt;/code&gt; 只是初始化了一个使用 &lt;code&gt;ejs&lt;/code&gt; 模板引擎的工程而已，比如 &lt;code&gt;node_modules&lt;/code&gt; 下添加了 &lt;code&gt;ejs&lt;/code&gt; 模块，&lt;code&gt;views&lt;/code&gt; 文件夹下有 &lt;code&gt;index.ejs&lt;/code&gt; 。并不是说强制该工程只能使用 &lt;code&gt;ejs&lt;/code&gt; 不能使用其他的模板引擎比如 &lt;code&gt;jade&lt;/code&gt;，真正指定使用哪个模板引擎的是 &lt;code&gt;app.set(&amp;#39;view engine&amp;#39;, &amp;#39;ejs&amp;#39;);&lt;/code&gt; 。&lt;/p&gt;
+
+&lt;p&gt;在 &lt;code&gt;routes/index.js&lt;/code&gt; 中通过调用 &lt;code&gt;res.render()&lt;/code&gt; 渲染模版，并将其产生的页面直接返回给客户端。它接受两个参数，第一个是模板的名称，即 &lt;code&gt;views&lt;/code&gt; 目录下的模板文件名，扩展名 &lt;code&gt;.ejs&lt;/code&gt; 可选。第二个参数是传递给模板的数据对象，用于模板翻译。&lt;/p&gt;
+
+&lt;p&gt;ejs 的标签系统非常简单，它只有以下三种标签：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&amp;lt;% code %&amp;gt;：JavaScript 代码。&lt;/li&gt;
+&lt;li&gt;&amp;lt;%= code %&amp;gt;：显示替换过 HTML 特殊字符的内容。&lt;/li&gt;
+&lt;li&gt;&amp;lt;%- code %&amp;gt;：显示原始 HTML 内容。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;&amp;lt;%= code %&amp;gt;&lt;/code&gt; 和 &lt;code&gt;&amp;lt;%- code %&amp;gt;&lt;/code&gt; 的区别，当变量 code 为普通字符串时，两者没有区别。当 &lt;code&gt;code&lt;/code&gt; 比如为 &lt;code&gt;&amp;lt;h1&amp;gt;hello&amp;lt;/h1&amp;gt;&lt;/code&gt; 这种字符串时，&lt;code&gt;&amp;lt;%= code %&amp;gt;&lt;/code&gt; 会原样输出 &lt;code&gt;&amp;lt;h1&amp;gt;hello&amp;lt;/h1&amp;gt;&lt;/code&gt;，而 &lt;code&gt;&amp;lt;%- code %&amp;gt;&lt;/code&gt; 则会显示 H1 大的 hello 字符串。&lt;/p&gt;
+
+&lt;p&gt;我们可以在 &lt;code&gt;&amp;lt;% %&amp;gt;&lt;/code&gt; 内使用 JavaScript 代码&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;ul&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+ &lt;span class="o"&gt;&amp;lt;%&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;supplies&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;length&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&amp;gt;&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;li&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;lt;%=&lt;/span&gt; &lt;span class="nx"&gt;supplies&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;%&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class="sr"&gt;/li&lt;/span&gt;&lt;span class="err"&gt;&amp;gt;
+&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;%&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;%&amp;gt;&lt;/span&gt;
+ &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="sr"&gt;/ul&lt;/span&gt;&lt;span class="err"&gt;&amp;gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</content>
+  </entry>
+  <entry>
+    <title>阿里云 Ubuntu 支持 IPv6 的完整步骤</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-06.html"/>
+    <id>https://jiandanxinli.github.io/2016-08-06.html</id>
+    <published>2016-08-06T08:00:00+08:00</published>
+    <updated>2016-08-16T07:21:15+08:00</updated>
+    <author>
+      <name>Ben</name>
+    </author>
+    <content type="html">&lt;p&gt;前几天提交新版 iOS App 被拒，原因是在 IPv6 only 的环境下无法使用。但阿里云的 ECS 并不支持 IPv6，只提供 IPv4 的 IP。好在 Hurricane Electric （下文简称 HE）提供免费的 IPv6 通道，基本够用了。&lt;/p&gt;
+
+&lt;p&gt;先说下 ECS 的基本环境：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;操作系统：Ubuntu&lt;/li&gt;
+&lt;li&gt;前端服务器：Nginx&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;启用 IPv6 的主要有四步：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;注册并创建 IPv6 通道&lt;/li&gt;
+&lt;li&gt;配置 ECS 使其支持 IPv6&lt;/li&gt;
+&lt;li&gt;配置 Nginx 使其监听 IPv6 端口&lt;/li&gt;
+&lt;li&gt;配置 DNS 使其支持 IPv6 解析&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第一步：注册并创建 IPv6 通道&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;注册 &lt;a href="https://www.tunnelbroker.net/"&gt;https://www.tunnelbroker.net/&lt;/a&gt; （需要邮箱验证）&lt;/li&gt;
+&lt;li&gt;点击 &lt;a href="https://www.tunnelbroker.net/new_tunnel.php"&gt;Create Regular Tunnel&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;在&lt;code&gt;IPv4 Endpoint (Your side)&lt;/code&gt;处填上 ECS 的 IPv4 地址&lt;/li&gt;
+&lt;li&gt;在&lt;code&gt;Available Tunnel Servers&lt;/code&gt;中选择&lt;code&gt;Hong Kong, HK&lt;/code&gt;（如果你面向海外用户，可以选择更接近目标用户的地区）&lt;/li&gt;
+&lt;li&gt;点击&lt;code&gt;Create Tunnel&lt;/code&gt;后，通道就创建完成了&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第二步：配置 ECS 使其支持 IPv6&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;编辑&lt;code&gt;/etc/sysctl.conf&lt;/code&gt;，将以下三项的配置改成&lt;code&gt;0&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class="highlight conf"&gt;&lt;code&gt;  &lt;span class="n"&gt;net&lt;/span&gt;.&lt;span class="n"&gt;ipv6&lt;/span&gt;.&lt;span class="n"&gt;conf&lt;/span&gt;.&lt;span class="n"&gt;all&lt;/span&gt;.&lt;span class="n"&gt;disable_ipv6&lt;/span&gt; = &lt;span class="m"&gt;0&lt;/span&gt;
+  &lt;span class="n"&gt;net&lt;/span&gt;.&lt;span class="n"&gt;ipv6&lt;/span&gt;.&lt;span class="n"&gt;conf&lt;/span&gt;.&lt;span class="n"&gt;default&lt;/span&gt;.&lt;span class="n"&gt;disable_ipv6&lt;/span&gt; = &lt;span class="m"&gt;0&lt;/span&gt;
+  &lt;span class="n"&gt;net&lt;/span&gt;.&lt;span class="n"&gt;ipv6&lt;/span&gt;.&lt;span class="n"&gt;conf&lt;/span&gt;.&lt;span class="n"&gt;lo&lt;/span&gt;.&lt;span class="n"&gt;disable_ipv6&lt;/span&gt; = &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;在&lt;code&gt;/etc/network/interfaces&lt;/code&gt;底部加上以下内容（注：下面大写的&lt;IPV6&gt;处，需要替换成你在 HE 得到的&lt;code&gt;Server IPv6 Address&lt;/code&gt;，但不包括最后的&lt;code&gt;::1/64&lt;/code&gt;，如：&lt;code&gt;2001:470:100:100&lt;/code&gt;）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class="highlight conf"&gt;&lt;code&gt;  &lt;span class="n"&gt;auto&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt;
+  &lt;span class="n"&gt;iface&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt; &lt;span class="n"&gt;inet6&lt;/span&gt; &lt;span class="n"&gt;v4tunnel&lt;/span&gt;
+  &lt;span class="n"&gt;address&lt;/span&gt; &amp;lt;&lt;span class="n"&gt;IPV6&lt;/span&gt;&amp;gt;::&lt;span class="m"&gt;2&lt;/span&gt;
+  &lt;span class="n"&gt;netmask&lt;/span&gt; &lt;span class="m"&gt;64&lt;/span&gt;
+  &lt;span class="n"&gt;remote&lt;/span&gt; &amp;lt;&lt;span class="n"&gt;HE&lt;/span&gt; 的 &lt;span class="n"&gt;Server&lt;/span&gt; &lt;span class="n"&gt;IPv4&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt;&amp;gt;
+  &lt;span class="n"&gt;local&lt;/span&gt; &amp;lt;阿里云的 &lt;span class="n"&gt;IPv4&lt;/span&gt; 地址&amp;gt;
+  &lt;span class="n"&gt;endpoint&lt;/span&gt; &lt;span class="n"&gt;any&lt;/span&gt;
+  &lt;span class="n"&gt;ttl&lt;/span&gt; &lt;span class="m"&gt;255&lt;/span&gt;
+  &lt;span class="n"&gt;gateway&lt;/span&gt; &amp;lt;&lt;span class="n"&gt;IPv6&lt;/span&gt;&amp;gt;::&lt;span class="m"&gt;1&lt;/span&gt;
+  &lt;span class="n"&gt;up&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt; -&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="n"&gt;route&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="m"&gt;2000&lt;/span&gt;::/&lt;span class="m"&gt;3&lt;/span&gt; &lt;span class="n"&gt;via&lt;/span&gt; ::&amp;lt;&lt;span class="n"&gt;HE&lt;/span&gt; 的 &lt;span class="n"&gt;Server&lt;/span&gt; &lt;span class="n"&gt;IPv4&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt;&amp;gt; &lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt;
+  &lt;span class="n"&gt;up&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt; -&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="n"&gt;addr&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &amp;lt;&lt;span class="n"&gt;IPv6&lt;/span&gt;&amp;gt;::&lt;span class="m"&gt;1&lt;/span&gt;:&lt;span class="m"&gt;1&lt;/span&gt;/&lt;span class="m"&gt;128&lt;/span&gt; &lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt;
+  &lt;span class="n"&gt;up&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt; -&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="n"&gt;addr&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &amp;lt;&lt;span class="n"&gt;IPv6&lt;/span&gt;&amp;gt;::&lt;span class="m"&gt;2&lt;/span&gt;:&lt;span class="m"&gt;1&lt;/span&gt;/&lt;span class="m"&gt;128&lt;/span&gt; &lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt;
+  &lt;span class="n"&gt;down&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt; -&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="n"&gt;route&lt;/span&gt; &lt;span class="n"&gt;flush&lt;/span&gt; &lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;he&lt;/span&gt;-&lt;span class="n"&gt;ipv6&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;重启服务器&lt;/li&gt;
+&lt;li&gt;执行&lt;code&gt;ifup he-ipv6&lt;/code&gt;确认 IPv6 已启用&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第三步：配置 Nginx 使其监听 IPv6 端口&lt;/p&gt;
+&lt;pre class="highlight conf"&gt;&lt;code&gt;&lt;span class="n"&gt;server&lt;/span&gt; {
+  &lt;span class="n"&gt;listen&lt;/span&gt; &lt;span class="m"&gt;80&lt;/span&gt;; // 监听 &lt;span class="n"&gt;IPv4&lt;/span&gt; 的 &lt;span class="m"&gt;80&lt;/span&gt; 端口
+  &lt;span class="n"&gt;listen&lt;/span&gt; [::]:&lt;span class="m"&gt;80&lt;/span&gt;; // 监听 &lt;span class="n"&gt;IPv6&lt;/span&gt; 的 &lt;span class="m"&gt;80&lt;/span&gt; 端口
+}
+
+&lt;span class="n"&gt;server&lt;/span&gt; {
+  &lt;span class="n"&gt;listen&lt;/span&gt; &lt;span class="m"&gt;443&lt;/span&gt; &lt;span class="n"&gt;ssl&lt;/span&gt; &lt;span class="n"&gt;http2&lt;/span&gt;; // 监听 &lt;span class="n"&gt;IPv4&lt;/span&gt; 的 &lt;span class="m"&gt;443&lt;/span&gt; 端口
+  &lt;span class="n"&gt;listen&lt;/span&gt; [::]:&lt;span class="m"&gt;443&lt;/span&gt; &lt;span class="n"&gt;ssl&lt;/span&gt; &lt;span class="n"&gt;http2&lt;/span&gt;; // 监听 &lt;span class="n"&gt;IPv6&lt;/span&gt; 的 &lt;span class="m"&gt;443&lt;/span&gt; 端口
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第四步：配置 DNS 使其支持 IPv6 解析&lt;/p&gt;
+
+&lt;p&gt;这步最简单，只需给相应的域名加上&lt;code&gt;AAAA&lt;/code&gt;解析，值填 HE 里的&lt;code&gt;Client IPv6 Address&lt;/code&gt;，去掉最后的&lt;code&gt;/64&lt;/code&gt;即可，如&lt;code&gt;2001:470:100:100::2&lt;/code&gt;&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Rails ActiveRecord 不同的赋值方法</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2016-07-31.html"/>
+    <id>https://jiandanxinli.github.io/2016-07-31.html</id>
+    <published>2016-07-31T08:00:00+08:00</published>
+    <updated>2016-08-04T13:13:28+08:00</updated>
+    <author>
+      <name>fengd</name>
+    </author>
+    <content type="html">&lt;p&gt;Rails 提供了多种设置Model属性的方法，方法之间又各有异同，有的会出发回调，有的不会，有的会对所属对象其它属性也产生影响。 因此理解方法之间的区别就显得很重要。&lt;/p&gt;
+
+&lt;h3&gt;Cheat Sheet&lt;/h3&gt;
+
+&lt;p&gt;最方便的先来，cheetsheet表，方便查询：&lt;/p&gt;
+
+&lt;table class="table-compact table table-striped"&gt;
+                &lt;thead&gt;
+                  &lt;tr&gt;
+                    &lt;th&gt;Method&lt;/th&gt;
+                    &lt;th&gt;Uses Default Accessor&lt;/th&gt;
+                    &lt;th&gt;Saved to Database&lt;/th&gt;
+                    &lt;th&gt;Validations&lt;/th&gt;
+                    &lt;th&gt;Callbacks&lt;/th&gt;
+                    &lt;th&gt;Touches &lt;code&gt;updated_at&lt;/code&gt;&lt;/th&gt;
+                    &lt;th&gt;Readonly check&lt;/th&gt;
+                  &lt;/tr&gt;
+                &lt;/thead&gt;
+                &lt;tbody&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/AttributeMethods/Write/attribute%3D" style="text-decoration: none"&gt;attribute=&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/AttributeMethods/Write/write_attribute" style="text-decoration: none"&gt;write_attribute&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/Persistence/update_attribute" style="text-decoration: none"&gt;update_attribute&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/AttributeAssignment/attributes%3D" style="text-decoration: none"&gt;attributes=&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                    &lt;td&gt;&lt;span style="color: #c0c0c0;"&gt;n/a&lt;/span&gt;&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/Persistence/update" style="text-decoration: none"&gt;update&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/Persistence/update_column" style="text-decoration: none"&gt;update_column&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/Persistence/update_columns" style="text-decoration: none"&gt;update_columns&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/ActiveRecord/Relation/update" style="text-decoration: none"&gt;User::update&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                  &lt;/tr&gt;
+                  &lt;tr&gt;
+                    &lt;td&gt;&lt;a href="http://apidock.com/rails/v4.0.2/ActiveRecord/Relation/update_all" style="text-decoration: none"&gt;User::update_all&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;Yes&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                    &lt;td&gt;No&lt;/td&gt;
+                  &lt;/tr&gt;
+                &lt;/tbody&gt;
+              &lt;/table&gt;
+
+&lt;h3&gt;user.name =&lt;/h3&gt;
+
+&lt;p&gt;这是最常用的赋值方法，这个也是Rails默认生成的赋值方法。赋值后，对应的属性会被标记为dirty, 脏数据，但是并没有更新到数据里去。&lt;/p&gt;
+
+&lt;p&gt;调用&lt;code&gt;save&lt;/code&gt;会把数据更新到数据库。调用&lt;code&gt;reload&lt;/code&gt;会丢弃脏数据。&lt;/p&gt;
+
+&lt;h3&gt;user.write_attribute(:name, &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;这是上面那个赋值方法会调用的方法， 这个方法也不会更新数据库。&lt;/p&gt;
+
+&lt;h3&gt;user.update_attribute(:name, &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;这个方法会直接更新数据到数据库，而且会忽略到所有的验证，直接更新数据库。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;所有更新会直接到数据库&lt;/li&gt;
+&lt;li&gt;所有的验证会被跳过&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;user.attributes = { name: &amp;#39;feng&amp;#39; }&lt;/h3&gt;
+
+&lt;p&gt;这个赋值方法会根据右边传入的哈希，对相应的属性进行赋值。其它的属性不会有变动。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;user.assign_attributes { name: &amp;#39;feng&amp;#39; }&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3&gt;user.update(name: &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;在Rails 3中，这个方法叫&lt;code&gt;update_attributes&lt;/code&gt;， 这个方法会更新对象，进行验证，然后更新到数据库.这方法会把所属对象中别的脏数据也更新到数据库。&lt;/p&gt;
+
+&lt;h3&gt;user.update_columns(name: &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;这个方法会生成 SQL Update，直接更新到数据库，跳过所有的数据验证和回调。&lt;/p&gt;
+
+&lt;h3&gt;user.update_column(:name, &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;跟上面的方法类似&lt;/p&gt;
+
+&lt;h3&gt;User.update(1, name: &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;这是一个类方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这个方法的第一个参数是 &lt;code&gt;id&lt;/code&gt;, 后面是更新的属性hash。 第一个参数，可以是一个数组， 一组 &lt;code&gt;id&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h3&gt;User.update_all(name: &amp;#39;feng&amp;#39;)&lt;/h3&gt;
+
+&lt;p&gt;批量更新，&lt;strong&gt;be careful！&lt;/strong&gt;&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>选择 jsonapi-resources 的理由</title>
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-07-30.html"/>
     <id>https://jiandanxinli.github.io/2016-07-30.html</id>
     <published>2016-07-30T08:00:00+08:00</published>
-    <updated>2016-07-30T16:20:32+08:00</updated>
+    <updated>2016-08-04T13:09:46+08:00</updated>
     <author>
       <name>Ben</name>
     </author>
@@ -24,7 +733,7 @@
 
 &lt;ol&gt;
 &lt;li&gt;它的 resource 语法与 active_model_serializers 相近，而我们之前使用的是 active_model_serializers&lt;/li&gt;
-&lt;li&gt;active_model_serializers 不支持 immutable 特性，必须基于某个 model，而我们有些 resource 并非基于 model&lt;/li&gt;
+&lt;li&gt;active_model_serializers 不支持 abstract 特性，必须基于某个 model，而我们有些 resource 并非基于 model&lt;/li&gt;
 &lt;li&gt;jsonapi-resources 内置了 fields 选项，可以方便的在请求端指定返回的字段，而不必返回全部字段&lt;/li&gt;
 &lt;li&gt;返回的数据结构符合 &lt;a href="http://jsonapi.org/"&gt;jsonapi 规范&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;JSONAPI::ResourceController 提供了 RESTful 的封装，可以省去不少代码&lt;/li&gt;
@@ -396,6 +1105,614 @@ app/views/pages/home.html+mobile.erb # 文件名格式为 响应格式+设备名
 &lt;img src="http://jdxl-img.b0.upaiyun.com/id_cards/6a9656184f9a467eac8d7c7f5ab0d5e2.jpg" alt="帅哥美女" /&gt;&lt;/p&gt;
 
 &lt;p&gt;了解更多我们公司的详情可以移步这里： &lt;a href="https://www.jiandanxinli.com/pages/37"&gt;https://www.jiandanxinli.com/pages/37&lt;/a&gt;&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Rails遗留程序里最常犯的错误(译)</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2014-07-23.html"/>
+    <id>https://jiandanxinli.github.io/2014-07-23.html</id>
+    <published>2014-07-23T08:00:00+08:00</published>
+    <updated>2016-08-08T10:12:51+08:00</updated>
+    <author>
+      <name>韩冰</name>
+    </author>
+    <content type="html">&lt;p&gt;原文出自&lt;a href="http://edelpero.svbtle.com/most-common-mistakes-on-legacy-rails-apps"&gt;most-common-mistakes-on-legacy-rails-apps&lt;/a&gt;, 感谢作者&lt;a href="http://edelpero.svbtle.com/"&gt;EZEQUIEL DELPERO&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;近来我一直在对几个遗留项目作维护。&lt;/p&gt;
+
+&lt;p&gt;众所周知，处理遗留项目多数时间都感觉糟透了，因为那些代码通常都丑陋不堪而且晦涩难懂。&lt;/p&gt;
+
+&lt;p&gt;我决定做一个列表，记录下那些公认的不良实践，或者是我认为不太好的实践，以及如何改良代码来避免这些不良实践。&lt;/p&gt;
+
+&lt;h3&gt;问题一览&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在模型层以外使用查询方法&lt;/li&gt;
+&lt;li&gt;在视图层使用业务逻辑&lt;/li&gt;
+&lt;li&gt;使用无意义的方法名和变量名&lt;/li&gt;
+&lt;li&gt;条件判断时使用unless或者否定的表达式&lt;/li&gt;
+&lt;li&gt;没有遵循“命令，不要去询问”原则&lt;/li&gt;
+&lt;li&gt;使用复杂的条件&lt;/li&gt;
+&lt;li&gt;在模型的实例方法里，本来不需要的时候使用了“self.”&lt;/li&gt;
+&lt;li&gt;使用条件表达式并且返回了条件&lt;/li&gt;
+&lt;li&gt;在视图层使用行内样式&lt;/li&gt;
+&lt;li&gt;在视图层使用JavaScript&lt;/li&gt;
+&lt;li&gt;调用方法时把另一个方法的调用作为参数&lt;/li&gt;
+&lt;li&gt;没有使用类来隔离Rake Tasks&lt;/li&gt;
+&lt;li&gt;没有遵循Sandi Metz的规则&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;在模型层以外使用查询方法&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/controllers/users_controller.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;UsersController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ApplicationController&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;index&lt;/span&gt;
+    &lt;span class="vi"&gt;@users&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;active: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;order&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:last_login_at&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这段代码不可重用而且难于测试。如果你在别的地方也想查找全部用户并进行排序，就会出现冗余代码。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;比起在控制器里使用查询方法，我们的做法是在模型层中使用scope把它们独立出来，就如下例所示。这样做既可以使代码能够复用，又便于代码阅读和测试。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="n"&gt;scope&lt;/span&gt; &lt;span class="ss"&gt;:active&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;active: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="n"&gt;scope&lt;/span&gt; &lt;span class="ss"&gt;:by_last_login_at&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;order&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:lasst_login_at&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/controllers/users_controller.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;UsersController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ApplicationController&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;index&lt;/span&gt;
+    &lt;span class="vi"&gt;@users&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;active&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;by_last_login_at&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;每当你想用where、order、joins、includes、group、having或者其他查询方法时，记得要把它们放在模型层里。&lt;/p&gt;
+
+&lt;h3&gt;在视图层使用业务逻辑&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;lt;!--&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;views&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;posts&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;html&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;erb&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nf"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;h2&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="sx"&gt;%= "#{@comments.count} Comment#{@comments.count =&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="s1"&gt;''&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'s'&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;" %&amp;gt;
+&amp;lt;/h2&amp;gt;
+...
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;初看之下这小段代码似乎没什么问题，但是它会让HTML变得有点难以阅读，而且可以肯定的说一旦你在视图层添加了逻辑代码，那么日后你定会添加更多的逻辑到视图。这段代码还有一个问题，里面的逻辑无法复用，而且不能单独测试。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;使用Rails的helper方法把业务逻辑隔离出来&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/helpers/comments_helper.rb&lt;/span&gt;
+&lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;CommentsHelper&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;comments_count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;comments&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;comments&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;count&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; Comment&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;comments&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;count&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="s1"&gt;''&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'s'&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;lt;!--&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;views&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;posts&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;html&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;erb&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;h2&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="sx"&gt;%= comments_count(@comments) %&amp;gt;
+&amp;lt;/h2&amp;gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;使用无意义的方法名和变量名&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/topic.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Topic&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;r_topics&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;questions&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;rt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+    &lt;span class="n"&gt;questions&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;each&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;q&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;q&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;topics&lt;/span&gt;
+
+      &lt;span class="n"&gt;topics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;each&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;enabled?&lt;/span&gt;
+          &lt;span class="n"&gt;rt&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;
+        &lt;span class="k"&gt;end&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="no"&gt;Topic&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;id: &lt;/span&gt;&lt;span class="n"&gt;rt&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这类遗留代码最主要的问题在于：你需要花费大把时间来搞清楚这些代码的用途。r_topics这个方法是做什么的，rt这个变量又是什么意思。其他的一些变量，比如在代码块里用到的那个，变量名的含义很模糊，这样也使得它们的用途初看起来很难理解。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;对方法和变量命名时选那些能表达出其含义的名字。这样更便于其他开发者理解你的代码。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/topic.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Topic&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;related&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;questions&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;related_topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+    &lt;span class="n"&gt;questions&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;each&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;question&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;topics&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;question&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;topics&lt;/span&gt;
+
+      &lt;span class="n"&gt;topics&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;each&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;topic&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;topic&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;enabled?&lt;/span&gt;
+          &lt;span class="n"&gt;related_topics&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;topic&lt;/span&gt;
+        &lt;span class="k"&gt;end&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="no"&gt;Topic&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;id: &lt;/span&gt;&lt;span class="n"&gt;related_topics&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样改进的好处在于：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;第一次看到方法名时就会对方法返回值有个概念。一个与给定问题集合相关联的主题的集合。&lt;/li&gt;
+&lt;li&gt;现在你能够了解related_topics表示一个数组，它里面存放了一个与给定问题集合相关联的主题的集合。之前打代码里rt表示什么非常含糊。&lt;/li&gt;
+&lt;li&gt;使用topic代替之前的t，并用question替换掉q，使得你的代码更便于阅读，因为你不再需要脑补这些变量的用途。现在这些代码已然能够自解释一切。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;条件判断时使用unless或者否定的表达式&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/services/charge_user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ChargeUser&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;perform&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kp"&gt;false&lt;/span&gt; &lt;span class="k"&gt;unless&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;enabled?&lt;/span&gt;
+
+    &lt;span class="no"&gt;PaymentGateway&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;charge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;account_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这段代码也许并不难理解，但是使用unless或者否定的条件表达式会稍微增加代码的发复杂度，因为你必须对它要判断的条件自行脑补。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;改用if或者肯定的条件表达式之后，上述代码就会好懂得多。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;disabled?&lt;/span&gt;
+    &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;enabled?&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/services/charge_user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ChargeUser&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;perform&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kp"&gt;false&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;disabled?&lt;/span&gt;
+
+    &lt;span class="no"&gt;PaymentGateway&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;charge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;account_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;不觉得这样写代码更易读了吗？我更倾向于使用if而非unless，用肯定的表达式多过肯定的表达式。实在不行就添加个反意的方法，比如我们在User模型里加的那个。&lt;/p&gt;
+
+&lt;h3&gt;没有遵循“命令，不要去询问”原则&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;enable!&lt;/span&gt;
+    &lt;span class="n"&gt;update&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;enabled: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/controllers/users_controller.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;UsersController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ApplicationController&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;enable&lt;/span&gt;
+    &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:id&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;disabled?&lt;/span&gt;
+      &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;enable!&lt;/span&gt;
+      &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"User enabled"&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;
+      &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"User already disabled"&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="n"&gt;redirect_to&lt;/span&gt; &lt;span class="n"&gt;user_path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="ss"&gt;notice: &lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里的问题是在不恰当的地方出现了控制逻辑。你先判断了用户是否是不可用，如果的确不可用，就启用这个用户。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;比较好的改办法是把控制逻辑放到enable!方法里。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;enable!&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;disabled?&lt;/span&gt;
+      &lt;span class="n"&gt;update&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;enabled: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/controllers/users_controller.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;UsersController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ApplicationController&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;enable&lt;/span&gt;
+    &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:id&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;enable!&lt;/span&gt;
+      &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"User enabled"&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;
+      &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"User already disabled"&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="n"&gt;redirect_to&lt;/span&gt; &lt;span class="n"&gt;user_path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="ss"&gt;notice: &lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;现在控制器不用关心user需要满足何种条件才会被启用。相关的判断由User模型和enable！方法来处理。&lt;/p&gt;
+
+&lt;h3&gt;使用复杂的条件&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/controllers/posts_controller.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;PostsController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ApplicationController&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;destroy&lt;/span&gt;
+    &lt;span class="n"&gt;post&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Post&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:id&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;enabled?&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;own_post?&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;admin?&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;destroy&lt;/span&gt;
+      &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"Post destroyed."&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;
+      &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"You're not allow to destroy this post."&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="n"&gt;redirect_to&lt;/span&gt; &lt;span class="n"&gt;posts_path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;notice: &lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;条件表达式弄的太过复杂了，实际上这里只想知道一件事：用户可以删掉post吗？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;从上面的代码我们可以了解到，一个用户需要是post的所有者或者这个用户是管理员，并且post本身也是可用的，才可以删除这个post。最好的做法就是，把这些条件抽取成一个日后可以复用的方法。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;can_destroy_post?&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;enabled?&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;own_post?&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="n"&gt;admin?&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/controllers/posts_controller.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;PostsController&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ApplicationController&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;destroy&lt;/span&gt;
+    &lt;span class="n"&gt;post&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Post&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:id&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;can_destroy_post?&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;destroy&lt;/span&gt;
+      &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"Post destroyed."&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;
+      &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"You're not allow to destroy this post."&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="n"&gt;redirect_to&lt;/span&gt; &lt;span class="n"&gt;posts_path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;notice: &lt;/span&gt;&lt;span class="n"&gt;message&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;每当条件表达式里出现了&amp;amp;&amp;amp;或者||，就应该把它们提取为方法，以备以后复用。&lt;/p&gt;
+
+&lt;h3&gt;在模型的实例方法里，本来不需要的时候使用了“self.”&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;full_name&lt;/span&gt;
+    &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;first_name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;last_name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这段代码并不复杂但是里面并不需要使用“self.”。把“self.”去掉会使代码更简洁且不影响可用性。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在模型里，只有在实例方法里需要赋值时，才会用到“self.”，否则通篇的“self.”只会徒增代码复杂度。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;full_name&lt;/span&gt;
+    &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;first_name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;last_name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;使用条件表达式并且返回了条件&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;full_name&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;name&lt;/span&gt;
+      &lt;span class="nb"&gt;name&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;
+      &lt;span class="s2"&gt;"No name"&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;或者&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;full_name&lt;/span&gt;
+    &lt;span class="nb"&gt;name&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="nb"&gt;name&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;"No name"&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这段代码的问题在于：在不需要的地方添加了控制语句。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;有种更简便的处理方式也能达到同样效果&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/models/user.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;full_name&lt;/span&gt;
+    &lt;span class="nb"&gt;name&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="s2"&gt;"No name"&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;简单来说这段代码会在name不为false或nil时将其返回，否则返回&amp;quot;No name&amp;quot;.&lt;/p&gt;
+
+&lt;p&gt;使用得当的话，||和&amp;amp;&amp;amp;这些操作符会对提升你的代码品质提供巨大助力。&lt;/p&gt;
+
+&lt;h3&gt;在视图层使用行内样式&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;lt;!--&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;views&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;projects&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;html&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;erb&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nf"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;h3&lt;/span&gt; &lt;span class="n"&gt;style&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"font-size:20px;letter-spacing:normal;color:#95d60a;line-height:100%;margin:0;font-family:'Proxima Nova';"&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="no"&gt;SECRET&lt;/span&gt; &lt;span class="no"&gt;PROJECT&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="sr"&gt;/h3&amp;gt;
+...
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里我们只列出一个标签，所有的样式都写在了标签里。现在，请设想一下，如果所有的标签都接收行内样式。这会把你的HTML变得和其难度，除此之外，每当你需要引入另一个同样的h3元素时，将不得不把同样代码照搬一边，造成冗余。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="sr"&gt;//&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;assets&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;stylesheets&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;application&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;css&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;project&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;font&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="ss"&gt;size: &lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="n"&gt;px&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;letter&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="ss"&gt;spacing: &lt;/span&gt;&lt;span class="n"&gt;normal&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="ss"&gt;color: &lt;/span&gt;&lt;span class="c1"&gt;#95d60a;&lt;/span&gt;
+    &lt;span class="n"&gt;line&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="ss"&gt;height: &lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="ss"&gt;margin: &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;font&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;family&lt;/span&gt;&lt;span class="ss"&gt;:'Proxima Nova'&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;lt;!--&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;views&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;projects&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;html&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;erb&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nf"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;h3&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"project-title"&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="no"&gt;SECRET&lt;/span&gt; &lt;span class="no"&gt;PROJECT&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="sr"&gt;/h3&amp;gt;
+...
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;现在我么可以复用样式了，并且HTML的可读性也有所提高。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt;这只是个简单的范例，实际应用时你应该把CSS拆分成多个小文件，并通过application.css来加载这些文件。另外只有在email模板里，才会用到行内样式。&lt;/p&gt;
+
+&lt;p&gt;###在视图层使用JavaScript&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;lt;!--&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;views&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;questions&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;html&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;erb&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nf"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;textarea&lt;/span&gt; &lt;span class="n"&gt;rows&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"4"&lt;/span&gt; &lt;span class="n"&gt;cols&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"50"&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'wysihtml5'&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="no"&gt;Insert&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="n"&gt;question&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt; &lt;span class="n"&gt;here&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nf"&gt;&amp;lt;&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;textarea&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nf"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;document&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;ready&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(){&lt;/span&gt;
+  &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'textarea.wysihtml5'&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;wysihtml5&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="s2"&gt;"font-styles"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Font&lt;/span&gt; &lt;span class="n"&gt;styling&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;g&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="nf"&gt;h1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;h2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"emphasis"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Italics&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;bold&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"lists"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;Un&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;ordered&lt;/span&gt; &lt;span class="n"&gt;lists&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;g&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Bullets&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;Numbers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"html"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Button&lt;/span&gt; &lt;span class="n"&gt;which&lt;/span&gt; &lt;span class="n"&gt;allows&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;edit&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;generated&lt;/span&gt; &lt;span class="no"&gt;HTML&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;false&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"link"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Button&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;insert&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"image"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Button&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;insert&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"color"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Button&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;change&lt;/span&gt; &lt;span class="n"&gt;color&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;font&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里的逻辑和特定页面耦合在一起，导致代码不可复用。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Rails里面有专门用于组织和存放javascript代码的地方：“app/assets/javascripts/”。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="sr"&gt;//&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;assets&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;javascripts&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;application&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;js&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;document&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;ready&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(){&lt;/span&gt;
+  &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'textarea.wysihtml5'&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;wysihtml5&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="s2"&gt;"font-styles"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Font&lt;/span&gt; &lt;span class="n"&gt;styling&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;g&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="nf"&gt;h1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;h2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"emphasis"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Italics&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;bold&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"lists"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;Un&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;ordered&lt;/span&gt; &lt;span class="n"&gt;lists&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;g&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Bullets&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;Numbers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"html"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Button&lt;/span&gt; &lt;span class="n"&gt;which&lt;/span&gt; &lt;span class="n"&gt;allows&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;edit&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;generated&lt;/span&gt; &lt;span class="no"&gt;HTML&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;false&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"link"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Button&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;insert&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"image"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Button&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;insert&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+    &lt;span class="s2"&gt;"color"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt; &lt;span class="sr"&gt;//&lt;/span&gt;&lt;span class="no"&gt;Button&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;change&lt;/span&gt; &lt;span class="n"&gt;color&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;font&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="no"&gt;Default&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;lt;!--&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;views&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;questions&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;html&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;erb&lt;/span&gt; &lt;span class="o"&gt;--&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nf"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;textarea&lt;/span&gt; &lt;span class="n"&gt;rows&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"4"&lt;/span&gt; &lt;span class="n"&gt;cols&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"50"&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'wysihtml5'&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="no"&gt;Insert&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="n"&gt;question&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt; &lt;span class="n"&gt;here&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nf"&gt;&amp;lt;&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;textarea&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;现在我们可以在view层任何地方用这段代码了。只需要页面上有一个带有wysihtml5这个class的textarea，刚才的那段js就会被执行。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt;这只是个简单的范例，实际应用时需要考虑是否需要把你的JavaScript拆分成若干小的文件，并通过application.js来加载这些文件。另外，如果你使用的是CoffeeScript而非JavaScript，请坚持不要把CoffeeScript与普通JavaScript在一起混写。&lt;/p&gt;
+
+&lt;h3&gt;调用方法时把另一个方法的调用作为参数&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/services/find_or_create_topic.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FindOrCreateTopic&lt;/span&gt;
+  &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+  &lt;span class="nf"&gt;def&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;perform&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sluggify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;name&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nf"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这段代码里调用了find方法并传入了2个参数，首参数为user，第二个参数则是直接调用了sluggify这个方法并把name作为参数传给sluggify。你也许会有疑问，这么写有什么问题吗？我明明完全能够看懂这段代码呀。是的，代码也许不难理解，但是每次到这里你都需要自己做一点脑筋转换，而这正是我一直极力想要避免的。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;避免需要脑筋转换的一个比较有效的办法就是：使用有意义的变量名。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/services/find_or_create_topic.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FindOrCreateTopic&lt;/span&gt;
+  &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+  &lt;span class="nf"&gt;def&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;perform&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;slug&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sluggify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;slug&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;.&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="nf"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样做可以避免脑筋转换。换用含义明确的变量名之后，每当你再调用find方法，就会知道find接受一个user和一个slug做参数。&lt;/p&gt;
+
+&lt;h3&gt;没有使用类来隔离Rake Tasks&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;不好的&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# lib/tasks/recalculate_badges_for_users.rake&lt;/span&gt;
+&lt;span class="n"&gt;namespace&lt;/span&gt; &lt;span class="ss"&gt;:users&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+
+  &lt;span class="n"&gt;desc&lt;/span&gt; &lt;span class="s2"&gt;"Recalculates Badges for Users"&lt;/span&gt;
+  &lt;span class="n"&gt;task&lt;/span&gt; &lt;span class="ss"&gt;recalculate_badges: :environment&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="n"&gt;user_count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;count&lt;/span&gt;
+
+    &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find_each&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;user_count&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; Recalculating Badges for: &lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;email&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;questions_with_negative_votes&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;answers_with_negative_votes&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+        &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;grant_badge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'Critic'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+
+      &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;answers&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find_each&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;answer&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+        &lt;span class="n"&gt;question&lt;/span&gt;   &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;answer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;question&lt;/span&gt;
+        &lt;span class="k"&gt;next&lt;/span&gt; &lt;span class="k"&gt;unless&lt;/span&gt; &lt;span class="n"&gt;answer&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;question&lt;/span&gt;
+
+        &lt;span class="n"&gt;days&lt;/span&gt;       &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;answer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;created_at&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;question&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;created_at&lt;/span&gt;
+        &lt;span class="n"&gt;days_count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;days&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;day&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;round&lt;/span&gt;
+
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;days_count&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;60&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;question&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;vote_count&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+          &lt;span class="n"&gt;grant_badge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'Necromancer'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt;
+        &lt;span class="k"&gt;end&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个rake task有问题多多。最主要的问题是，这个rake太长了而且不好测试。代码写的初一看也很难理解。你只好相信这个task的确是为用户重新计算奖章系统的，因为它上面描述就这么写的。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;好的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;解决这个问题最好的办法就是，把业务逻辑挪到一个特定的类里面。所以，让我们新建个类来搞定它吧。&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# app/services/recalculate_badge.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;RecalculateBadge&lt;/span&gt;
+  &lt;span class="kp"&gt;attr_reader&lt;/span&gt; &lt;span class="ss"&gt;:user&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;initialize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="vi"&gt;@user&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;grant_citric&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;grant_citric?&lt;/span&gt;
+      &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;grant_badge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'Critic'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;grant_necromancer&lt;/span&gt;
+    &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;answers&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find_each&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;answer&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;question&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;answer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;question&lt;/span&gt;
+      &lt;span class="k"&gt;next&lt;/span&gt; &lt;span class="k"&gt;unless&lt;/span&gt; &lt;span class="n"&gt;answer&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;question&lt;/span&gt;
+
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;grant_necromancer?&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;answer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;question&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;grant_badge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'Necromancer'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+  &lt;span class="kp"&gt;protected&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;grant_citric?&lt;/span&gt;
+      &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;questions_with_negative_votes&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt;
+      &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;answers_with_negative_votes&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;days_count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;answer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;question&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="n"&gt;days&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;answer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;created_at&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;question&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;created_at&lt;/span&gt;
+      &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;days&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;day&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;round&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;grant_necromancer?&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;answer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;question&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;days_count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;answer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;question&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;60&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+      &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;question&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;vote_count&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;# lib/tasks/recalculate_badges_for_users.rake&lt;/span&gt;
+&lt;span class="n"&gt;namespace&lt;/span&gt; &lt;span class="ss"&gt;:users&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+
+  &lt;span class="n"&gt;desc&lt;/span&gt; &lt;span class="s2"&gt;"Recalculates Badges for Users"&lt;/span&gt;
+  &lt;span class="n"&gt;task&lt;/span&gt; &lt;span class="ss"&gt;recalculate_badges: :environment&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="n"&gt;user_count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;count&lt;/span&gt;
+
+    &lt;span class="no"&gt;User&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;find_each&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;user_count&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; Recalculating Badges for: &lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;email&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+      &lt;span class="n"&gt;task&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;RecalculateBadge&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="n"&gt;task&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;grant_citric&lt;/span&gt;
+      &lt;span class="n"&gt;task&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;grant_necromancer&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如你所见，现在这个rake task可读性要好的多，而且还可以单独测试每一种批准徽章的方法。除此以外我么也可以在有需要时复用这个类。当然这段代码只是点到即止，诸位可以再做进一步优化。&lt;/p&gt;
+
+&lt;h3&gt;没有遵循 Sandi Metz 的规则&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;每个类代码不可以超过100行&lt;/li&gt;
+&lt;li&gt;每个方法代码不可以超过5行&lt;/li&gt;
+&lt;li&gt;方法参数不可以超过4个，hash项也包括在内&lt;/li&gt;
+&lt;li&gt;控制器之可以初始化一个对象。而且视图层只可以使用一个实例变量，并且只可以在这个对象上调用方法（@object.collaborator.value这种是不可以的）。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;更多关于Sandi Metz的规则请移步至&lt;a href="http://robots.thoughtbot.com/"&gt;thoughtbot&lt;/a&gt;,参阅&lt;a href="http://robots.thoughtbot.com/sandi-metz-rules-for-developers"&gt;Sandi Metz&amp;#39; Rules For Developers&lt;/a&gt;这篇博文。&lt;/p&gt;
 </content>
   </entry>
 </feed>

@@ -14,8 +14,8 @@ html lang="zh-CN"
         a href='/' 简单心理 · 技术团队
       a.github href="https://github.com/jiandanxinli" github.com/jiandanxinli
     .subheader.container
-      p 欢迎，这里有我们团队的技术分享，你可以点击查看各个主题
-      - blog.tags.each do |tag, articles|
+      p Hello, world!
+      - blog.tags.sort { |a, b| b[1].count <=> a[1].count }.each do |tag, articles|
         = link_to tag, tag_path(tag), class: ('active' if defined?(tagname) && tagname == tag)
       a href='https://www.jiandanxinli.com/pages/37' Join Us
     .animated_container

@@ -10,6 +10,7 @@ page '/*.xml', layout: false
 page '/*.json', layout: false
 page '/*.txt', layout: false
 ignore 'blog'
+ignore 'stylesheets/libs/*'
 
 # With alternative layout
 # page "/path/to/file.html", layout: :otherlayout
@@ -45,7 +46,7 @@ activate :blog do |blog|
 
   # Enable pagination
   blog.paginate = true
-  # blog.per_page = 10
+  blog.per_page = 100
   # blog.page_link = "page/{num}"
 end
 

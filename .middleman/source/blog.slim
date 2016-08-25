@@ -15,8 +15,8 @@ html lang="zh-CN"
           a href='/' 简单心理 · 技术团队
         a.github href="https://github.com/jiandanxinli" github.com/jiandanxinli
       .subheader.container
-        - blog.tags.each do |tag, articles|
-          = link_to tag, tag_path(tag), class: ('active' if defined?(tagname) && tagname == tag)
+        - blog.tags.sort { |a, b| b[1].count <=> a[1].count }.each do |tag, articles|
+          = link_to tag, tag_path(tag), class: ('active' if current_article.tags.include?(tag))
         a href='https://www.jiandanxinli.com/pages/37' Join Us
     .animated_container
       .content.container.animated.fadeIn.delay
@@ -25,6 +25,4 @@ html lang="zh-CN"
           span.date= current_page.data.date
           span.author= current_page.data.author
         = yield
-      #uyan_frame
     = partial 'footer'
-    script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1938211"

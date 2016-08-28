@@ -479,5 +479,36 @@ public class MainActivity extends AppCompatActivity {
   ```
 <br>
 <br>
-  演示二 JavaS
+**演示二 JavaScript调用有返回值的Java方法**
+
+  **1.定义一个带返回值的Java方法，并使用@JavaInterface：**
+  ```Java
+    @JavaInterface
+    public String getMessage(){
+        return "Hello,boy~";
+    }
+  ```
+  
+  **2.添加JavaScript的映射**
+  ```Java
+    webView.addJavaScriptInterface(this,"Android");
+  ```
+  
+  **3.通过JavaScript调用Java方法**
+  ```JavaScript
+  function showHello(){
+      var str=window.Android.getMessage();
+      console.log(str);
+  }
+ ```
+ 
+ 以上就是Js与WebView交互的一些介绍，希望能对你有帮助。
+ <br>
+ <br>
+##WebView加载优化
+ 
+  按时打卡大量空间啊
+ 
+ 
+ 
   

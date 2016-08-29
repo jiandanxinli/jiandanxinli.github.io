@@ -601,9 +601,21 @@ public class MainActivity extends AppCompatActivity {
  <br>
 ##WebView加载优化
 
-###1. 案件打卡机
+当WebView的使用频率变得频繁的时候，对于其各方面的优化就变得逐渐重要了起来。可以知道的是，我们每加载一个 H5页面，都会有很多的请求。除了HTML主URL自身的请求外，HTML外部引用的 JS、CSS、字体文件、图片都是一个个独立的HTTP 请求，每一个请求都是串行的（可能有连接复用）。这么多请求串起来，再加上浏览器解析、渲染的时间，Web 整体的加载时间变得较长。同时请求文件越多，消耗的流量也会越多。那么对于加载的优化就变得非常重要，这方面的经验我也没有什么别的，大概三个方面：
 
-###2. 啦啦啦
+<br>
+###一个，就是资源本地化的问题
+首先可以明确的是，以目前的网络条件，通过网络去服务器获取资源的速度是远远比不上从本地读取的。所以我们的思路一，就是将一些较重的资源比如js、css、图片等进行本地化处理，在每次加载到这些资源的时候，从本地读取进行加载，可以简单记忆为**“存·取·更”**。
+
+具体实现思路为：
+  1. **“存”**——将上述重量级资源打包进apk文件，每次加载相应文件时时从本地取即可。也可不打包，在第一次加载时以及接下来的若干间隔时间里动态下载存储；
+  2. **“取”**——重写WebViewClient的***WebResourceResponse	shouldInterceptRequest***(WebView view, WebResourceRequest request)方法，通过一定的判别方法（例如正则表达式）拦截相应的请求，从本地读取相应资源并返回；
+  3. **“更”**——建立起Cache Control机制，定期或使用API通知的形式控制本地资源的更新，保证本地资源是最新和可用的。
+  
+这里附上一篇博客链接，非常棒可供参考：[caching-web-resources-in-the-android-device](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html#caching-web-resources-in-the-android-device)  
+
+<br>
+###第二个，就是
   大家刻录机卡顿
  
  

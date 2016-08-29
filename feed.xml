@@ -5,10 +5,107 @@
   <id>https://jiandanxinli.github.io/</id>
   <link href="https://jiandanxinli.github.io/"/>
   <link href="https://jiandanxinli.github.io/feed.xml" rel="self"/>
-  <updated>2016-08-11T08:00:00+08:00</updated>
+  <updated>2016-08-25T08:00:00+08:00</updated>
   <author>
     <name>北京竹间科技有限公司</name>
   </author>
+  <entry>
+    <title>常用有用的 Git Tips</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-25.html"/>
+    <id>https://jiandanxinli.github.io/2016-08-25.html</id>
+    <published>2016-08-25T08:00:00+08:00</published>
+    <updated>2016-08-29T11:22:16+08:00</updated>
+    <author>
+      <name>fengd</name>
+    </author>
+    <content type="html">&lt;h3&gt;用好Git Log&lt;/h3&gt;
+
+&lt;p&gt;你应该用过 git log, 但是 log 支持很多有用的参数也许你不知道，下面列出一些比较有用的&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;--author=&amp;quot;jack&amp;quot; : 只显示jack提交的commit&lt;/li&gt;
+&lt;li&gt;--name-only : 只显示改动了的文件名&lt;/li&gt;
+&lt;li&gt;--oneline : 在一行内显示信息&lt;/li&gt;
+&lt;li&gt;--grath : 显示一些分支信息&lt;/li&gt;
+&lt;li&gt;--reverse : 倒序显示commits&lt;/li&gt;
+&lt;li&gt;--after : 显示这个时间之后的commits&lt;/li&gt;
+&lt;li&gt;--before : 显示这个时间之前的commits&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这些参数组合起来挺有用的，比如&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;git log --author="jack" --after="1 week ago" -- oneline
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;查看还没有合并到Master/父分之中的改动&lt;/h3&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;git log --no-merges masters..
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;从另一个分支中获取文件&lt;/h3&gt;
+
+&lt;p&gt;先看另一个分支的某个文件，其实可以不用切换到那个分支，执行下面的命令就可以直接查看&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;git show some-branch:somefile.js
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果你想和某个分支上的版本进行对比&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;git diff some-branch some-file.js
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;关于 rebasing&lt;/h3&gt;
+
+&lt;p&gt;Rebase其实比较复杂，单独写一篇文章都未必讲的清楚明白, 当时有一个很实用的技巧不得不提&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;`git pull --rebase`
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这是什么？
+当你在本地改完，想要把代码push上去，如果主分支上已经有改动，这时候push失败，而且会提示你使用&lt;code&gt;git pull&lt;/code&gt; 来获取最新的代码, 和本地的代码合并，产生log&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;&amp;gt; Merge remote-tracking branch 'origin/master'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这时rebase就是更好的选择，&lt;code&gt;git pull --rebase&lt;/code&gt;, git 会先从remote获取最新的代码，然后在push本地的改动，不会有merge产生.&lt;/p&gt;
+
+&lt;h3&gt;修改上一个 Commit&lt;/h3&gt;
+
+&lt;p&gt;发现刚刚提交的Commit有一个Typo或者其它很小的改动，Well，当然可以提交个新的Commit， 然后log写上 “fix typo”.&lt;/p&gt;
+
+&lt;p&gt;当时其实应该这么做，&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Fix Typo&lt;/li&gt;
+&lt;li&gt;Stage 这个文件&lt;/li&gt;
+&lt;li&gt;执行 &lt;code&gt;git commit --amend&lt;/code&gt; 这会把这一次的改动提交到上一个Commit中&lt;/li&gt;
+&lt;li&gt;Push&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3&gt;Git的三个状态，三个状态之间如何切换&lt;/h3&gt;
+
+&lt;h4&gt;三个状态：&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;没有Staged, 没有执行&lt;code&gt;git add&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Staged, 当时没有Commit的， 执行了 &lt;code&gt;git add&lt;/code&gt; , 当时没有执行 &lt;code&gt;git commit&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Commit的, 执行了 &lt;code&gt;git commit&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;用 &lt;code&gt;git status&lt;/code&gt; 可以查看处在1， 2状态的文件&lt;/p&gt;
+
+&lt;h4&gt;如何在三个状态之间切换&lt;/h4&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;git reset --head {{some-commit-hash}}&lt;/code&gt; 返回到某一个Commit， 所有这个commit之后的改动都丢弃&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git reset {{some-commit-hash}}&lt;/code&gt; 返回到某一个commit，所有这个commit之后的改动都归到状态1， 没有staged，&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git reset --soft {{some-commit-hash}}&lt;/code&gt; 返回到某一个commit， 这个commit之后的改动都归到状态2&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;最常用的一个可能是第一个, 放弃本地所有的改动&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;git reset --hard HEAD
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Revert Commit&lt;/h3&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;git revert -n
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;取消之前的Commit&lt;/p&gt;
+
+&lt;h3&gt;为常用的git命令设置别名&lt;/h3&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;git l = git log --online --grath
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;等等等等&lt;/p&gt;
+
+&lt;p&gt;来自文章 &lt;a href="http://www.alexkras.com/19-git-tips-for-everyday-use/"&gt;Top 19 Tips For everyday git use&lt;/a&gt;&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>CSS 命名规范总结</title>
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-11.html"/>

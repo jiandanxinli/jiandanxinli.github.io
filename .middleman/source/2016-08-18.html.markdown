@@ -168,10 +168,10 @@ public class MainActivity extends AppCompatActivity {
   <br>  
   <br>
   <br>
-    - boolean **canGoBack**()：用来确认WebView的历史记录里是否还有页面。通常我们会在WebView里重写返回键的点击事件，通过该方法判断WebView里是否还有历史记录，若有则返回上一页。
+    - boolean **canGoBack**()：用来确认WebView里是否还有可回退的历史记录。通常我们会在WebView里重写返回键的点击事件，通过该方法判断WebView里是否还有历史记录，若有则返回上一页。
   <br>
   <br>
-    - boolean **canGoForward**()：用来确认WebView是否有向前的历史记录。
+    - boolean **canGoForward**()：用来确认WebView是否还有可向前的历史记录。
   <br>
   <br>
     - boolean **canGoBackOrForward**(int steps)：以当前的页面为起始点，用来确认WebView的历史记录是否足以后退或前进给定的步数，正数为前进，负数为后退。
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
     - **clearHistory**()：清除当前webview访问的历史记录。
   <br>
   <br>
-    - **clearFormData**()：清除自动完成填充的表单数据。需要注意的是，该方法仅仅清楚**当前表单域自动完成填充的表单数据**，并不会清除WebView存储到本地的数据。
+    - **clearFormData**()：清除自动完成填充的表单数据。需要注意的是，该方法仅仅清除**当前表单域自动完成填充的表单数据**，并不会清除WebView存储到本地的数据。
   <br>
   <br>
   <br>
@@ -379,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
   - **onPageStarted(WebView view, String url, Bitmap favicon)**：该方法在WebView开始加载页面且仅在**Main frame loading**（即***整页加载***）时回调，一次Main frame的加载只会回调该方法一次。我们可以在这个方法里设定开启一个加载的动画，告诉用户程序在等待网络的响应。
   <br>
   <br>
-  - **onPageFinished(WebView view, String url)**：该方法在WebView加载一个页面结束时调用（同样也只在**Main frame loading**时调用），**理论上**可以在此时关闭加载动画，进行其他操作。___（这里有一坑，后面会进一步介绍）___
+  - **onPageFinished(WebView view, String url)**：该方法只在WebView完成一个页面加载时调用一次（同样也只在**Main frame loading**时调用），我们可以可以在此时关闭加载动画，进行其他操作。
   <br>
   <br>
   - **onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)**：该方法在web页面加载错误时回调，这些错误通常都是由无法与服务器正常连接引起的，最常见的就是网络问题。
@@ -600,8 +600,11 @@ public class MainActivity extends AppCompatActivity {
  <br>
  <br>
 ##WebView加载优化
- 
-  按时打卡大量空间啊
+
+###1. 案件打卡机
+
+###2. 啦啦啦
+  大家刻录机卡顿
  
  
  

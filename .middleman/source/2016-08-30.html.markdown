@@ -605,19 +605,71 @@ public class MainActivity extends AppCompatActivity {
 
 <br>
 ###一个，就是资源本地化的问题
-首先可以明确的是，以目前的网络条件，通过网络去服务器获取资源的速度是远远比不上从本地读取的。所以我们的思路一，就是将一些较重的资源比如js、css、图片等进行本地化处理，在每次加载到这些资源的时候，从本地读取进行加载，可以简单记忆为**“存·取·更”**。
+首先可以明确的是，以目前的网络条件，通过网络去服务器获取资源的速度是远远比不上从本地读取的。谈论各种优化策略其实恰恰忽略了“需要加载”才是阻挡速度提升的最大绊脚石。所以我们的思路一，就是将一些较重的资源比如js、css、图片甚至HTML本身进行本地化处理，在每次加载到这些资源的时候，从本地读取进行加载，可以简单记忆为**“存·取·更”**。
 
 具体实现思路为：
-  1. **“存”**——将上述重量级资源打包进apk文件，每次加载相应文件时时从本地取即可。也可不打包，在第一次加载时以及接下来的若干间隔时间里动态下载存储；
+  1. **“存”**——将上述重量级资源打包进apk文件，每次加载相应文件时时从本地取即可。也可不打包，在第一次加载时以及接下来的若干间隔时间里动态下载存储，将所有的资源文件都存在Android的asset目录下；
   2. **“取”**——重写WebViewClient的***WebResourceResponse	shouldInterceptRequest***(WebView view, WebResourceRequest request)方法，通过一定的判别方法（例如正则表达式）拦截相应的请求，从本地读取相应资源并返回；
   3. **“更”**——建立起Cache Control机制，定期或使用API通知的形式控制本地资源的更新，保证本地资源是最新和可用的。
   
 这里附上一篇博客链接，非常棒可供参考：[caching-web-resources-in-the-android-device](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html#caching-web-resources-in-the-android-device)  
 
 <br>
-###第二个，就是
-  大家刻录机卡顿
+###第二个，就是缓存的问题
+倘若你不采用或不完全采用第一条资源本地化的思路，那么你的WebView缓存是必须要开启的（虽然这一思路和第一条有重合的地方）。
+  ```Java
+    WebSettings settings = webView.getSettings();
+    settings.setAppCacheEnabled(true);
+    settings.setDatabaseEnabled(true);
+    settings.setDomStorageEnabled(true);//开启DOM缓存
+    settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+  ```
+在网络正常时，采用默认缓存策略，在缓存可获取并且没有过期的情况下加载缓存，否则通过网络获取资源以减少页面的网络请求次数。
+<br>
+这里值得提起的是，我们经常在app里用WebView展示页面时，并不想让用户觉得他是在访问一个网页。因为倘若我们的app里网页非常多，而我们给用户的感觉又都像在访问网页的话，我们的app便失去了意义。（我的意思是为什么用户不直接使用浏览器呢？）
+<br>
+所以这时，离线缓存的问题就值得我们注意。我们需要让用户在没有网的时候，依然能够操作我们的app，而不是面对一个和浏览器里的网络错误一样的页面，哪怕他能进行的操作十分有限。
+<br>
+这里我的思路是，在开启缓存的前提下，WebView在加载页面时检测网络变化，倘若在加载页面时用户的网络突然断掉，我们应当更改WebView的缓存策略。
+  ```Java
+    ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+    if(networkInfo.isAvailable()) {
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);//网络正常时使用默认缓存策略
+    } else {
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);//网络不可用时只加载缓存
+    }
+  ```
+
+既然有缓存，就要有缓存控制，与一相似的是我们也要建立缓存控制机制，定期或接受服务器通知来进行缓存的清空或更新。
+
+<br>
+###第三个，就是延迟加载和执行js
+  在WebView中，onPageFinished()的回调意味着页面加载的完成。但该方法会在JavScript脚本执行完成后才会触发，倘若我们要加载的页面使用了JQuery，会在处理完DOM对象，执行完$(document).ready(function() {})后才会渲染并显示页面。这是不可接受的，所以我们需要对Js进行延迟加载，当然这部分是Web前端的工作。
  
- 
- 
+ <br>
+ ###最后
+如果说还有什么我知道的但没提到的话那就是JsBridge一律不得滥用，这个对页面加载的完成速度是有很大影响的。同时要注意的是，不管你是否对资源进行缓存，都请将资源在服务器端进行压缩。因为无论是资源的获取和更新，都是要从服务器获取的，所以对于资源文件的压缩其实是最直接也最应该做的事情之一，但是一般服务器端都会做好，所以主要就是上面这三件事。
+ <br>
+ <br>
+##驾照考试
+
+介绍了这么多，希望能对你有点帮助。接下来时纯实战时间，我会将上面所介绍的很多知识点在接下来的代码里实际应用一遍，希望能够带给你更加直观的使用感受。
+
+  ```Java
+    public class WebViewTestActivity{
+        
+        @Override
+        public void onCreate(){
+            lalala
+        }
+    }
+  ```
+  效果图：
+  <br>
+  <img src="https://cloud.githubusercontent.com/assets/12692071/17649176/5ffb5b44-6260-11e6-84dc-2ac41be1b858.gif" width="300" height="550" />
+  <br>
+  <br>
+##上路
+  好了，到此为止你已阅读完所有的指南。
   

@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
   
   <br>
   <br>
-    - String **getUrl**()：获取当前页面的URL。
+    - **String getUrl**()：获取当前页面的URL。
   <br>
   <br>
     - **reload**()：重新reload当前的URL，即刷新。
@@ -176,13 +176,13 @@ public class MainActivity extends AppCompatActivity {
   <br>  
   <br>
   <br>
-    - boolean **canGoBack**()：用来确认WebView里是否还有可回退的历史记录。通常我们会在WebView里重写返回键的点击事件，通过该方法判断WebView里是否还有历史记录，若有则返回上一页。
+    - **boolean canGoBack**()：用来确认WebView里是否还有可回退的历史记录。通常我们会在WebView里重写返回键的点击事件，通过该方法判断WebView里是否还有历史记录，若有则返回上一页。
   <br>
   <br>
-    - boolean **canGoForward**()：用来确认WebView是否还有可向前的历史记录。
+    - **boolean canGoForward**()：用来确认WebView是否还有可向前的历史记录。
   <br>
   <br>
-    - boolean **canGoBackOrForward**(int steps)：以当前的页面为起始点，用来确认WebView的历史记录是否足以后退或前进给定的步数，正数为前进，负数为后退。
+    - **boolean canGoBackOrForward**(int steps)：以当前的页面为起始点，用来确认WebView的历史记录是否足以后退或前进给定的步数，正数为前进，负数为后退。
   <br>
   <br>
     - **goBack**()：在WebView历史记录后退到上一项。
@@ -247,10 +247,10 @@ public class MainActivity extends AppCompatActivity {
 ```
   <br>
   <br>
-    - **pageUp**()：待斟酌。
+    - **pageUp**(boolean top)：将WebView展示的页面滑动至顶部。
   <br>
   <br>
-    - **pageDown**()：待斟酌。
+    - **pageDown**(boolean bottom)：将WebView展示的页面滑动至底部。
   <br>
   <br>
   
@@ -412,12 +412,6 @@ public class MainActivity extends AppCompatActivity {
   <br>
   <br>
   <br>
-  - **onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm)**：待斟酌。
-  <br>
-  <br>
-  - **onReceivedLoginRequest(WebView view, String realm, String account, String args)**：待斟酌。
-  <br>
-  <br>
   - **onScaleChanged(WebView view, float oldScale, float newScale)**：当WebView得页面Scale值发生改变时回调。
   <br>
   <br>
@@ -466,9 +460,6 @@ public class MainActivity extends AppCompatActivity {
   <br>
   <br>
   - **boolean	onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result)**：处理Javascript中的Prompt对话框。
-  <br>
-  <br>
-  - **boolean	onJsBeforeUnload(WebView view, String url, String message, JsResult result)**：待斟酌
   <br>
   <br>
   - **boolean	onJsConfirm(WebView view, String url, String message, JsResult result)**：处理Javascript中的Confirm对话框
@@ -608,11 +599,11 @@ public class MainActivity extends AppCompatActivity {
 <br>
 ##WebView加载优化
 
-当WebView的使用频率变得频繁的时候，对于其各方面的优化就变得逐渐重要了起来。可以知道的是，我们每加载一个 H5页面，都会有很多的请求。除了HTML主URL自身的请求外，HTML外部引用的 JS、CSS、字体文件、图片都是一个个独立的HTTP 请求，请求为并行但执行却为串行（可能有连接复用）。这么多请求串起来，再加上浏览器解析、渲染的时间，Web 整体的加载时间变得较长。同时请求文件越多，消耗的流量也会越多。那么对于加载的优化就变得非常重要，这方面的经验我也没有什么别的，大概三个方面：
+当WebView的使用频率变得频繁的时候，对于其各方面的优化就变得逐渐重要了起来。可以知道的是，我们每加载一个 H5页面，都会有很多的请求。除了HTML主URL自身的请求外，HTML外部引用的 JS、CSS、字体文件、图片都是一个个独立的HTTP 请求，虽然请求是并发的，但当网页整体数量达到一定程度的时候，再加上浏览器解析、渲染的时间，Web整体的加载时间变得很长。同时请求文件越多，消耗的流量也会越多。那么对于加载的优化就变得非常重要，这方面的经验我也没有什么别的，大概三个方面：
 
 <br>
 ####一个，就是资源本地化的问题
-首先可以明确的是，以目前的网络条件，通过网络去服务器获取资源的速度是远远比不上从本地读取的。谈论各种优化策略其实恰恰忽略了“需要加载”才是阻挡速度提升的最大绊脚石。所以我们的思路一，就是将一些较重的资源比如js、css、图片甚至HTML本身进行本地化处理，在每次加载到这些资源的时候，从本地读取进行加载，可以简单记忆为**“存·取·更”**。
+首先可以明确的是，以目前的网络条件，通过网络去服务器获取资源的速度是远远比不上从本地读取的。**谈论各种优化策略其实恰恰忽略了“需要加载”才是阻挡速度提升的最大绊脚石。**所以我们的思路一，就是将一些较重的资源比如js、css、图片甚至HTML本身进行本地化处理，在每次加载到这些资源的时候，从本地读取进行加载，可以简单记忆为**“存·取·更”**。
 
 具体实现思路为：
   1. **“存”**——将上述重量级资源打包进apk文件，每次加载相应文件时时从本地取即可。也可不打包，在第一次加载时以及接下来的若干间隔时间里动态下载存储，将所有的资源文件都存在Android的asset目录下；
@@ -644,7 +635,7 @@ public class MainActivity extends AppCompatActivity {
     if(networkInfo.isAvailable()) {
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);//网络正常时使用默认缓存策略
     } else {
-        settings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);//网络不可用时只加载缓存
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);//网络不可用时只使用缓存
     }
   ```
 
@@ -657,7 +648,7 @@ public class MainActivity extends AppCompatActivity {
  <br>
 ####如果说还有什么
  
-那就是JsBridge一律不得滥用，这个对页面加载的完成速度是有很大影响的。同时要注意的是，不管你是否对资源进行缓存，都请将资源在服务器端进行压缩。因为无论是资源的获取和更新，都是要从服务器获取的，所以对于资源文件的压缩其实是最直接也最应该做的事情之一，但是一般服务器端都会做好，所以主要就是上面这三件事。
+那就是JsBridge一律不得滥用，这个对页面加载的完成速度是有很大影响的，倘若一个页面很多操作都通过JSbridge来控制，再怎么优化也无济于事（因为毕竟有那么多操作要实际执行）。同时要注意的是，不管你是否对资源进行缓存，都请将资源在服务器端进行压缩。因为无论是资源的获取和更新，都是要从服务器获取的，所以对于资源文件的压缩其实是**最直接也最应该做**的事情之一，但是一般服务器端都会做好，所以主要就是上面这三件事。
 <br>
 <br>
   
@@ -667,13 +658,209 @@ public class MainActivity extends AppCompatActivity {
 介绍了这么多，希望能对你有点帮助。接下来时纯实战时间，我会将上面所介绍的很多知识点在接下来的代码里实际应用一遍，希望能够带给你更加直观的使用感受。
 
   ```Java
-    public class WebViewTestActivity{
-        
-        @Override
-        public void onCreate(){
-            lalala
+    public class MainActivity extends AppCompatActivity {
+
+    private WebView mWebView;
+
+    private ProgressBar mProgressbar;
+    private Toolbar mToolbar;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        initAppBar();//初始化Toolbar
+
+        initWebView();//初始化WebView
+        initWebSettings();//初始化WebSettings
+        initWebViewClient();//初始化WebViewClient
+        initWebChromeClient();//初始化WebChromeClient
+    }
+
+    private void initAppBar() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("载入中..");
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
+    private void initWebView() {
+        mWebView = (WebView) findViewById(R.id.web_view);
+        mProgressbar = (ProgressBar) findViewById(R.id.progress_bar);
+        String url = "https://www.google.com";
+        mWebView.loadUrl(url);
+    }
+
+    private void initWebSettings() {
+        WebSettings settings = mWebView.getSettings();
+        //支持获取手势焦点
+        mWebView.requestFocusFromTouch();
+        //支持JS
+        settings.setJavaScriptEnabled(true);
+        //支持插件
+        settings.setPluginState(WebSettings.PluginState.ON);
+        //设置适应屏幕
+        settings.setUseWideViewPort(true);
+        settings.setLoadWithOverviewMode(true);
+        //支持缩放
+        settings.setSupportZoom(false);
+        //隐藏原生的缩放控件
+        settings.setDisplayZoomControls(false);
+        //支持内容重新布局
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        settings.supportMultipleWindows();
+        settings.setSupportMultipleWindows(true);
+        //设置缓存模式
+        settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        settings.setAppCacheEnabled(true);
+        settings.setAppCachePath(mWebView.getContext().getCacheDir().getAbsolutePath());
+
+        //设置可访问文件
+        settings.setAllowFileAccess(true);
+        //当webview调用requestFocus时为webview设置节点
+        settings.setNeedInitialFocus(true);
+        //支持自动加载图片
+        if (Build.VERSION.SDK_INT >= 19) {
+            settings.setLoadsImagesAutomatically(true);
+        } else {
+            settings.setLoadsImagesAutomatically(false);
+        }
+        settings.setNeedInitialFocus(true);
+        //设置编码格式
+        settings.setDefaultTextEncodingName("UTF-8");
+    }
+
+    private void initWebViewClient() {
+        mWebView.setWebViewClient(new WebViewClient() {
+
+            //页面开始加载时
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                mProgressbar.setVisibility(View.VISIBLE);
+            }
+
+
+            //页面完成加载时
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                mProgressbar.setVisibility(View.GONE);
+            }
+
+            //是否在WebView内加载新页面
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                view.loadUrl(request.toString());
+                return true;
+            }
+
+            //网络错误时回调的方法
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                /**
+                 * 在这里写网络错误时的逻辑,比如显示一个错误页面
+                 *
+                 * 这里我偷个懒不写了
+                 * */
+            }
+
+            @TargetApi(Build.VERSION_CODES.M)
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                super.onReceivedHttpError(view, request, errorResponse);
+            }
+        });
+    }
+
+    private void initWebChromeClient() {
+
+        mWebView.setWebChromeClient(new WebChromeClient() {
+
+            private Bitmap mDefaultVideoPoster;//默认的视频展示图
+
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                setToolbarTitle(title);
+            }
+
+            @Override
+            public Bitmap getDefaultVideoPoster() {
+                if (mDefaultVideoPoster == null) {
+                    mDefaultVideoPoster = BitmapFactory.decodeResource(
+                            getResources(), R.drawable.video_default
+                    );
+                    return mDefaultVideoPoster;
+                }
+                return super.getDefaultVideoPoster();
+            }
+        });
+    }
+
+    /**
+     * 设置Toolbar标题
+     *
+     * @param title
+     */
+    private void setToolbarTitle(final String title) {
+        Log.d("setToolbarTitle", " WebDetailActivity " + title);
+        if (mToolbar != null) {
+            mToolbar.post(new Runnable() {
+                @Override
+                public void run() {
+                    mToolbar.setTitle(TextUtils.isEmpty(title) ? getString(R.string.loading) : title);
+                }
+            });
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.page_up:
+                Toast.makeText(getApplicationContext(), "页面向上", Toast.LENGTH_SHORT).show();
+                mWebView.pageUp(true);
+                break;
+            case R.id.page_down:
+                Toast.makeText(getApplicationContext(), "页面向下", Toast.LENGTH_SHORT).show();
+                mWebView.pageDown(true);
+                break;
+            case R.id.refresh:
+                Toast.makeText(getApplicationContext(), "刷新~", Toast.LENGTH_SHORT).show();
+                mWebView.reload();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        //如果按下的是回退键且历史记录里确实还有页面
+        if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebView.canGoBack()) {
+            mWebView.goBack();
+            return true;
+        } else {
+            Toast.makeText(getApplicationContext(), "考试结束,恭喜您考试合格!", Toast.LENGTH_LONG).show();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+}
+
   ```
   效果图：
   <br>
@@ -683,8 +870,9 @@ public class MainActivity extends AppCompatActivity {
   
 <br>
 ##上路
-  好了，到此为止你已阅读完所有的指南。
-  
+  好了，到此为止你已阅读完所有的指南，送你一辆车，上路吧。
+  <br>
+  <img src="" width="300" height="550" />
   
 <br>
 <br>
@@ -692,8 +880,13 @@ public class MainActivity extends AppCompatActivity {
 <br>
 ##参考文章
 
-  [caching-web-resources-in-the-android-device](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html#caching-web-resources-in-the-android-device)  
-  [caching-web-resources-in-the-android-device](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html#caching-web-resources-in-the-android-device)  
-  [caching-web-resources-in-the-android-device](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html#caching-web-resources-in-the-android-device)  
-  [caching-web-resources-in-the-android-device](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html#caching-web-resources-in-the-android-device)  
+  [Android官方文档](https://developer.android.com/guide/index.html)
+  <br>
+  [Android Web Apps Using Android WebView](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html) 
+  <br>
+  [史上最全webview详解](https://yq.aliyun.com/articles/32559)  
+  <br>
+  [H5 缓存机制浅析 移动端 Web 加载性能优化 ](http://bugly.qq.com/bbs/forum.php?mod=viewthread&tid=267)  
+  <br>
+  [WebView加载速度优化](http://www.jianshu.com/p/427600ca2107)  
   

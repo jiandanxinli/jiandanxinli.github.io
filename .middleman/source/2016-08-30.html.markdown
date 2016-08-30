@@ -657,6 +657,48 @@ public class MainActivity extends AppCompatActivity {
 
 介绍了这么多，希望能对你有点帮助。接下来时纯实战时间，我会将上面所介绍的很多知识点在接下来的代码里实际应用一遍，希望能够带给你更加直观的使用感受。
 
+  ```XML
+      <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/ThemeOverlay.AppCompat.Light" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <WebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>
+  ```
+  <br>
+  <br>
+  Java部分
   ```Java
     public class MainActivity extends AppCompatActivity {
 
@@ -863,8 +905,8 @@ public class MainActivity extends AppCompatActivity {
 
   ```
   效果图：
-  <br>
-  <img src="https://cloud.githubusercontent.com/assets/12692071/17649176/5ffb5b44-6260-11e6-84dc-2ac41be1b858.gif" width="300" height="550" />
+  
+  fuck，效果图太大压缩无望~~~
 <br>
 <br>
   
@@ -872,7 +914,7 @@ public class MainActivity extends AppCompatActivity {
 ##上路
   好了，到此为止你已阅读完所有的指南，送你一辆车，上路吧。
   <br>
-  <img src="" width="300" height="550" />
+  <img src="https://cloud.githubusercontent.com/assets/12692071/18089238/78f70d26-6ef1-11e6-8b7d-2b821fd92355.jpg" width="752" height="538" />
   
 <br>
 <br>
@@ -881,12 +923,12 @@ public class MainActivity extends AppCompatActivity {
 ##参考文章
 
   [Android官方文档](https://developer.android.com/guide/index.html)
-  <br>
+  
   [Android Web Apps Using Android WebView](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html) 
-  <br>
+  
   [史上最全webview详解](https://yq.aliyun.com/articles/32559)  
-  <br>
+  
   [H5 缓存机制浅析 移动端 Web 加载性能优化 ](http://bugly.qq.com/bbs/forum.php?mod=viewthread&tid=267)  
-  <br>
+  
   [WebView加载速度优化](http://www.jianshu.com/p/427600ca2107)  
   

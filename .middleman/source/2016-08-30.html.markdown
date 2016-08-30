@@ -611,7 +611,7 @@ public class MainActivity extends AppCompatActivity {
 当WebView的使用频率变得频繁的时候，对于其各方面的优化就变得逐渐重要了起来。可以知道的是，我们每加载一个 H5页面，都会有很多的请求。除了HTML主URL自身的请求外，HTML外部引用的 JS、CSS、字体文件、图片都是一个个独立的HTTP 请求，请求为并行但执行却为串行（可能有连接复用）。这么多请求串起来，再加上浏览器解析、渲染的时间，Web 整体的加载时间变得较长。同时请求文件越多，消耗的流量也会越多。那么对于加载的优化就变得非常重要，这方面的经验我也没有什么别的，大概三个方面：
 
 <br>
-###一个，就是资源本地化的问题
+####一个，就是资源本地化的问题
 首先可以明确的是，以目前的网络条件，通过网络去服务器获取资源的速度是远远比不上从本地读取的。谈论各种优化策略其实恰恰忽略了“需要加载”才是阻挡速度提升的最大绊脚石。所以我们的思路一，就是将一些较重的资源比如js、css、图片甚至HTML本身进行本地化处理，在每次加载到这些资源的时候，从本地读取进行加载，可以简单记忆为**“存·取·更”**。
 
 具体实现思路为：
@@ -622,7 +622,7 @@ public class MainActivity extends AppCompatActivity {
 这里附上一篇博客链接，非常棒可供参考：[caching-web-resources-in-the-android-device](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html#caching-web-resources-in-the-android-device)  
 
 <br>
-###第二个，就是缓存的问题
+####第二个，就是缓存的问题
 倘若你不采用或不完全采用第一条资源本地化的思路，那么你的WebView缓存是必须要开启的（虽然这一思路和第一条有重合的地方）。
   ```Java
     WebSettings settings = webView.getSettings();
@@ -651,11 +651,11 @@ public class MainActivity extends AppCompatActivity {
 既然有缓存，就要有缓存控制，与一相似的是我们也要建立缓存控制机制，定期或接受服务器通知来进行缓存的清空或更新。
 
 <br>
-###第三个，就是延迟加载和执行js
+####第三个，就是延迟加载和执行js
   在WebView中，onPageFinished()的回调意味着页面加载的完成。但该方法会在JavScript脚本执行完成后才会触发，倘若我们要加载的页面使用了JQuery，会在处理完DOM对象，执行完$(document).ready(function() {})后才会渲染并显示页面。这是不可接受的，所以我们需要对Js进行延迟加载，当然这部分是Web前端的工作。
  
  <br>
-###如果说还有什么
+####如果说还有什么
  
 那就是JsBridge一律不得滥用，这个对页面加载的完成速度是有很大影响的。同时要注意的是，不管你是否对资源进行缓存，都请将资源在服务器端进行压缩。因为无论是资源的获取和更新，都是要从服务器获取的，所以对于资源文件的压缩其实是最直接也最应该做的事情之一，但是一般服务器端都会做好，所以主要就是上面这三件事。
 <br>

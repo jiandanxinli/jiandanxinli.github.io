@@ -168,58 +168,58 @@ public class MainActivity extends AppCompatActivity {
   
   <br>
   <br>
-    - **String getUrl**()：获取当前页面的URL。
+  - **String getUrl**()：获取当前页面的URL。
   <br>
   <br>
-    - **reload**()：重新reload当前的URL，即刷新。
+  - **reload**()：重新reload当前的URL，即刷新。
   <br>
   <br>  
   <br>
   <br>
-    - **boolean canGoBack**()：用来确认WebView里是否还有可回退的历史记录。通常我们会在WebView里重写返回键的点击事件，通过该方法判断WebView里是否还有历史记录，若有则返回上一页。
+  - **boolean canGoBack**()：用来确认WebView里是否还有可回退的历史记录。通常我们会在WebView里重写返回键的点击事件，通过该方法判断WebView里是否还有历史记录，若有则返回上一页。
   <br>
   <br>
-    - **boolean canGoForward**()：用来确认WebView是否还有可向前的历史记录。
+  - **boolean canGoForward**()：用来确认WebView是否还有可向前的历史记录。
   <br>
   <br>
-    - **boolean canGoBackOrForward**(int steps)：以当前的页面为起始点，用来确认WebView的历史记录是否足以后退或前进给定的步数，正数为前进，负数为后退。
+  - **boolean canGoBackOrForward**(int steps)：以当前的页面为起始点，用来确认WebView的历史记录是否足以后退或前进给定的步数，正数为前进，负数为后退。
   <br>
   <br>
-    - **goBack**()：在WebView历史记录后退到上一项。
+  - **goBack**()：在WebView历史记录后退到上一项。
   <br>
   <br>
-    - **goForward**()：在WebView历史记录里前进到下一项。
+  - **goForward**()：在WebView历史记录里前进到下一项。
   <br>
   <br>
-    - **goBackOrForward**(int steps)：以当前页面为起始点，前进或后退历史记录中指定的步数，正数为前进，负数为后退。
-  <br>
-  <br>
-  <br>
-  <br>
-    - **clearCache**(boolean includeDiskFiles)：清空网页访问留下的缓存数据。需要注意的时，由于缓存是全局的，所以只要是WebView用到的缓存都会被清空，即便其他地方也会使用到。该方法接受一个参数，从命名即可看出作用。若设为false，则只清空内存里的资源缓存，而不清空磁盘里的。
-  <br>
-  <br>
-    - **clearHistory**()：清除当前webview访问的历史记录。
-  <br>
-  <br>
-    - **clearFormData**()：清除自动完成填充的表单数据。需要注意的是，该方法仅仅清除**当前表单域自动完成填充的表单数据**，并不会清除WebView存储到本地的数据。
+  - **goBackOrForward**(int steps)：以当前页面为起始点，前进或后退历史记录中指定的步数，正数为前进，负数为后退。
   <br>
   <br>
   <br>
   <br>
-    - **onPause**()：当页面被失去焦点被切换到后台不可见状态，需要执行onPause操作，该操作会通知内核安全地暂停所有动作，比如动画的执行或定位的获取等。需要注意的是该方法并不会暂停JavaScript的执行，若要暂停JavaScript的执行请使用接下来的这个方法。
+  - **clearCache**(boolean includeDiskFiles)：清空网页访问留下的缓存数据。需要注意的时，由于缓存是全局的，所以只要是WebView用到的缓存都会被清空，即便其他地方也会使用到。该方法接受一个参数，从命名即可看出作用。若设为false，则只清空内存里的资源缓存，而不清空磁盘里的。
   <br>
   <br>
-    - **onResume**()：在先前调用***onPause()***后，我们可以调用该方法来恢复WebView的运行。
+  - **clearHistory**()：清除当前webview访问的历史记录。
   <br>
   <br>
-    - **pauseTimers**()：该方法面向全局整个应用程序的webview，它会暂停所有webview的layout，parsing，JavaScript Timer。当程序进入后台时，该方法的调用可以降低CPU功耗。
+  - **clearFormData**()：清除自动完成填充的表单数据。需要注意的是，该方法仅仅清除**当前表单域自动完成填充的表单数据**，并不会清除WebView存储到本地的数据。
   <br>
   <br>
-    - **resumeTimers**()：恢复pauseTimers时的所有操作。
   <br>
   <br>
-    - **destroy**()：销毁WebView。需要注意的是：这个方法的调用应在WebView从父容器中被remove掉之后。我们可以手动地调用
+  - **onPause**()：当页面被失去焦点被切换到后台不可见状态，需要执行onPause操作，该操作会通知内核安全地暂停所有动作，比如动画的执行或定位的获取等。需要注意的是该方法并不会暂停JavaScript的执行，若要暂停JavaScript的执行请使用接下来的这个方法。
+  <br>
+  <br>
+  - **onResume**()：在先前调用***onPause()***后，我们可以调用该方法来恢复WebView的运行。
+  <br>
+  <br>
+  - **pauseTimers**()：该方法面向全局整个应用程序的webview，它会暂停所有webview的layout，parsing，JavaScript Timer。当程序进入后台时，该方法的调用可以降低CPU功耗。
+  <br>
+  <br>
+  - **resumeTimers**()：恢复pauseTimers时的所有操作。
+  <br>
+  <br>
+  - **destroy**()：销毁WebView。需要注意的是：这个方法的调用应在WebView从父容器中被remove掉之后。我们可以手动地调用
   ```Java
     rootLayout.removeView(webView);
     webView.destroy();
@@ -229,13 +229,13 @@ public class MainActivity extends AppCompatActivity {
   <br>
   <br>
   <br>
-    - **getScrollY**()：该方法返回的当前可见区域的顶端距整个页面顶端的距离，也就是当前内容滚动的距离。
+  - **getScrollY**()：该方法返回的当前可见区域的顶端距整个页面顶端的距离，也就是当前内容滚动的距离。
   <br>
   <br>
-    - **getHeight**()：方法都返回当前WebView这个容器的高度。其实以上两个方法都属于View。
+  - **getHeight**()：方法都返回当前WebView这个容器的高度。其实以上两个方法都属于View。
   <br>
   <br>
-    - **getContentHeight**()：该方法返回整个HTML页面的高度，但该高度值并不等同于当前整个页面的高度，因为WebView有缩放功能， 所以当前整个页面的高度实际上应该是原始HTML的高度再乘上缩放比例。因此，准确的判断方法应该是
+  - **getContentHeight**()：该方法返回整个HTML页面的高度，但该高度值并不等同于当前整个页面的高度，因为WebView有缩放功能， 所以当前整个页面的高度实际上应该是原始HTML的高度再乘上缩放比例。因此，准确的判断方法应该是
   ```Java
     if (webView.getContentHeight() * webView.getScale() == (webView.getHeight() + webView.getScrollY())) {
         //已经处于底端
@@ -247,10 +247,10 @@ public class MainActivity extends AppCompatActivity {
 ```
   <br>
   <br>
-    - **pageUp**(boolean top)：将WebView展示的页面滑动至顶部。
+  - **pageUp**(boolean top)：将WebView展示的页面滑动至顶部。
   <br>
   <br>
-    - **pageDown**(boolean bottom)：将WebView展示的页面滑动至底部。
+  - **pageDown**(boolean bottom)：将WebView展示的页面滑动至底部。
   <br>
   <br>
   

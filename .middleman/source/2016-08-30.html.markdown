@@ -22,7 +22,9 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
 ## 前言
 
   喝酒不开车，开车不喝酒。
-
+<br>
+<br>
+  
 <br>
 ## 目录
 
@@ -36,8 +38,10 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
   8. WebView加载优化
   9. 驾照考试
   10. 上路
+<br>
+<br>
   
-
+<br>
 ## WebView简介
   
   为了方便开发者实现在app内展示网页并与网页交互的需求，Android SDK提供了WebView组件。<br>它继承自AbsoluteLayout，展示网页的同时，也可以在其中放入其他的子View。<br>
@@ -45,7 +49,10 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
   不过有几点改变需要注意，但我尝试着翻译了下，发现还是英文原文说得好，所以我贴链接吧~~~<br>
   [Migrating to WebView in Android 4.4](https://developer.android.com/guide/webapps/migrating.html)<br><br>
   在WebView中，有几个地方是我们可以使用来定制我们的WebView各种行为的，分别是：**WebSettings**、**JavaScriptInterface**、**WebViewClient**以及**WebChromeClient**。这些我都会在接下来的文章中一一介绍。
-<br><br>
+<br>
+<br>
+  
+<br>
 ## WebView基本使用
   
   下面简单介绍下WebView的基本使用：
@@ -151,9 +158,10 @@ public class MainActivity extends AppCompatActivity {
   效果图：
   <br>
   <img src="https://cloud.githubusercontent.com/assets/12692071/17649176/5ffb5b44-6260-11e6-84dc-2ac41be1b858.gif" width="300" height="550" />
-  <br>
-  <br>
+<br>
+<br>
   
+<br>
 ## WebView简介
   
   接下来再介绍一些WebView的常用方法，具体演示会在后面章节的代码里统一展示。
@@ -363,10 +371,9 @@ public class MainActivity extends AppCompatActivity {
   <br>
   <br>
 以上就是一些WebSettings的常用方法，具体的使用以及一些缓存的问题会在接下来的代码以及文章中有更加直观的说明。
-
 <br>
 <br>
-<br>
+  
 <br>
 ##WebViewClient
   
@@ -415,75 +422,73 @@ public class MainActivity extends AppCompatActivity {
   <br>
   <br>
   - **boolean	shouldOverrideKeyEvent(WebView view, KeyEvent event)**：默认值为false，重写此方法并return true可以让我们在WebView内处理按键事件。
-  <br>
-  <br>
-  <br>
-  <br>
-
+<br>
+<br>
+  
+<br>
 ##WebChromeClient
 
   如果说WebViewClient是帮助WebView处理各种通知、请求事件的“内政大臣”的话，那么WebChromeClient就是辅助WebView处理Javascript的对话框，网站图标，网站title，加载进度等偏外部事件的“外交大臣”。
   
   
-  - onProgressChanged(WebView view, int newProgress)：当页面加载的进度发生改变时回调，用来告知主程序当前页面的加载进度。
+  - **onProgressChanged(WebView view, int newProgress)**：当页面加载的进度发生改变时回调，用来告知主程序当前页面的加载进度。
   <br>
   <br>
   <br>
   <br>
-  - onReceivedIcon(WebView view, Bitmap icon)：用来接收web页面的icon，我们可以在这里将该页面的icon设置到Toolbar。
+  - **onReceivedIcon(WebView view, Bitmap icon)**：用来接收web页面的icon，我们可以在这里将该页面的icon设置到Toolbar。
   <br>
   <br>
-  - onReceivedTitle(WebView view, String title)：用来接收web页面的title，我们可以在这里将页面的title设置到Toolbar。
+  - **onReceivedTitle(WebView view, String title)**：用来接收web页面的title，我们可以在这里将页面的title设置到Toolbar。
   <br>
   <br>
   <br>
   <br>
 以下两个方法是为了支持web页面进入全屏模式而存在的（比如播放视频），如果不实现这两个方法，该web上的内容便不能进入全屏模式。<br>
-  - onShowCustomView(View view, WebChromeClient.CustomViewCallback callback)：该方法在当前页面进入全屏模式时回调，主程序必须提供一个包含当前web内容（视频 or Something）的自定义的View。
+  - **onShowCustomView(View view, WebChromeClient.CustomViewCallback callback)**：该方法在当前页面进入全屏模式时回调，主程序必须提供一个包含当前web内容（视频 or Something）的自定义的View。
   <br>
   <br>
-  - onHideCustomView()：该方法在当前页面退出全屏模式时回调，主程序应在这时隐藏之前show出来的View。
+  - **onHideCustomView()**：该方法在当前页面退出全屏模式时回调，主程序应在这时隐藏之前show出来的View。
   <br>
   <br>
   <br>
   <br>
-  - Bitmap getDefaultVideoPoster()：当我们的Web页面包含视频时，我们可以在HTML里为它设置一个预览图，WebView会在绘制页面时根据它的宽高为它布局。而当我们处于弱网状态下时，我们没有比较快的获取该图片，那WebView绘制页面时的gitWidth()方法就会报出空指针异常~ 于是app就crash了。。<br>
+  - **Bitmap getDefaultVideoPoster()**：当我们的Web页面包含视频时，我们可以在HTML里为它设置一个预览图，WebView会在绘制页面时根据它的宽高为它布局。而当我们处于弱网状态下时，我们没有比较快的获取该图片，那WebView绘制页面时的gitWidth()方法就会报出空指针异常~ 于是app就crash了。。<br>
   这时我们就需要重写该方法，在我们尚未获取web页面上的video预览图时，给予它一个本地的图片，避免空指针的发生。
   <br>
   <br>
-  - View getVideoLoadingProgressView()：重写该方法可以在视频loading时给予一个自定义的View，可以是加载圆环 or something。
+  - **View getVideoLoadingProgressView()**：重写该方法可以在视频loading时给予一个自定义的View，可以是加载圆环 or something。
   <br>
   <br>
   <br>
   <br>
-  - boolean	onJsAlert(WebView view, String url, String message, JsResult result)：处理Javascript中的Alert对话框。
+  - **boolean	onJsAlert(WebView view, String url, String message, JsResult result)**：处理Javascript中的Alert对话框。
   <br>
   <br>
-  - boolean	onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result)：处理Javascript中的Prompt对话框。
+  - **boolean	onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result)**：处理Javascript中的Prompt对话框。
   <br>
   <br>
-  - boolean	onJsBeforeUnload(WebView view, String url, String message, JsResult result)：待斟酌
+  - **boolean	onJsBeforeUnload(WebView view, String url, String message, JsResult result)**：待斟酌
   <br>
   <br>
-  - boolean	onJsConfirm(WebView view, String url, String message, JsResult result)：处理Javascript中的Confirm对话框
-  <br>
-  <br>
-  <br>
-  <br>
-  - boolean	onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams)：该方法在用户进行了web上某个需要上传文件的操作时回调。我们应该在这里打开一个文件选择器，如果要取消这个请求我们可以调用***filePathCallback.onReceiveValue(null)***并返回***true***。
+  - **boolean	onJsConfirm(WebView view, String url, String message, JsResult result)**：处理Javascript中的Confirm对话框
   <br>
   <br>
   <br>
   <br>
-  - onPermissionRequest(PermissionRequest request)：该方法在web页面请求某个尚未被允许或拒绝的权限时回调，主程序在此时调用***grant(String [])***或***deny()***方法。如果该方法没有被重写，则默认拒绝web页面请求的权限。
-  <br>
-  <br>
-  - onPermissionRequestCanceled(PermissionRequest request)：该方法在web权限申请权限被取消时回调，这时应该隐藏任何与之相关的UI界面。
+  - **boolean	onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams)**：该方法在用户进行了web上某个需要上传文件的操作时回调。我们应该在这里打开一个文件选择器，如果要取消这个请求我们可以调用***filePathCallback.onReceiveValue(null)***并返回***true***。
   <br>
   <br>
   <br>
   <br>
+  - **onPermissionRequest(PermissionRequest request)**：该方法在web页面请求某个尚未被允许或拒绝的权限时回调，主程序在此时调用***grant(String [])***或***deny()***方法。如果该方法没有被重写，则默认拒绝web页面请求的权限。
+  <br>
+  <br>
+  - **onPermissionRequestCanceled(PermissionRequest request)**：该方法在web权限申请权限被取消时回调，这时应该隐藏任何与之相关的UI界面。
+<br>
+<br>
   
+<br>
 ##Js与WebVipew交互
 
   既然嗨鸟应用大行其道，那么毫无疑问Android与JavaScript的交互我们也必须了解清楚，下面来介绍一下JavaScript与Android是如何互相调用的。
@@ -597,11 +602,13 @@ public class MainActivity extends AppCompatActivity {
  ```
  
  以上就是Js与WebView交互的一些介绍，希望能对你有帮助。
- <br>
- <br>
+<br>
+<br>
+  
+<br>
 ##WebView加载优化
 
-当WebView的使用频率变得频繁的时候，对于其各方面的优化就变得逐渐重要了起来。可以知道的是，我们每加载一个 H5页面，都会有很多的请求。除了HTML主URL自身的请求外，HTML外部引用的 JS、CSS、字体文件、图片都是一个个独立的HTTP 请求，每一个请求都是串行的（可能有连接复用）。这么多请求串起来，再加上浏览器解析、渲染的时间，Web 整体的加载时间变得较长。同时请求文件越多，消耗的流量也会越多。那么对于加载的优化就变得非常重要，这方面的经验我也没有什么别的，大概三个方面：
+当WebView的使用频率变得频繁的时候，对于其各方面的优化就变得逐渐重要了起来。可以知道的是，我们每加载一个 H5页面，都会有很多的请求。除了HTML主URL自身的请求外，HTML外部引用的 JS、CSS、字体文件、图片都是一个个独立的HTTP 请求，请求为并行但执行却为串行（可能有连接复用）。这么多请求串起来，再加上浏览器解析、渲染的时间，Web 整体的加载时间变得较长。同时请求文件越多，消耗的流量也会越多。那么对于加载的优化就变得非常重要，这方面的经验我也没有什么别的，大概三个方面：
 
 <br>
 ###一个，就是资源本地化的问题
@@ -651,8 +658,10 @@ public class MainActivity extends AppCompatActivity {
 ###如果说还有什么
  
 那就是JsBridge一律不得滥用，这个对页面加载的完成速度是有很大影响的。同时要注意的是，不管你是否对资源进行缓存，都请将资源在服务器端进行压缩。因为无论是资源的获取和更新，都是要从服务器获取的，所以对于资源文件的压缩其实是最直接也最应该做的事情之一，但是一般服务器端都会做好，所以主要就是上面这三件事。
- <br>
- <br>
+<br>
+<br>
+  
+<br>
 ##驾照考试
 
 介绍了这么多，希望能对你有点帮助。接下来时纯实战时间，我会将上面所介绍的很多知识点在接下来的代码里实际应用一遍，希望能够带给你更加直观的使用感受。
@@ -669,8 +678,22 @@ public class MainActivity extends AppCompatActivity {
   效果图：
   <br>
   <img src="https://cloud.githubusercontent.com/assets/12692071/17649176/5ffb5b44-6260-11e6-84dc-2ac41be1b858.gif" width="300" height="550" />
-  <br>
-  <br>
+<br>
+<br>
+  
+<br>
 ##上路
   好了，到此为止你已阅读完所有的指南。
+  
+  
+<br>
+<br>
+  
+<br>
+##参考文章
+
+  [caching-web-resources-in-the-android-device](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html#caching-web-resources-in-the-android-device)  
+  [caching-web-resources-in-the-android-device](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html#caching-web-resources-in-the-android-device)  
+  [caching-web-resources-in-the-android-device](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html#caching-web-resources-in-the-android-device)  
+  [caching-web-resources-in-the-android-device](http://tutorials.jenkov.com/android/android-web-apps-using-android-webview.html#caching-web-resources-in-the-android-device)  
   

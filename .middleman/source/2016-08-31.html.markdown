@@ -480,7 +480,7 @@ public class MainActivity extends AppCompatActivity {
 <br>
   
 <br>
-##Js与WebVipew交互
+##Js与WebView交互
 
   既然嗨鸟应用大行其道，那么毫无疑问Android与JavaScript的交互我们也必须了解清楚，下面来介绍一下JavaScript与Android是如何互相调用的。
   <br>
@@ -658,7 +658,7 @@ public class MainActivity extends AppCompatActivity {
 介绍了这么多，希望能对你有点帮助。接下来时纯实战时间，我会将上面所介绍的很多知识点在接下来的代码里实际应用一遍，希望能够带给你更加直观的使用感受。
 
   ```XML
-      <?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -907,6 +907,7 @@ public class MainActivity extends AppCompatActivity {
   效果图：
   
   fuck，效果图太大压缩无望~~~
+  [效果图看外链视频吧](http://www.iqiyi.com/w_19rsx24znp.html)
 <br>
 <br>
   

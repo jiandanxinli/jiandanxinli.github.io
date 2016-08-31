@@ -19,16 +19,16 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
 
 ### 目录
 
-  1. WebView简介
-  2. WebView基本使用
-  3. WebView常用方法
-  4. WebSettings
-  5. WebViewClient
-  6. WebChromeClient
-  7. JavaScript与WebView交互
-  8. WebView加载优化
-  9. 驾照考试
-  10. 上路
+1. WebView简介
+2. WebView基本使用
+3. WebView常用方法
+4. WebSettings
+5. WebViewClient
+6. WebChromeClient
+7. JavaScript与WebView交互
+8. WebView加载优化
+9. 驾照考试
+10. 上路
 
 ### WebView简介
 
@@ -52,7 +52,7 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
 
 首先新建一个工程，在layout文件里放入一个WebView控件（当然也可以通过Java代码动态放入，这里不演示了）
 
-```XML
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -67,15 +67,15 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
 
 然后在Activity的onCreate方法里写入如下代码：
 
-```Java
-  String url = "https://www.google.com";
-  WebView webView = (WebView) findViewById(R.id.web_view);
-  webView.loadUrl(url);
+```java
+String url = "https://www.google.com";
+WebView webView = (WebView) findViewById(R.id.web_view);
+webView.loadUrl(url);
 ```
 
 接着在AndroidManifest声明访问网络的权限：
 
-```XML
+```xml
 <uses-permission android:name="android.permission.INTERNET"/>
 ```
 
@@ -87,7 +87,7 @@ summary: 北京市东城区首席Bug布道师开山之作，一整月交通事�
 
 Layout文件改为：
 
-```XML
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
@@ -112,54 +112,51 @@ Layout文件改为：
 
 Activity的onCreate里加上：
 
-```Java
-  Button button = (Button) findViewById(R.id.button);
-  button.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-          Toast.makeText(getApplicationContext(), "系好安全带!", Toast.LENGTH_SHORT).show();
-      }
-  });
+```java
+Button button = (Button) findViewById(R.id.button);
+button.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        Toast.makeText(getApplicationContext(), "系好安全带!", Toast.LENGTH_SHORT).show();
+    }
+});
 ```
 
 这时，运行app，里面就会多出一个Button~ 但如果你真的运行的话，你就会发现，app会自动跳到浏览器并打开指定的网页，而并非在app内展示网页，那这就与我们的初衷背道而驰了，那么要如何实现网页在App内打开呢?这就引出了下面的章节会提到的东西：WebViewClient。我先将代码贴出，具体实现原理留到下节说明。
 
 最终XML布局就如上面那样，Java代码（最终）如下：
 
-```Java
+```java
 public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
+        String url = "https://www.google.com";
+        WebView webView = (WebView) findViewById(R.id.web_view);
+        webView.loadUrl(url);
 
-            String url = "https://www.google.com";
-            WebView webView = (WebView) findViewById(R.id.web_view);
-            webView.loadUrl(url);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                view.loadUrl(request.toString());
+                return true;
+            }
+        });
 
-            webView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                    view.loadUrl(request.toString());
-                    return true;
-                }
-            });
-
-            Button button = (Button) findViewById(R.id.button);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getApplicationContext(), "系好安全带!", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "系好安全带!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }
 ```
 
-效果图：
-
-![效果图](https://cloud.githubusercontent.com/assets/12692071/17649176/5ffb5b44-6260-11e6-84dc-2ac41be1b858.gif)
+效果图：[效果视频](http://www.iqiyi.com/w_19rsx20xst.html)
 
 ### WebView简介
 
@@ -197,9 +194,9 @@ public class MainActivity extends AppCompatActivity {
 
 - **destroy**()：销毁WebView。需要注意的是：这个方法的调用应在WebView从父容器中被remove掉之后。我们可以手动地调用
 
-```Java
-  rootLayout.removeView(webView);
-  webView.destroy();
+```java
+rootLayout.removeView(webView);
+webView.destroy();
 ```
 
 - **getScrollY**()：该方法返回的当前可见区域的顶端距整个页面顶端的距离，也就是当前内容滚动的距离。
@@ -208,14 +205,14 @@ public class MainActivity extends AppCompatActivity {
 
 - **getContentHeight**()：该方法返回整个HTML页面的高度，但该高度值并不等同于当前整个页面的高度，因为WebView有缩放功能， 所以当前整个页面的高度实际上应该是原始HTML的高度再乘上缩放比例。因此，准确的判断方法应该是
 
-```Java
-  if (webView.getContentHeight() * webView.getScale() == (webView.getHeight() + webView.getScrollY())) {
-      //已经处于底端
-  }
+```java
+if (webView.getContentHeight() * webView.getScale() == (webView.getHeight() + webView.getScrollY())) {
+    //已经处于底端
+}
 
-  if(webView.getScrollY() == 0){
-      //处于顶端
-  }
+if(webView.getScrollY() == 0){
+    //处于顶端
+}
 ```
 
 - **pageUp**(boolean top)：将WebView展示的页面滑动至顶部。
@@ -230,7 +227,7 @@ WebSettings对象可以通过***WebView.getSettings()***获得，它的生命周
 
 ### 获取WebSettings对象
 
-```Java
+```java
   WebSettings webSettings = webView.getSettings();
 ```
 
@@ -375,39 +372,37 @@ WebSettings对象可以通过***WebView.getSettings()***获得，它的生命周
 
 **现有以下这段JavaScript代码**
 
-```JavaScript
-<script type="text/javascript">
-    function readyToGo() {
-        alert("Hello")
-    }
+```javascript
+  function readyToGo() {
+      alert("Hello")
+  }
 
-    function alertMessage(message) {
-        alert(message)
-    }
+  function alertMessage(message) {
+      alert(message)
+  }
 
-    function getYourCar(){
-        return "Car";
-    }
-</script>
+  function getYourCar(){
+      return "Car";
+  }
 ```
 
 #### 1. WebView调用JavaScript无参无返回值函数
 
-```Java
+```java
 String call = "javascript:readyToGo()";
 webView.loadUrl(call);
 ```
 
 #### 2. WebView调用JavScript有参无返回值函数
 
-```Java
+```java
 String call = "javascript:alertMessage(\"" + "content" + "\")";
 webView.loadUrl(call);
 ```
 
 #### 3. WebView调用JavaScript有参数有返回值的函数
 
-```Java
+```java
 @TargetApi(Build.VERSION_CODES.KITKAT)
 private void evaluateJavaScript(WebView webView){
     webView.evaluateJavascript("getYourCar()", new ValueCallback<String>() {
@@ -427,7 +422,7 @@ private void evaluateJavaScript(WebView webView){
 
 **1. 编写Java原生方法并用使用@JavascriptInterface注解**
 
-```Java
+```java
 @JavascriptInterface
 public void show(String s){
     Toast.makeText(getApplication(), s, Toast.LENGTH_SHORT).show();
@@ -436,7 +431,7 @@ public void show(String s){
 
 **2.注册JavaScriptInterface**
 
-```Java
+```java
 webView.addJavascriptInterface(this, "android");
 ```
 
@@ -444,7 +439,7 @@ webView.addJavascriptInterface(this, "android");
 
 **3.编写JavaScript代码**
 
-```JavaScript
+```javascript
 function toastClick(){
     window.android.show("JavaScript called~!");
 }
@@ -454,22 +449,22 @@ function toastClick(){
 
 **1.定义一个带返回值的Java方法，并使用@JavaInterface：**
 
-```Java
-  @JavaInterface
-  public String getMessage(){
-      return "Hello,boy~";
-  }
+```java
+@JavaInterface
+public String getMessage(){
+    return "Hello,boy~";
+}
 ```
 
 **2.添加JavaScript的映射**
 
-```Java
-  webView.addJavaScriptInterface(this,"Android");
+```java
+webView.addJavaScriptInterface(this,"Android");
 ```
 
 **3.通过JavaScript调用Java方法**
 
-```JavaScript
+```javascript
 function showHello(){
     var str=window.Android.getMessage();
     console.log(str);
@@ -498,12 +493,12 @@ function showHello(){
 
 倘若你不采用或不完全采用第一条资源本地化的思路，那么你的WebView缓存是必须要开启的（虽然这一思路和第一条有重合的地方）。
 
-```Java
-  WebSettings settings = webView.getSettings();
-  settings.setAppCacheEnabled(true);
-  settings.setDatabaseEnabled(true);
-  settings.setDomStorageEnabled(true);//开启DOM缓存
-  settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+```java
+WebSettings settings = webView.getSettings();
+settings.setAppCacheEnabled(true);
+settings.setDatabaseEnabled(true);
+settings.setDomStorageEnabled(true);//开启DOM缓存
+settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 ```
 
 在网络正常时，采用默认缓存策略，在缓存可获取并且没有过期的情况下加载缓存，否则通过网络获取资源以减少页面的网络请求次数。
@@ -514,14 +509,14 @@ function showHello(){
 
 这里我的思路是，在开启缓存的前提下，WebView在加载页面时检测网络变化，倘若在加载页面时用户的网络突然断掉，我们应当更改WebView的缓存策略。
 
-```Java
-  ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-  NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-  if(networkInfo.isAvailable()) {
-      settings.setCacheMode(WebSettings.LOAD_DEFAULT);//网络正常时使用默认缓存策略
-  } else {
-      settings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);//网络不可用时只使用缓存
-  }
+```java
+ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+if(networkInfo.isAvailable()) {
+    settings.setCacheMode(WebSettings.LOAD_DEFAULT);//网络正常时使用默认缓存策略
+} else {
+    settings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);//网络不可用时只使用缓存
+}
 ```
 
 既然有缓存，就要有缓存控制，与一相似的是我们也要建立缓存控制机制，定期或接受服务器通知来进行缓存的清空或更新。
@@ -538,7 +533,7 @@ function showHello(){
 
 介绍了这么多，希望能对你有点帮助。接下来时纯实战时间，我会将上面所介绍的很多知识点在接下来的代码里实际应用一遍，希望能够带给你更加直观的使用感受。
 
-```XML
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -580,8 +575,8 @@ function showHello(){
 
 Java部分
 
-```Java
-  public class MainActivity extends AppCompatActivity {
+```java
+public class MainActivity extends AppCompatActivity {
 
   private WebView mWebView;
 

@@ -14,7 +14,7 @@
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-31.html"/>
     <id>https://jiandanxinli.github.io/2016-08-31.html</id>
     <published>2016-08-31T08:00:00+08:00</published>
-    <updated>2016-08-31T11:25:56+08:00</updated>
+    <updated>2016-08-31T11:50:41+08:00</updated>
     <author>
       <name>BugDev</name>
     </author>
@@ -67,24 +67,24 @@
 &lt;p&gt;下面简单介绍下WebView的基本使用：&lt;/p&gt;
 
 &lt;p&gt;首先新建一个工程，在layout文件里放入一个WebView控件（当然也可以通过Java代码动态放入，这里不演示了）&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
-&amp;lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"&amp;gt;
+&lt;pre class="highlight xml"&gt;&lt;code&gt;&lt;span class="cp"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;LinearLayout&lt;/span&gt; &lt;span class="na"&gt;xmlns:android=&lt;/span&gt;&lt;span class="s"&gt;"http://schemas.android.com/apk/res/android"&lt;/span&gt;
+    &lt;span class="na"&gt;android:layout_width=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;
+    &lt;span class="na"&gt;android:layout_height=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
 
-    &amp;lt;WebView
-        android:id="@+id/web_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/&amp;gt;
-&amp;lt;/LinearLayout&amp;gt;
+    &lt;span class="nt"&gt;&amp;lt;WebView&lt;/span&gt;
+        &lt;span class="na"&gt;android:id=&lt;/span&gt;&lt;span class="s"&gt;"@+id/web_view"&lt;/span&gt;
+        &lt;span class="na"&gt;android:layout_width=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;
+        &lt;span class="na"&gt;android:layout_height=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;&lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/LinearLayout&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;然后在Activity的onCreate方法里写入如下代码：&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;  String url = "https://www.google.com";
-  WebView webView = (WebView) findViewById(R.id.web_view);
-  webView.loadUrl(url);
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"https://www.google.com"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;WebView&lt;/span&gt; &lt;span class="n"&gt;webView&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;findViewById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;web_view&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;loadUrl&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;接着在AndroidManifest声明访问网络的权限：&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;&amp;lt;uses-permission android:name="android.permission.INTERNET"/&amp;gt;
+&lt;pre class="highlight xml"&gt;&lt;code&gt;&lt;span class="nt"&gt;&amp;lt;uses-permission&lt;/span&gt; &lt;span class="na"&gt;android:name=&lt;/span&gt;&lt;span class="s"&gt;"android.permission.INTERNET"&lt;/span&gt;&lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;就，完事了~&lt;/p&gt;
 
@@ -93,71 +93,68 @@
 &lt;p&gt;上面提到了WebView继承自AbsoluteLayout，可以在其中放入一些子View，那也顺手来一下。&lt;/p&gt;
 
 &lt;p&gt;Layout文件改为：&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
-&amp;lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"&amp;gt;
+&lt;pre class="highlight xml"&gt;&lt;code&gt;&lt;span class="cp"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;LinearLayout&lt;/span&gt; &lt;span class="na"&gt;xmlns:android=&lt;/span&gt;&lt;span class="s"&gt;"http://schemas.android.com/apk/res/android"&lt;/span&gt;
+  &lt;span class="na"&gt;android:layout_width=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;
+  &lt;span class="na"&gt;android:layout_height=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
 
-  &amp;lt;WebView
-      android:id="@+id/web_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"&amp;gt;
+  &lt;span class="nt"&gt;&amp;lt;WebView&lt;/span&gt;
+      &lt;span class="na"&gt;android:id=&lt;/span&gt;&lt;span class="s"&gt;"@+id/web_view"&lt;/span&gt;
+      &lt;span class="na"&gt;android:layout_width=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;
+      &lt;span class="na"&gt;android:layout_height=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
 
-      &amp;lt;Button
-          android:id="@+id/button"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_x="170dp"
-          android:layout_y="400dp"
-          android:background="@color/colorAccent"
-          android:text="@string/app_name" /&amp;gt;
-  &amp;lt;/WebView&amp;gt;
-&amp;lt;/LinearLayout&amp;gt;
+      &lt;span class="nt"&gt;&amp;lt;Button&lt;/span&gt;
+          &lt;span class="na"&gt;android:id=&lt;/span&gt;&lt;span class="s"&gt;"@+id/button"&lt;/span&gt;
+          &lt;span class="na"&gt;android:layout_width=&lt;/span&gt;&lt;span class="s"&gt;"wrap_content"&lt;/span&gt;
+          &lt;span class="na"&gt;android:layout_height=&lt;/span&gt;&lt;span class="s"&gt;"wrap_content"&lt;/span&gt;
+          &lt;span class="na"&gt;android:layout_x=&lt;/span&gt;&lt;span class="s"&gt;"170dp"&lt;/span&gt;
+          &lt;span class="na"&gt;android:layout_y=&lt;/span&gt;&lt;span class="s"&gt;"400dp"&lt;/span&gt;
+          &lt;span class="na"&gt;android:background=&lt;/span&gt;&lt;span class="s"&gt;"@color/colorAccent"&lt;/span&gt;
+          &lt;span class="na"&gt;android:text=&lt;/span&gt;&lt;span class="s"&gt;"@string/app_name"&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;/WebView&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/LinearLayout&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Activity的onCreate里加上：&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;  Button button = (Button) findViewById(R.id.button);
-  button.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-          Toast.makeText(getApplicationContext(), "系好安全带!", Toast.LENGTH_SHORT).show();
-      }
-  });
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="n"&gt;Button&lt;/span&gt; &lt;span class="n"&gt;button&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Button&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;findViewById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;button&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;button&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setOnClickListener&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;View&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;OnClickListener&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onClick&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;View&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;makeText&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getApplicationContext&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="s"&gt;"系好安全带!"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LENGTH_SHORT&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;show&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;});&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;这时，运行app，里面就会多出一个Button~ 但如果你真的运行的话，你就会发现，app会自动跳到浏览器并打开指定的网页，而并非在app内展示网页，那这就与我们的初衷背道而驰了，那么要如何实现网页在App内打开呢?这就引出了下面的章节会提到的东西：WebViewClient。我先将代码贴出，具体实现原理留到下节说明。&lt;/p&gt;
 
 &lt;p&gt;最终XML布局就如上面那样，Java代码（最终）如下：&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;public class MainActivity extends AppCompatActivity {
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MainActivity&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;AppCompatActivity&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="nd"&gt;@Override&lt;/span&gt;
+    &lt;span class="kd"&gt;protected&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onCreate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Bundle&lt;/span&gt; &lt;span class="n"&gt;savedInstanceState&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;onCreate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;savedInstanceState&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;setContentView&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;layout&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;activity_main&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"https://www.google.com"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;WebView&lt;/span&gt; &lt;span class="n"&gt;webView&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;findViewById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;web_view&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;loadUrl&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
 
-            String url = "https://www.google.com";
-            WebView webView = (WebView) findViewById(R.id.web_view);
-            webView.loadUrl(url);
+        &lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setWebViewClient&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;WebViewClient&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="nd"&gt;@Override&lt;/span&gt;
+            &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="nf"&gt;shouldOverrideUrlLoading&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;WebResourceRequest&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;loadUrl&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+                &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;});&lt;/span&gt;
 
-            webView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                    view.loadUrl(request.toString());
-                    return true;
-                }
-            });
-
-            Button button = (Button) findViewById(R.id.button);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getApplicationContext(), "系好安全带!", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-}
+        &lt;span class="n"&gt;Button&lt;/span&gt; &lt;span class="n"&gt;button&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Button&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;findViewById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;button&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;button&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setOnClickListener&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;View&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;OnClickListener&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="nd"&gt;@Override&lt;/span&gt;
+            &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onClick&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;View&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;makeText&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getApplicationContext&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="s"&gt;"系好安全带!"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LENGTH_SHORT&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;show&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;});&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;效果图：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src="https://cloud.githubusercontent.com/assets/12692071/17649176/5ffb5b44-6260-11e6-84dc-2ac41be1b858.gif" alt="效果图" /&gt;&lt;/p&gt;
+&lt;p&gt;效果图：&lt;a href="http://www.iqiyi.com/w_19rsx20xst.html"&gt;效果视频&lt;/a&gt;&lt;/p&gt;
 
 &lt;h3&gt;WebView简介&lt;/h3&gt;
 
@@ -181,21 +178,21 @@
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;resumeTimers&lt;/strong&gt;()：恢复pauseTimers时的所有操作。&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;destroy&lt;/strong&gt;()：销毁WebView。需要注意的是：这个方法的调用应在WebView从父容器中被remove掉之后。我们可以手动地调用&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;  rootLayout.removeView(webView);
-  webView.destroy();
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="n"&gt;rootLayout&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;removeView&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;destroy&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;getScrollY&lt;/strong&gt;()：该方法返回的当前可见区域的顶端距整个页面顶端的距离，也就是当前内容滚动的距离。&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;getHeight&lt;/strong&gt;()：方法都返回当前WebView这个容器的高度。其实以上两个方法都属于View。&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;getContentHeight&lt;/strong&gt;()：该方法返回整个HTML页面的高度，但该高度值并不等同于当前整个页面的高度，因为WebView有缩放功能， 所以当前整个页面的高度实际上应该是原始HTML的高度再乘上缩放比例。因此，准确的判断方法应该是&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;  if (webView.getContentHeight() * webView.getScale() == (webView.getHeight() + webView.getScrollY())) {
-      //已经处于底端
-  }
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getContentHeight&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getScale&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getHeight&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getScrollY&lt;/span&gt;&lt;span class="o"&gt;()))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;//已经处于底端&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
 
-  if(webView.getScrollY() == 0){
-      //处于顶端
-  }
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getScrollY&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+    &lt;span class="c1"&gt;//处于顶端&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;pageUp&lt;/strong&gt;(boolean top)：将WebView展示的页面滑动至顶部。&lt;/p&gt;&lt;/li&gt;
@@ -209,7 +206,7 @@
 &lt;p&gt;WebSettings对象可以通过&lt;strong&gt;&lt;em&gt;WebView.getSettings()&lt;/em&gt;&lt;/strong&gt;获得，它的生命周期是与它的WebView本身息息相关的，如果WebView被销毁了，那么任何由WebSettings调用的方法也同样不能使用。&lt;/p&gt;
 
 &lt;h3&gt;获取WebSettings对象&lt;/h3&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;  WebSettings webSettings = webView.getSettings();
+&lt;pre class="highlight java"&gt;&lt;code&gt;  &lt;span class="n"&gt;WebSettings&lt;/span&gt; &lt;span class="n"&gt;webSettings&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSettings&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;WebSettings常用方法&lt;/h3&gt;
 
@@ -328,38 +325,36 @@
 &lt;p&gt;在WebView中调用Js的基本格式为&lt;strong&gt;webView.loadUrl(&amp;quot;javascript:methodName(parameterValues)&amp;quot;);&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;现有以下这段JavaScript代码&lt;/strong&gt;&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;&amp;lt;script type="text/javascript"&amp;gt;
-    function readyToGo() {
-        alert("Hello")
-    }
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;  &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;readyToGo&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="nx"&gt;alert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
 
-    function alertMessage(message) {
-        alert(message)
-    }
+  &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;alertMessage&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="nx"&gt;alert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;message&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
 
-    function getYourCar(){
-        return "Car";
-    }
-&amp;lt;/script&amp;gt;
+  &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;getYourCar&lt;/span&gt;&lt;span class="p"&gt;(){&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;"Car"&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h4&gt;1. WebView调用JavaScript无参无返回值函数&lt;/h4&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;String call = "javascript:readyToGo()";
-webView.loadUrl(call);
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"javascript:readyToGo()"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;loadUrl&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;call&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h4&gt;2. WebView调用JavScript有参无返回值函数&lt;/h4&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;String call = "javascript:alertMessage(\"" + "content" + "\")";
-webView.loadUrl(call);
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"javascript:alertMessage(\""&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;"content"&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s"&gt;"\")"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;loadUrl&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;call&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h4&gt;3. WebView调用JavaScript有参数有返回值的函数&lt;/h4&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;@TargetApi(Build.VERSION_CODES.KITKAT)
-private void evaluateJavaScript(WebView webView){
-    webView.evaluateJavascript("getYourCar()", new ValueCallback&amp;lt;String&amp;gt;() {
-        @Override
-        public void onReceiveValue(String s) {
-            Log.d("findCar",s);
-        }
-    });
-}
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="nd"&gt;@TargetApi&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Build&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;VERSION_CODES&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;KITKAT&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;evaluateJavaScript&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt; &lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+    &lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;evaluateJavascript&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"getYourCar()"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ValueCallback&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="nd"&gt;@Override&lt;/span&gt;
+        &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onReceiveValue&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;d&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"findCar"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;});&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h4&gt;JavaScript通过WebView调用Java代码&lt;/h4&gt;
 
@@ -368,37 +363,37 @@ private void evaluateJavaScript(WebView webView){
 &lt;p&gt;&lt;strong&gt;演示一 JavaScript调用Android Toast方法&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;1. 编写Java原生方法并用使用@JavascriptInterface注解&lt;/strong&gt;&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;@JavascriptInterface
-public void show(String s){
-    Toast.makeText(getApplication(), s, Toast.LENGTH_SHORT).show();
-}
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="nd"&gt;@JavascriptInterface&lt;/span&gt;
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;show&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+    &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;makeText&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getApplication&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LENGTH_SHORT&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;show&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;2.注册JavaScriptInterface&lt;/strong&gt;&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;webView.addJavascriptInterface(this, "android");
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addJavascriptInterface&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;"android"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;addJavascriptInterface的作用是把this所代表的类映射为JavaScript中的android对象。&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;3.编写JavaScript代码&lt;/strong&gt;&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;function toastClick(){
-    window.android.show("JavaScript called~!");
-}
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;toastClick&lt;/span&gt;&lt;span class="p"&gt;(){&lt;/span&gt;
+    &lt;span class="nb"&gt;window&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;android&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;show&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"JavaScript called~!"&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;演示二 JavaScript调用有返回值的Java方法&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;1.定义一个带返回值的Java方法，并使用@JavaInterface：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;  @JavaInterface
-  public String getMessage(){
-      return "Hello,boy~";
-  }
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="nd"&gt;@JavaInterface&lt;/span&gt;
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="nf"&gt;getMessage&lt;/span&gt;&lt;span class="o"&gt;(){&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s"&gt;"Hello,boy~"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;2.添加JavaScript的映射&lt;/strong&gt;&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;  webView.addJavaScriptInterface(this,"Android");
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;addJavaScriptInterface&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="s"&gt;"Android"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;3.通过JavaScript调用Java方法&lt;/strong&gt;&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;function showHello(){
-    var str=window.Android.getMessage();
-    console.log(str);
-}
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;showHello&lt;/span&gt;&lt;span class="p"&gt;(){&lt;/span&gt;
+    &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;str&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;window&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Android&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;getMessage&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="nx"&gt;console&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;str&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;以上就是Js与WebView交互的一些介绍，希望能对你有帮助。&lt;/p&gt;
 
@@ -423,11 +418,11 @@ public void show(String s){
 &lt;h4&gt;第二个，就是缓存的问题&lt;/h4&gt;
 
 &lt;p&gt;倘若你不采用或不完全采用第一条资源本地化的思路，那么你的WebView缓存是必须要开启的（虽然这一思路和第一条有重合的地方）。&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;  WebSettings settings = webView.getSettings();
-  settings.setAppCacheEnabled(true);
-  settings.setDatabaseEnabled(true);
-  settings.setDomStorageEnabled(true);//开启DOM缓存
-  settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="n"&gt;WebSettings&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;webView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSettings&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setAppCacheEnabled&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setDatabaseEnabled&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setDomStorageEnabled&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;&lt;span class="c1"&gt;//开启DOM缓存&lt;/span&gt;
+&lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCacheMode&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebSettings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LOAD_DEFAULT&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;在网络正常时，采用默认缓存策略，在缓存可获取并且没有过期的情况下加载缓存，否则通过网络获取资源以减少页面的网络请求次数。&lt;/p&gt;
 
@@ -436,13 +431,13 @@ public void show(String s){
 &lt;p&gt;所以这时，离线缓存的问题就值得我们注意。我们需要让用户在没有网的时候，依然能够操作我们的app，而不是面对一个和浏览器里的网络错误一样的页面，哪怕他能进行的操作十分有限。&lt;/p&gt;
 
 &lt;p&gt;这里我的思路是，在开启缓存的前提下，WebView在加载页面时检测网络变化，倘若在加载页面时用户的网络突然断掉，我们应当更改WebView的缓存策略。&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;  ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-  NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-  if(networkInfo.isAvailable()) {
-      settings.setCacheMode(WebSettings.LOAD_DEFAULT);//网络正常时使用默认缓存策略
-  } else {
-      settings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);//网络不可用时只使用缓存
-  }
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="n"&gt;ConnectivityManager&lt;/span&gt; &lt;span class="n"&gt;connectivityManager&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ConnectivityManager&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="n"&gt;getSystemService&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;CONNECTIVITY_SERVICE&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;NetworkInfo&lt;/span&gt; &lt;span class="n"&gt;networkInfo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;connectivityManager&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getActiveNetworkInfo&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;networkInfo&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;isAvailable&lt;/span&gt;&lt;span class="o"&gt;())&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCacheMode&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebSettings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LOAD_DEFAULT&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;&lt;span class="c1"&gt;//网络正常时使用默认缓存策略&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCacheMode&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebSettings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LOAD_CACHE_ONLY&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;&lt;span class="c1"&gt;//网络不可用时只使用缓存&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;既然有缓存，就要有缓存控制，与一相似的是我们也要建立缓存控制机制，定期或接受服务器通知来进行缓存的清空或更新。&lt;/p&gt;
 
@@ -457,247 +452,247 @@ public void show(String s){
 &lt;h2&gt;驾照考试&lt;/h2&gt;
 
 &lt;p&gt;介绍了这么多，希望能对你有点帮助。接下来时纯实战时间，我会将上面所介绍的很多知识点在接下来的代码里实际应用一遍，希望能够带给你更加直观的使用感受。&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
-&amp;lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"&amp;gt;
+&lt;pre class="highlight xml"&gt;&lt;code&gt;&lt;span class="cp"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;LinearLayout&lt;/span&gt; &lt;span class="na"&gt;xmlns:android=&lt;/span&gt;&lt;span class="s"&gt;"http://schemas.android.com/apk/res/android"&lt;/span&gt;
+    &lt;span class="na"&gt;xmlns:app=&lt;/span&gt;&lt;span class="s"&gt;"http://schemas.android.com/apk/res-auto"&lt;/span&gt;
+    &lt;span class="na"&gt;android:layout_width=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;
+    &lt;span class="na"&gt;android:layout_height=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;
+    &lt;span class="na"&gt;android:orientation=&lt;/span&gt;&lt;span class="s"&gt;"vertical"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
 
-    &amp;lt;android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"&amp;gt;
+    &lt;span class="nt"&gt;&amp;lt;android.support.design.widget.AppBarLayout&lt;/span&gt;
+        &lt;span class="na"&gt;android:layout_width=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;
+        &lt;span class="na"&gt;android:layout_height=&lt;/span&gt;&lt;span class="s"&gt;"wrap_content"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
 
-        &amp;lt;android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:theme="@style/ThemeOverlay.AppCompat.Light" /&amp;gt;
+        &lt;span class="nt"&gt;&amp;lt;android.support.v7.widget.Toolbar&lt;/span&gt;
+            &lt;span class="na"&gt;android:id=&lt;/span&gt;&lt;span class="s"&gt;"@+id/toolbar"&lt;/span&gt;
+            &lt;span class="na"&gt;android:layout_width=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;
+            &lt;span class="na"&gt;android:layout_height=&lt;/span&gt;&lt;span class="s"&gt;"?attr/actionBarSize"&lt;/span&gt;
+            &lt;span class="na"&gt;android:background=&lt;/span&gt;&lt;span class="s"&gt;"?attr/colorPrimary"&lt;/span&gt;
+            &lt;span class="na"&gt;app:theme=&lt;/span&gt;&lt;span class="s"&gt;"@style/ThemeOverlay.AppCompat.Light"&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
 
-    &amp;lt;/android.support.design.widget.AppBarLayout&amp;gt;
+    &lt;span class="nt"&gt;&amp;lt;/android.support.design.widget.AppBarLayout&amp;gt;&lt;/span&gt;
 
-    &amp;lt;FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"&amp;gt;
+    &lt;span class="nt"&gt;&amp;lt;FrameLayout&lt;/span&gt;
+        &lt;span class="na"&gt;android:layout_width=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;
+        &lt;span class="na"&gt;android:layout_height=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
 
-        &amp;lt;WebView
-            android:id="@+id/web_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" /&amp;gt;
+        &lt;span class="nt"&gt;&amp;lt;WebView&lt;/span&gt;
+            &lt;span class="na"&gt;android:id=&lt;/span&gt;&lt;span class="s"&gt;"@+id/web_view"&lt;/span&gt;
+            &lt;span class="na"&gt;android:layout_width=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt;
+            &lt;span class="na"&gt;android:layout_height=&lt;/span&gt;&lt;span class="s"&gt;"match_parent"&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
 
-        &amp;lt;ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:visibility="gone" /&amp;gt;
-    &amp;lt;/FrameLayout&amp;gt;
-&amp;lt;/LinearLayout&amp;gt;
+        &lt;span class="nt"&gt;&amp;lt;ProgressBar&lt;/span&gt;
+            &lt;span class="na"&gt;android:id=&lt;/span&gt;&lt;span class="s"&gt;"@+id/progress_bar"&lt;/span&gt;
+            &lt;span class="na"&gt;android:layout_width=&lt;/span&gt;&lt;span class="s"&gt;"50dp"&lt;/span&gt;
+            &lt;span class="na"&gt;android:layout_height=&lt;/span&gt;&lt;span class="s"&gt;"50dp"&lt;/span&gt;
+            &lt;span class="na"&gt;android:layout_gravity=&lt;/span&gt;&lt;span class="s"&gt;"center"&lt;/span&gt;
+            &lt;span class="na"&gt;android:visibility=&lt;/span&gt;&lt;span class="s"&gt;"gone"&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/FrameLayout&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/LinearLayout&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Java部分&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;  public class MainActivity extends AppCompatActivity {
+&lt;pre class="highlight java"&gt;&lt;code&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MainActivity&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;AppCompatActivity&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
 
-  private WebView mWebView;
+  &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;WebView&lt;/span&gt; &lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
-  private ProgressBar mProgressbar;
-  private Toolbar mToolbar;
+  &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;ProgressBar&lt;/span&gt; &lt;span class="n"&gt;mProgressbar&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;Toolbar&lt;/span&gt; &lt;span class="n"&gt;mToolbar&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-      supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_main);
+  &lt;span class="nd"&gt;@Override&lt;/span&gt;
+  &lt;span class="kd"&gt;protected&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onCreate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Bundle&lt;/span&gt; &lt;span class="n"&gt;savedInstanceState&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;supportRequestWindowFeature&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Window&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;FEATURE_NO_TITLE&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;onCreate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;savedInstanceState&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;setContentView&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;layout&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;activity_main&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
 
-      initAppBar();//初始化Toolbar
+      &lt;span class="n"&gt;initAppBar&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;&lt;span class="c1"&gt;//初始化Toolbar&lt;/span&gt;
 
-      initWebView();//初始化WebView
-      initWebSettings();//初始化WebSettings
-      initWebViewClient();//初始化WebViewClient
-      initWebChromeClient();//初始化WebChromeClient
-  }
+      &lt;span class="n"&gt;initWebView&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;&lt;span class="c1"&gt;//初始化WebView&lt;/span&gt;
+      &lt;span class="n"&gt;initWebSettings&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;&lt;span class="c1"&gt;//初始化WebSettings&lt;/span&gt;
+      &lt;span class="n"&gt;initWebViewClient&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;&lt;span class="c1"&gt;//初始化WebViewClient&lt;/span&gt;
+      &lt;span class="n"&gt;initWebChromeClient&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;&lt;span class="c1"&gt;//初始化WebChromeClient&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
 
-  private void initAppBar() {
-      mToolbar = (Toolbar) findViewById(R.id.toolbar);
-      mToolbar.setTitle("载入中..");
-      mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
-      setSupportActionBar(mToolbar);
-      getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-  }
+  &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;initAppBar&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;mToolbar&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Toolbar&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;findViewById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toolbar&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;mToolbar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setTitle&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"载入中.."&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;mToolbar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setTitleTextColor&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getResources&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getColor&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;color&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;colorWhite&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+      &lt;span class="n"&gt;setSupportActionBar&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mToolbar&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;getSupportActionBar&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;setDisplayHomeAsUpEnabled&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
 
-  private void initWebView() {
-      mWebView = (WebView) findViewById(R.id.web_view);
-      mProgressbar = (ProgressBar) findViewById(R.id.progress_bar);
-      String url = "https://www.google.com";
-      mWebView.loadUrl(url);
-  }
+  &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;initWebView&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;mWebView&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;findViewById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;web_view&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;mProgressbar&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ProgressBar&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;findViewById&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;progress_bar&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"https://www.google.com"&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+      &lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;loadUrl&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
 
-  private void initWebSettings() {
-      WebSettings settings = mWebView.getSettings();
-      //支持获取手势焦点
-      mWebView.requestFocusFromTouch();
-      //支持JS
-      settings.setJavaScriptEnabled(true);
-      //支持插件
-      settings.setPluginState(WebSettings.PluginState.ON);
-      //设置适应屏幕
-      settings.setUseWideViewPort(true);
-      settings.setLoadWithOverviewMode(true);
-      //支持缩放
-      settings.setSupportZoom(false);
-      //隐藏原生的缩放控件
-      settings.setDisplayZoomControls(false);
-      //支持内容重新布局
-      settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-      settings.supportMultipleWindows();
-      settings.setSupportMultipleWindows(true);
-      //设置缓存模式
-      settings.setDomStorageEnabled(true);
-      settings.setDatabaseEnabled(true);
-      settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-      settings.setAppCacheEnabled(true);
-      settings.setAppCachePath(mWebView.getContext().getCacheDir().getAbsolutePath());
+  &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;initWebSettings&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;WebSettings&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getSettings&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+      &lt;span class="c1"&gt;//支持获取手势焦点&lt;/span&gt;
+      &lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;requestFocusFromTouch&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+      &lt;span class="c1"&gt;//支持JS&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setJavaScriptEnabled&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="c1"&gt;//支持插件&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setPluginState&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebSettings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;PluginState&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ON&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="c1"&gt;//设置适应屏幕&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setUseWideViewPort&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setLoadWithOverviewMode&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="c1"&gt;//支持缩放&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setSupportZoom&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="c1"&gt;//隐藏原生的缩放控件&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setDisplayZoomControls&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="c1"&gt;//支持内容重新布局&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setLayoutAlgorithm&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebSettings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LayoutAlgorithm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SINGLE_COLUMN&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;supportMultipleWindows&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setSupportMultipleWindows&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="c1"&gt;//设置缓存模式&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setDomStorageEnabled&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setDatabaseEnabled&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setCacheMode&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebSettings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LOAD_DEFAULT&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setAppCacheEnabled&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setAppCachePath&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getContext&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getCacheDir&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getAbsolutePath&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
 
-      //设置可访问文件
-      settings.setAllowFileAccess(true);
-      //当webview调用requestFocus时为webview设置节点
-      settings.setNeedInitialFocus(true);
-      //支持自动加载图片
-      if (Build.VERSION.SDK_INT &amp;gt;= 19) {
-          settings.setLoadsImagesAutomatically(true);
-      } else {
-          settings.setLoadsImagesAutomatically(false);
-      }
-      settings.setNeedInitialFocus(true);
-      //设置编码格式
-      settings.setDefaultTextEncodingName("UTF-8");
-  }
+      &lt;span class="c1"&gt;//设置可访问文件&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setAllowFileAccess&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="c1"&gt;//当webview调用requestFocus时为webview设置节点&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setNeedInitialFocus&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="c1"&gt;//支持自动加载图片&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Build&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;VERSION&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SDK_INT&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;19&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+          &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setLoadsImagesAutomatically&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+          &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setLoadsImagesAutomatically&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="o"&gt;}&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setNeedInitialFocus&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="c1"&gt;//设置编码格式&lt;/span&gt;
+      &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setDefaultTextEncodingName&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"UTF-8"&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
 
-  private void initWebViewClient() {
-      mWebView.setWebViewClient(new WebViewClient() {
+  &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;initWebViewClient&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setWebViewClient&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;WebViewClient&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
 
-          //页面开始加载时
-          @Override
-          public void onPageStarted(WebView view, String url, Bitmap favicon) {
-              super.onPageStarted(view, url, favicon);
-              mProgressbar.setVisibility(View.VISIBLE);
-          }
+          &lt;span class="c1"&gt;//页面开始加载时&lt;/span&gt;
+          &lt;span class="nd"&gt;@Override&lt;/span&gt;
+          &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onPageStarted&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Bitmap&lt;/span&gt; &lt;span class="n"&gt;favicon&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+              &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;onPageStarted&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;favicon&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+              &lt;span class="n"&gt;mProgressbar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setVisibility&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;View&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;VISIBLE&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+          &lt;span class="o"&gt;}&lt;/span&gt;
 
 
-          //页面完成加载时
-          @Override
-          public void onPageFinished(WebView view, String url) {
-              super.onPageFinished(view, url);
-              mProgressbar.setVisibility(View.GONE);
-          }
+          &lt;span class="c1"&gt;//页面完成加载时&lt;/span&gt;
+          &lt;span class="nd"&gt;@Override&lt;/span&gt;
+          &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onPageFinished&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+              &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;onPageFinished&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+              &lt;span class="n"&gt;mProgressbar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setVisibility&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;View&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;GONE&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+          &lt;span class="o"&gt;}&lt;/span&gt;
 
-          //是否在WebView内加载新页面
-          @Override
-          public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-              view.loadUrl(request.toString());
-              return true;
-          }
+          &lt;span class="c1"&gt;//是否在WebView内加载新页面&lt;/span&gt;
+          &lt;span class="nd"&gt;@Override&lt;/span&gt;
+          &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="nf"&gt;shouldOverrideUrlLoading&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;WebResourceRequest&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+              &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;loadUrl&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+              &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+          &lt;span class="o"&gt;}&lt;/span&gt;
 
-          //网络错误时回调的方法
-          @Override
-          public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-              super.onReceivedError(view, request, error);
-              /**
+          &lt;span class="c1"&gt;//网络错误时回调的方法&lt;/span&gt;
+          &lt;span class="nd"&gt;@Override&lt;/span&gt;
+          &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onReceivedError&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;WebResourceRequest&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;WebResourceError&lt;/span&gt; &lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+              &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;onReceivedError&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+              &lt;span class="cm"&gt;/**
                * 在这里写网络错误时的逻辑,比如显示一个错误页面
                *
                * 这里我偷个懒不写了
-               * */
-          }
+               * */&lt;/span&gt;
+          &lt;span class="o"&gt;}&lt;/span&gt;
 
-          @TargetApi(Build.VERSION_CODES.M)
-          @Override
-          public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-              super.onReceivedHttpError(view, request, errorResponse);
-          }
-      });
-  }
+          &lt;span class="nd"&gt;@TargetApi&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Build&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;VERSION_CODES&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;M&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+          &lt;span class="nd"&gt;@Override&lt;/span&gt;
+          &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onReceivedHttpError&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;WebResourceRequest&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;WebResourceResponse&lt;/span&gt; &lt;span class="n"&gt;errorResponse&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+              &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;onReceivedHttpError&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;errorResponse&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+          &lt;span class="o"&gt;}&lt;/span&gt;
+      &lt;span class="o"&gt;});&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
 
-  private void initWebChromeClient() {
+  &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;initWebChromeClient&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
 
-      mWebView.setWebChromeClient(new WebChromeClient() {
+      &lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setWebChromeClient&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;WebChromeClient&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
 
-          private Bitmap mDefaultVideoPoster;//默认的视频展示图
+          &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;Bitmap&lt;/span&gt; &lt;span class="n"&gt;mDefaultVideoPoster&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="c1"&gt;//默认的视频展示图&lt;/span&gt;
 
-          @Override
-          public void onReceivedTitle(WebView view, String title) {
-              super.onReceivedTitle(view, title);
-              setToolbarTitle(title);
-          }
+          &lt;span class="nd"&gt;@Override&lt;/span&gt;
+          &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onReceivedTitle&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt; &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+              &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;onReceivedTitle&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+              &lt;span class="n"&gt;setToolbarTitle&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+          &lt;span class="o"&gt;}&lt;/span&gt;
 
-          @Override
-          public Bitmap getDefaultVideoPoster() {
-              if (mDefaultVideoPoster == null) {
-                  mDefaultVideoPoster = BitmapFactory.decodeResource(
-                          getResources(), R.drawable.video_default
-                  );
-                  return mDefaultVideoPoster;
-              }
-              return super.getDefaultVideoPoster();
-          }
-      });
-  }
+          &lt;span class="nd"&gt;@Override&lt;/span&gt;
+          &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;Bitmap&lt;/span&gt; &lt;span class="nf"&gt;getDefaultVideoPoster&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+              &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mDefaultVideoPoster&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                  &lt;span class="n"&gt;mDefaultVideoPoster&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;BitmapFactory&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;decodeResource&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;
+                          &lt;span class="n"&gt;getResources&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;drawable&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;video_default&lt;/span&gt;
+                  &lt;span class="o"&gt;);&lt;/span&gt;
+                  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;mDefaultVideoPoster&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+              &lt;span class="o"&gt;}&lt;/span&gt;
+              &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getDefaultVideoPoster&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+          &lt;span class="o"&gt;}&lt;/span&gt;
+      &lt;span class="o"&gt;});&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
 
-  /**
+  &lt;span class="cm"&gt;/**
    * 设置Toolbar标题
    *
    * @param title
-   */
-  private void setToolbarTitle(final String title) {
-      Log.d("setToolbarTitle", " WebDetailActivity " + title);
-      if (mToolbar != null) {
-          mToolbar.post(new Runnable() {
-              @Override
-              public void run() {
-                  mToolbar.setTitle(TextUtils.isEmpty(title) ? getString(R.string.loading) : title);
-              }
-          });
-      }
-  }
+   */&lt;/span&gt;
+  &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;setToolbarTitle&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;d&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;"setToolbarTitle"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;" WebDetailActivity "&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mToolbar&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+          &lt;span class="n"&gt;mToolbar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;post&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Runnable&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+              &lt;span class="nd"&gt;@Override&lt;/span&gt;
+              &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;run&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                  &lt;span class="n"&gt;mToolbar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setTitle&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TextUtils&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;isEmpty&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="n"&gt;getString&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;string&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;loading&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+              &lt;span class="o"&gt;}&lt;/span&gt;
+          &lt;span class="o"&gt;});&lt;/span&gt;
+      &lt;span class="o"&gt;}&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-      getMenuInflater().inflate(R.menu.menu_main, menu);
-      return super.onCreateOptionsMenu(menu);
-  }
+  &lt;span class="nd"&gt;@Override&lt;/span&gt;
+  &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="nf"&gt;onCreateOptionsMenu&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Menu&lt;/span&gt; &lt;span class="n"&gt;menu&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;getMenuInflater&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;inflate&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;menu&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;menu_main&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;menu&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;onCreateOptionsMenu&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;menu&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-      switch (item.getItemId()) {
-          case R.id.page_up:
-              Toast.makeText(getApplicationContext(), "页面向上", Toast.LENGTH_SHORT).show();
-              mWebView.pageUp(true);
-              break;
-          case R.id.page_down:
-              Toast.makeText(getApplicationContext(), "页面向下", Toast.LENGTH_SHORT).show();
-              mWebView.pageDown(true);
-              break;
-          case R.id.refresh:
-              Toast.makeText(getApplicationContext(), "刷新~", Toast.LENGTH_SHORT).show();
-              mWebView.reload();
-          default:
-              return super.onOptionsItemSelected(item);
-      }
-      return super.onOptionsItemSelected(item);
-  }
+  &lt;span class="nd"&gt;@Override&lt;/span&gt;
+  &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="nf"&gt;onOptionsItemSelected&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MenuItem&lt;/span&gt; &lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;switch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getItemId&lt;/span&gt;&lt;span class="o"&gt;())&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+          &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;page_up&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+              &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;makeText&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getApplicationContext&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="s"&gt;"页面向上"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LENGTH_SHORT&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;show&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+              &lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pageUp&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+              &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+          &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;page_down&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+              &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;makeText&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getApplicationContext&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="s"&gt;"页面向下"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LENGTH_SHORT&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;show&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+              &lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pageDown&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+              &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+          &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;refresh&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+              &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;makeText&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getApplicationContext&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="s"&gt;"刷新~"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LENGTH_SHORT&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;show&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+              &lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;reload&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+          &lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+              &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;onOptionsItemSelected&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="o"&gt;}&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;onOptionsItemSelected&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
 
-  @Override
-  public boolean onKeyDown(int keyCode, KeyEvent event) {
+  &lt;span class="nd"&gt;@Override&lt;/span&gt;
+  &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="nf"&gt;onKeyDown&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;keyCode&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;KeyEvent&lt;/span&gt; &lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
 
-      //如果按下的是回退键且历史记录里确实还有页面
-      if ((keyCode == KeyEvent.KEYCODE_BACK) &amp;amp;&amp;amp; mWebView.canGoBack()) {
-          mWebView.goBack();
-          return true;
-      } else {
-          Toast.makeText(getApplicationContext(), "考试结束,恭喜您考试合格!", Toast.LENGTH_LONG).show();
-      }
-      return super.onKeyDown(keyCode, event);
-  }
-}
+      &lt;span class="c1"&gt;//如果按下的是回退键且历史记录里确实还有页面&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="n"&gt;keyCode&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;KeyEvent&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;KEYCODE_BACK&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;canGoBack&lt;/span&gt;&lt;span class="o"&gt;())&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+          &lt;span class="n"&gt;mWebView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;goBack&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+          &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+      &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+          &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;makeText&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getApplicationContext&lt;/span&gt;&lt;span class="o"&gt;(),&lt;/span&gt; &lt;span class="s"&gt;"考试结束,恭喜您考试合格!"&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Toast&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;LENGTH_LONG&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;show&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+      &lt;span class="o"&gt;}&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;onKeyDown&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;keyCode&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;效果图：&lt;/p&gt;
 

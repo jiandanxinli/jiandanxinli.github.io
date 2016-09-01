@@ -1,0 +1,62 @@
+---
+title: Riot.js 代码风格指南
+date: 2016-09-01
+tags: Javascript
+author: Ben
+summary: Riot.js 是一个比 React.js 和 Vue.js 更轻量的前端框架。但作为灵活的代价，团队协作时需要一份代码风格指南以保证代码风格的一致。
+---
+
+本文节选翻译自 https://github.com/voorhoede/riotjs-style-guide
+
+### 宗旨
+
+本指南的目标是提供一份统一的 Riot.js 代码风格指南，以使你的项目达到以下效果：
+
+* 帮助开发人员理解和查找代码
+* 方便 IDE 高亮代码和提供协助
+* 方便构建工具构建代码
+* 方便缓存、打包和分离代码
+
+本指南受 John Papa 的 [AngularJS Style Guide](https://github.com/johnpapa/angular-styleguide) 启发。
+
+### 示例
+
+这些是按照本指南编写的示例项目：https://voorhoede.github.io/riotjs-demos/
+
+### 正文
+
+#### 模块化开发
+
+让你的代码模块化，并保证其业务逻辑小而清晰。
+
+模块是应用的组成部分，Riot.js 可以方便的构建和组织模块。
+
+__为什么要这么做？__
+
+无论对于你还是他人，小模块都是便于阅读、理解、维护、重用和调试的最佳选择。
+
+__如何做？__
+
+每个模块都需要符合[FIRST](https://addyosmani.com/first/)原则：专注（Focused，[单一职责](http://en.wikipedia.org/wiki/Single_responsibility_principle)）、独立（Independent，避免耦合）、可复用（Reusable）、简洁（Small）和可测试（Testable）。
+
+如果你的模块功能太多，导致体积臃肿，请把它切分成多个小模块。比如确保每个模块的代码不超过 100 行，并使其与其它模块隔离。
+
+__小贴士__
+
+如果你使用 AMD 或 CommonJS 来加载模块，可以在命令行中加上`--modular`参数
+
+```
+# enable AMD and CommonJS
+riot --modular
+```
+
+#### 模块的命名
+
+模块的名字代表模块的用途，需要遵守以下要求：
+
+* 恰当的含义：避免过于具体或过于抽象
+* 简短：2 ~ 3 个单词
+* 顺口：不绕口，方便交流
+* 符合 W3C 的[自定义标签标准](https://www.w3.org/TR/custom-elements/)，使用连字符，避开保留名称
+* 以对象作为名字的前缀。除非模块非常通用，否则不要只使用一个词作为名字。
+

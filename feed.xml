@@ -5,10 +5,729 @@
   <id>https://jiandanxinli.github.io/</id>
   <link href="https://jiandanxinli.github.io/"/>
   <link href="https://jiandanxinli.github.io/feed.xml" rel="self"/>
-  <updated>2016-08-31T08:00:00+08:00</updated>
+  <updated>2016-09-01T08:00:00+08:00</updated>
   <author>
     <name>北京竹间科技有限公司</name>
   </author>
+  <entry>
+    <title>Riot.js 代码风格指南</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2016-09-01.html"/>
+    <id>https://jiandanxinli.github.io/2016-09-01.html</id>
+    <published>2016-09-01T08:00:00+08:00</published>
+    <updated>2016-09-03T08:39:47+08:00</updated>
+    <author>
+      <name>Ben</name>
+    </author>
+    <content type="html">&lt;p&gt;本文节选翻译自 &lt;a href="https://github.com/voorhoede/riotjs-style-guide"&gt;https://github.com/voorhoede/riotjs-style-guide&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3&gt;宗旨&lt;/h3&gt;
+
+&lt;p&gt;本指南的目标是提供一份统一的 Riot.js 代码风格指南，以使你的项目达到以下效果：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;帮助开发人员理解和查找代码；&lt;/li&gt;
+&lt;li&gt;方便 IDE 高亮代码和提供协助；&lt;/li&gt;
+&lt;li&gt;方便构建工具构建代码；&lt;/li&gt;
+&lt;li&gt;方便缓存、打包和分离代码。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;本指南受 John Papa 的 &lt;a href="https://github.com/johnpapa/angular-styleguide"&gt;AngularJS Style Guide&lt;/a&gt; 启发。&lt;/p&gt;
+
+&lt;h3&gt;示例&lt;/h3&gt;
+
+&lt;p&gt;这些是按照本指南编写的示例项目：&lt;a href="https://voorhoede.github.io/riotjs-demos/"&gt;https://voorhoede.github.io/riotjs-demos/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3&gt;正文&lt;/h3&gt;
+
+&lt;h4&gt;模块化开发&lt;/h4&gt;
+
+&lt;p&gt;让你的代码模块化，并保证其业务逻辑小而清晰。&lt;/p&gt;
+
+&lt;p&gt;模块是应用的组成部分，Riot.js 可以方便的构建和组织模块。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么要这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;无论对于你还是他人，小模块都是便于阅读、理解、维护、重用和调试的最佳选择。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;每个模块都需要符合 &lt;a href="https://addyosmani.com/first/"&gt;FIRST&lt;/a&gt; 原则：专注（Focused，&lt;a href="http://en.wikipedia.org/wiki/Single_responsibility_principle"&gt;单一职责&lt;/a&gt;）、独立（Independent）、可复用（Reusable）、简洁（Small）和可测试（Testable）。&lt;/p&gt;
+
+&lt;p&gt;如果你的模块功能太多，导致体积臃肿，请把它切分成多个小模块。比如确保每个模块的代码不超过 100 行，并使其与其它模块隔离。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;小贴士&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;如果你使用 AMD 或 CommonJS 来加载模块，可以在命令行中加上&lt;code&gt;--modular&lt;/code&gt;参数&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;# enable AMD and CommonJS
+riot --modular
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;模块的命名&lt;/h4&gt;
+
+&lt;p&gt;模块的名字代表模块的用途，需要遵守以下要求：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;恰当的含义：避免过于具体或过于抽象；&lt;/li&gt;
+&lt;li&gt;简短：2 ~ 3 个单词；&lt;/li&gt;
+&lt;li&gt;顺口：不绕口，方便交流；&lt;/li&gt;
+&lt;li&gt;符合 W3C 的&lt;a href="https://www.w3.org/TR/custom-elements/"&gt;自定义标签标准&lt;/a&gt;，使用连字符，避开保留名称；&lt;/li&gt;
+&lt;li&gt;以对象作为名字的前缀。除非模块非常通用，否则不要只使用一个词作为名字。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么要这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;模块间通过名字来通讯，所以名字必须有恰当的含义、简短且顺口；&lt;/li&gt;
+&lt;li&gt;名字将作为标签名写入 HTML 中，所以必须符合 HTML 的规范。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="c"&gt;&amp;lt;!-- 推荐 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;app-header&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;user-list&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;range-slider&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+
+&lt;span class="c"&gt;&amp;lt;!-- 避免 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;btn-group&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 虽然简短，但绕口，可以用 `button-group` 替代 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;ui-slider&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 所有的模块都是 UI 模块，所以 ui 在这里没有意义 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;slider&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 不符合 W3C 的自定义标签标准 --&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;一个模块一个文件夹&lt;/h4&gt;
+
+&lt;p&gt;构建时把一个模块的所有文件打包成一个文件。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;打包文件方便查找和重用。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;把模块名作为文件夹的名字和文件前缀，后缀为文件类型。&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;modules/
+└── my-example/
+    ├── my-example.tag.html
+    ├── my-example.less
+    ├── ...
+    └── README.md
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果你的模块里有子模块，可以把子模块作为子文件夹。&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;modules/
+├── radio-group/
+|   └── radio-group.tag.html
+└── search-form/
+    ├── search-form.tag.html
+    ├── ...
+    └── search-filters/
+        └── search-filters.tag.html
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;使用 &lt;code&gt;.tag.html&lt;/code&gt; 作为文件后缀&lt;/h4&gt;
+
+&lt;p&gt;Riot.js 建议使用 &lt;code&gt;.tag&lt;/code&gt; 作为模块的文件名后缀，虽然它的本质是一个自定义标签。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;告诉开发者这不仅仅是一个 html 文件，而是 Riot.js 模块；&lt;/li&gt;
+&lt;li&gt;帮助 IDE 识别文件类型。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;如果在&lt;a href="http://riotjs.com/guide/compiler/#in-browser-compilation"&gt;浏览器端使用&lt;/a&gt;，可以这么写：&lt;/p&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="nt"&gt;&amp;lt;script &lt;/span&gt;&lt;span class="na"&gt;src=&lt;/span&gt;&lt;span class="s"&gt;"path/to/modules/my-example/my-example.tag.html"&lt;/span&gt; &lt;span class="na"&gt;type=&lt;/span&gt;&lt;span class="s"&gt;"riot/tag"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href="http://riotjs.com/guide/compiler/#pre-compilation"&gt;预编译&lt;/a&gt;时，需要加上&lt;a href="http://riotjs.com/guide/compiler/#custom-extension"&gt;后缀参数&lt;/a&gt;：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;riot --ext tag.html modules/ dist/tags.js
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果你使用 &lt;a href="https://github.com/srackham/tag-loader"&gt;Webpack tag loader&lt;/a&gt;，需要&lt;a href="http://webpack.github.io/docs/using-loaders.html#configuration"&gt;设置 loader&lt;/a&gt;：&lt;/p&gt;
+&lt;pre class="highlight json"&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;test:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;/\.tag.html$/,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;loader:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;'tag'&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;在自定义标签里使用 &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; 标签&lt;/h4&gt;
+
+&lt;p&gt;Riot.js 支持在&lt;a href="http://riotjs.com/guide/#no-script-tag"&gt;自定义标签里不使用 &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; 标签&lt;/a&gt;，但你需要把 Javascript 代码写在 &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; 标签里。这可以让代码更易于理解以及避免 IDE 识别混乱。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;避免非脚本语言被解读为脚本语言；&lt;/li&gt;
+&lt;li&gt;便于 IDE 识别；&lt;/li&gt;
+&lt;li&gt;明确脚本从哪里开始，在哪里结束。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="c"&gt;&amp;lt;!-- 推荐 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;my-example&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;The year is { this.year }&lt;span class="nt"&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+
+    &lt;span class="nt"&gt;&amp;lt;script&amp;gt;&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;year&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;()).&lt;/span&gt;&lt;span class="nx"&gt;getUTCFullYear&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/my-example&amp;gt;&lt;/span&gt;
+
+&lt;span class="c"&gt;&amp;lt;!-- 避免 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;my-example&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;The year is { this.year }&lt;span class="nt"&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+
+    this.year = (new Date()).getUTCFullYear();
+&lt;span class="nt"&gt;&amp;lt;/my-example&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;保持自定义标签中的逻辑简洁&lt;/h4&gt;
+
+&lt;p&gt;Riot.js 提供的标签内置语法支持 Javascript 语法，但这并不表示建议你在其中编写复杂的代码。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;复杂的内置脚本会导致难以阅读；&lt;/li&gt;
+&lt;li&gt;复杂的内置脚本难以重用；&lt;/li&gt;
+&lt;li&gt;IDE 无法准确识别内置脚本。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;把复杂的内置脚本移到模块变量或模块方法里。&lt;/p&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="c"&gt;&amp;lt;!-- 推荐 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;my-example&amp;gt;&lt;/span&gt;
+    { year() + '-' + month() }
+
+    &lt;span class="nt"&gt;&amp;lt;script&amp;gt;&lt;/span&gt;
+        &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;twoDigits&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;num&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'0'&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nx"&gt;num&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;slice&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;month&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="nx"&gt;twoDigits&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;()).&lt;/span&gt;&lt;span class="nx"&gt;getUTCMonth&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;year&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;()).&lt;/span&gt;&lt;span class="nx"&gt;getUTCFullYear&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/my-example&amp;gt;&lt;/span&gt;
+
+&lt;span class="c"&gt;&amp;lt;!-- 避免 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;my-example&amp;gt;&lt;/span&gt;
+    { (new Date()).getUTCFullYear() + '-' + ('0' + ((new Date()).getUTCMonth()+1)).slice(-2) }
+&lt;span class="nt"&gt;&amp;lt;/my-example&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;保持参数简洁&lt;/h4&gt;
+
+&lt;p&gt;Riot.js 支持通过自定义属性给模块添加参数，比如 &lt;code&gt;&amp;lt;my-tag my-attr=&amp;quot;{ value }&amp;quot; /&amp;gt;&lt;/code&gt;，可以在模块中通过 &lt;code&gt;opts.MyAttr&lt;/code&gt; 获取参数。&lt;/p&gt;
+
+&lt;p&gt;尽管 Riot.js 支持使用复杂的原生 Javascript 语法来传递参数，但我们应保持参数的简洁，只使用标准的&lt;a href="https://developer.mozilla.org/en-US/docs/Glossary/Primitive"&gt;Javascript 类型&lt;/a&gt;，如字符串、数字、函数等。&lt;/p&gt;
+
+&lt;p&gt;允许的例外情况是只能使用复杂对象来传递参数（如一组对象、递归模块等）或通用的业务对象（如 &lt;code&gt;Product&lt;/code&gt;）。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;每个属性作为一个独立参数，可以让参数易于阅读和理解；&lt;/li&gt;
+&lt;li&gt;只使用默认的 Javascript 类型可以让代码风格更接近 HTML 的原生风格；&lt;/li&gt;
+&lt;li&gt;复杂的参数会导致难以理解和重构，导致技术债务。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;每个属性作为一个独立的参数，参数值为 Javascript 原生类型。&lt;/p&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="c"&gt;&amp;lt;!-- 推荐 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;range-slider&lt;/span&gt;
+    &lt;span class="na"&gt;values=&lt;/span&gt;&lt;span class="s"&gt;"[10, 20]"&lt;/span&gt;
+    &lt;span class="na"&gt;min=&lt;/span&gt;&lt;span class="s"&gt;"0"&lt;/span&gt;
+    &lt;span class="na"&gt;max=&lt;/span&gt;&lt;span class="s"&gt;"100"&lt;/span&gt;
+    &lt;span class="na"&gt;step=&lt;/span&gt;&lt;span class="s"&gt;"5"&lt;/span&gt;
+    &lt;span class="na"&gt;on-slide=&lt;/span&gt;&lt;span class="s"&gt;"{ updateInputs }"&lt;/span&gt;
+    &lt;span class="na"&gt;on-end=&lt;/span&gt;&lt;span class="s"&gt;"{ updateResults }"&lt;/span&gt;
+    &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+
+&lt;span class="c"&gt;&amp;lt;!-- 避免 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;range-slider&lt;/span&gt; &lt;span class="na"&gt;config=&lt;/span&gt;&lt;span class="s"&gt;"{ complexConfigObject }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+
+&lt;span class="c"&gt;&amp;lt;!-- 例外: 迭代菜单模块 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;menu-item&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;a&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;"{ opts.url }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;{ opts.text }&lt;span class="nt"&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;ul&lt;/span&gt; &lt;span class="na"&gt;if=&lt;/span&gt;&lt;span class="s"&gt;"{ opts.items }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;li&lt;/span&gt; &lt;span class="na"&gt;each=&lt;/span&gt;&lt;span class="s"&gt;"{ item in opts.items }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;lt;menu-item&lt;/span&gt;
+                &lt;span class="na"&gt;text=&lt;/span&gt;&lt;span class="s"&gt;"{ item.text }"&lt;/span&gt;
+                &lt;span class="na"&gt;url=&lt;/span&gt;&lt;span class="s"&gt;"{ item.url }"&lt;/span&gt;
+                &lt;span class="na"&gt;items=&lt;/span&gt;&lt;span class="s"&gt;"{ item.items }"&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/menu-item&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;初始化参数&lt;/h4&gt;
+
+&lt;p&gt;在 Riot.js 中，参数是模块的 API。一个健壮的参数初始化过程，可以方便他人使用你的模块。&lt;/p&gt;
+
+&lt;p&gt;模块的参数可能是 Riot.js 的表达式（&lt;code&gt;attr=&amp;quot;{ var }&amp;quot;&lt;/code&gt;）、纯字符串（&lt;code&gt;attr=&amp;quot;value&amp;quot;&lt;/code&gt;）或不存在。你需要初始化处理这些情况。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;初始化参数可以确保你的模块总是可以正常运行。哪怕其他开发者将其用于超出你预期的用途。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;给参数设置默认值；&lt;/li&gt;
+&lt;li&gt;使用类型转换，将值转换成期望的类型；&lt;/li&gt;
+&lt;li&gt;在使用参数前，先检查参数是否存在。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在 &lt;a href="http://riotjs.com/guide/#example"&gt;Riot.js 的示例&lt;/a&gt; 中，可以把代码进行如下改进：&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;items&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;opts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;items&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="p"&gt;[];&lt;/span&gt; &lt;span class="c1"&gt;// 设置默认值为空数组&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样改进后，可以让模块在以下情况中正常运作：&lt;/p&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="nt"&gt;&amp;lt;todo&lt;/span&gt; &lt;span class="na"&gt;items=&lt;/span&gt;&lt;span class="s"&gt;"{ [{ title:'Apples' }, { title:'Oranges', done:true }] }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 传入参数时 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;todo&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 未传入参数时 --&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;对于 &lt;code&gt;&amp;lt;range-slider&amp;gt;&lt;/code&gt; 这种模块，我们预期其参数都是数字类型，可以这么写：&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;span class="c1"&gt;// 如果没有传入 step，就设为默认值&lt;/span&gt;
+&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;step&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="nb"&gt;isNaN&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;Number&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;opts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;step&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;?&lt;/span&gt; &lt;span class="nb"&gt;Number&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;opts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;step&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以此确保以下情况都可以正常运行：&lt;/p&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="nt"&gt;&amp;lt;range-slider&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 全部使用默认值 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;range-slider&lt;/span&gt; &lt;span class="na"&gt;step=&lt;/span&gt;&lt;span class="s"&gt;"5"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 将字符串 "5" 转变成数字 5 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;range-slider&lt;/span&gt; &lt;span class="na"&gt;step=&lt;/span&gt;&lt;span class="s"&gt;"{ x }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 使用变量 x --&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当 &lt;code&gt;&amp;lt;range-slider&amp;gt;&lt;/code&gt; 模块支持可选的 &lt;code&gt;on-slide&lt;/code&gt; 事件时，需要在使用前确认是否传入了回调：&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;span class="nx"&gt;slider&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;on&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'slide'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;values&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;handle&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;typeof&lt;/span&gt; &lt;span class="nx"&gt;opts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;onSlide&lt;/span&gt; &lt;span class="o"&gt;===&lt;/span&gt; &lt;span class="s1"&gt;'function'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;opts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;onSlide&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;values&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;handle&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以此确保以下情况可以正常运行：&lt;/p&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="nt"&gt;&amp;lt;range-slider&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 什么都不触发 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;range-slider&lt;/span&gt; &lt;span class="na"&gt;on-slide=&lt;/span&gt;&lt;span class="s"&gt;"{ updateInputs }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 触发 updateInputs --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;range-slider&lt;/span&gt; &lt;span class="na"&gt;on-slide=&lt;/span&gt;&lt;span class="s"&gt;"invalid option"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 什么都不触发 --&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;将 this 改名为 tag&lt;/h4&gt;
+
+&lt;p&gt;在 Riot.js 模块内，&lt;code&gt;this&lt;/code&gt; 指向模块实例，把 &lt;code&gt;tag&lt;/code&gt; 赋值为 &lt;code&gt;this&lt;/code&gt; 后，可以在不同的作用域下调用模块实例。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;将 &lt;code&gt;tag&lt;/code&gt; 赋值为实例变量，其它开发者就可以方便的调用了。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;span class="cm"&gt;/* 推荐 */&lt;/span&gt;
+
+&lt;span class="c1"&gt;// ES5 的赋值写法&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nb"&gt;window&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;onresize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;adjust&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;// ES6 中可以把 tag 赋值为常量&lt;/span&gt;
+&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nb"&gt;window&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;onresize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;adjust&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;// ES6 中也可以使用 =&amp;gt; 来继续使用 this&lt;/span&gt;
+&lt;span class="nb"&gt;window&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;onresize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;adjust&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="cm"&gt;/* 避免 */&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;self&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;_this&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="c1"&gt;// 等等&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;在顶部声明变量&lt;/h4&gt;
+
+&lt;p&gt;在 Riot.js 的模块中，你可以任意声明变量和方法，但这会导致可读性问题。所以建议把变量和方法按顺序在顶部声明。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在顶部声明变量和方法，可以方便开发者得知可以使用哪些变量和方法；&lt;/li&gt;
+&lt;li&gt;按字母顺序排列可以便于查找；&lt;/li&gt;
+&lt;li&gt;将方法放在后面，可以隐藏执行细节，便于一瞥全局。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;把变量声明和方法移到顶部。&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;span class="cm"&gt;/* 推荐 */&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;''&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;todos&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[];&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;add&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;add&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;edit&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;edit&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;toggle&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;toggle&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="cm"&gt;/* ... */&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;edit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="cm"&gt;/* ... */&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;toggle&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="cm"&gt;/* ... */&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;   
+
+&lt;span class="cm"&gt;/* 避免 */&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;todos&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[];&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;add&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="cm"&gt;/* ... */&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;''&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;edit&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="cm"&gt;/* ... */&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;toggle&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="cm"&gt;/* ... */&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;你也可以把 &lt;code&gt;mixins&lt;/code&gt; 和 &lt;code&gt;observables&lt;/code&gt; 放在顶部：&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;span class="cm"&gt;/* recommended */&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="c1"&gt;// alphabetized properties&lt;/span&gt;
+&lt;span class="c1"&gt;// alphabetized methods&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;mixin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'someBehaviour'&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;on&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'mount'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;onMount&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;on&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'update'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;onUpdate&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="c1"&gt;// etc&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;避免使用非标准的 ES6 语法&lt;/h4&gt;
+
+&lt;p&gt;Riot.js 支持&lt;a href="http://riotjs.com/guide/#tag-syntax"&gt;模仿 ES6 的方法声明语法&lt;/a&gt;，把 &lt;code&gt;methodName() { }&lt;/code&gt; 编译成 &lt;code&gt;this.methodName = function() {}.bind(this)&lt;/code&gt;。但这并不是 ES6 的标准语法。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;这并不是 ES6 的标准语法，会造成开发者的困扰；&lt;/li&gt;
+&lt;li&gt;IDE 无法准确识别这种语法；&lt;/li&gt;
+&lt;li&gt;这种语法无法清晰表达其作用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;使用 &lt;code&gt;tag.methodName =&lt;/code&gt; 替代 &lt;code&gt;methodName() { }&lt;/code&gt;。&lt;/p&gt;
+&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;span class="cm"&gt;/* 推荐 */&lt;/span&gt;
+&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;todos&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[];&lt;/span&gt;
+&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;add&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;add&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;add&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;todos&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;push&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt; &lt;span class="p"&gt;});&lt;/span&gt;
+        &lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;input&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;''&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="cm"&gt;/* 避免 */&lt;/span&gt;
+&lt;span class="nx"&gt;todos&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[];&lt;/span&gt;
+
+&lt;span class="nx"&gt;add&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;todos&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;push&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt; &lt;span class="p"&gt;});&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;input&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;''&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;小贴士&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;可以加上&lt;a href="http://riotjs.com/guide/compiler/#no-transformation"&gt;禁用 ES6 的参数&lt;/a&gt;，来避免编译这种语法：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;riot --type none
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;避免使用 &lt;code&gt;tag.parent&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;Riot.js 支持&lt;a href="http://riotjs.com/guide/#nested-tags"&gt;嵌套模块&lt;/a&gt;，可以通过 &lt;code&gt;tag.parent&lt;/code&gt; 访问父模块。但这种行为违反了 &lt;a href="https://addyosmani.com/first/"&gt;FIRST&lt;/a&gt; 原则，应当避免使用。&lt;/p&gt;
+
+&lt;p&gt;例外的情况是在循环中，且子对象是匿名模块。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;每个模块需运行在自己的作用域中，不同模块间保持隔离；&lt;/li&gt;
+&lt;li&gt;如果一个模块需要访问父模块，那它将无法在不同的环境下复用；&lt;/li&gt;
+&lt;li&gt;允许访问和修改父模块，可能会导致不可预期的错误。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;把需要的值从父模块传入子模块；&lt;/li&gt;
+&lt;li&gt;父模块以回调的形式监听子模块的事件，以修改自身。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="c"&gt;&amp;lt;!-- 推荐 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;parent-tag&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;child-tag&lt;/span&gt; &lt;span class="na"&gt;value=&lt;/span&gt;&lt;span class="s"&gt;"{ value }"&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 把值传入子模块 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/parent-tag&amp;gt;&lt;/span&gt;
+
+&lt;span class="nt"&gt;&amp;lt;child-tag&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;span&amp;gt;&lt;/span&gt;{ opts.value }&lt;span class="nt"&gt;&amp;lt;/span&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 使用父模块传入的值 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/child-tag&amp;gt;&lt;/span&gt;
+
+&lt;span class="c"&gt;&amp;lt;!-- 避免 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;parent-tag&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;child-tag&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/parent-tag&amp;gt;&lt;/span&gt;
+
+&lt;span class="nt"&gt;&amp;lt;child-tag&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;span&amp;gt;&lt;/span&gt;value: { parent.value }&lt;span class="nt"&gt;&amp;lt;/span&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 不要这么做 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/child-tag&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="c"&gt;&amp;lt;!-- 推荐 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;parent-tag&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;child-tag&lt;/span&gt; &lt;span class="na"&gt;on-event=&lt;/span&gt;&lt;span class="s"&gt;"{ methodToCallOnEvent }"&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 传入回调函数 --&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;script&amp;gt;&lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;methodToCallOnEvent&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="cm"&gt;/*...*/&lt;/span&gt; &lt;span class="p"&gt;};&lt;/span&gt;&lt;span class="nt"&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;parent-tag&amp;gt;&lt;/span&gt;
+
+&lt;span class="nt"&gt;&amp;lt;child-tag&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;button&lt;/span&gt; &lt;span class="na"&gt;onclick=&lt;/span&gt;&lt;span class="s"&gt;"{ opts.onEvent }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&amp;lt;/button&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 事件触发时通知父模块 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/child-tag&amp;gt;&lt;/span&gt;
+
+&lt;span class="c"&gt;&amp;lt;!-- 避免 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;parent-tag&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;child-tag&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;script&amp;gt;&lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;methodToCallOnEvent&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="cm"&gt;/*...*/&lt;/span&gt; &lt;span class="p"&gt;};&lt;/span&gt;&lt;span class="nt"&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;parent-tag&amp;gt;&lt;/span&gt;
+
+&lt;span class="nt"&gt;&amp;lt;child-tag&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;button&lt;/span&gt; &lt;span class="na"&gt;onclick=&lt;/span&gt;&lt;span class="s"&gt;"{ parent.methodToCallOnEvent }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&amp;lt;/button&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 不要这么做 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/child-tag&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="c"&gt;&amp;lt;!-- 允许的例外情况 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;parent-tag&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;button&lt;/span&gt; &lt;span class="na"&gt;each=&lt;/span&gt;&lt;span class="s"&gt;"{ item in items }"&lt;/span&gt;
+        &lt;span class="na"&gt;onclick=&lt;/span&gt;&lt;span class="s"&gt;"{ parent.onEvent }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- button 不是 Riot.js 的模块 --&amp;gt;&lt;/span&gt;
+        { item.text }
+    &lt;span class="nt"&gt;&amp;lt;/button&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;script&amp;gt;&lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;onEvent&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nx"&gt;alert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;item&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="nt"&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/parent-tag&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;使用 &lt;code&gt;each ... in&lt;/code&gt; 语法&lt;/h4&gt;
+
+&lt;p&gt;Riot.js 支持多种&lt;a href="http://riotjs.com/guide/#loops"&gt;循环的语法&lt;/a&gt;：数组可以写成 &lt;code&gt;each=&amp;quot;{ item in items }&amp;quot;&lt;/code&gt;；对象可以写成 &lt;code&gt;each=&amp;quot;{ key, value in items }&amp;quot;&lt;/code&gt;；以及简写 &lt;code&gt;each=&amp;quot;{ items }&amp;quot;&lt;/code&gt;。但这种简写会导致混淆，所以建议用 &lt;code&gt;each ... in&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;当 Riot.js 执行循环语句时，会把当前对象放到 &lt;code&gt;this&lt;/code&gt; 中，这种做法并不直观，可能会引起开发者的困扰。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;使用 &lt;code&gt;each=&amp;quot;{ item in items }&amp;quot;&lt;/code&gt; 或 &lt;code&gt;each=&amp;quot;{ key, value in items }&amp;quot;&lt;/code&gt; 替代 &lt;code&gt;each=&amp;quot;{ items }&amp;quot;&lt;/code&gt;。&lt;/p&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="c"&gt;&amp;lt;!-- 推荐 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;ul&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;li&lt;/span&gt; &lt;span class="na"&gt;each=&lt;/span&gt;&lt;span class="s"&gt;"{ item in items }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;label&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"{ completed: item.done }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;lt;input&lt;/span&gt; &lt;span class="na"&gt;type=&lt;/span&gt;&lt;span class="s"&gt;"checkbox"&lt;/span&gt; &lt;span class="na"&gt;checked=&lt;/span&gt;&lt;span class="s"&gt;"{ item.done }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt; { item.title }
+        &lt;span class="nt"&gt;&amp;lt;/label&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
+
+&lt;span class="c"&gt;&amp;lt;!-- 推荐 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;ul&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;li&lt;/span&gt; &lt;span class="na"&gt;each=&lt;/span&gt;&lt;span class="s"&gt;"{ key, item in items }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;label&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"{ completed: item.done }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;lt;input&lt;/span&gt; &lt;span class="na"&gt;type=&lt;/span&gt;&lt;span class="s"&gt;"checkbox"&lt;/span&gt; &lt;span class="na"&gt;checked=&lt;/span&gt;&lt;span class="s"&gt;"{ item.done }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt; { key }. { item.title }
+        &lt;span class="nt"&gt;&amp;lt;/label&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
+
+&lt;span class="c"&gt;&amp;lt;!-- 避免 --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;ul&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;li&lt;/span&gt; &lt;span class="na"&gt;each=&lt;/span&gt;&lt;span class="s"&gt;"{ items }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;label&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;"{ completed: done }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class="nt"&gt;&amp;lt;input&lt;/span&gt; &lt;span class="na"&gt;type=&lt;/span&gt;&lt;span class="s"&gt;"checkbox"&lt;/span&gt; &lt;span class="na"&gt;checked=&lt;/span&gt;&lt;span class="s"&gt;"{ done }"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt; { title }
+        &lt;span class="nt"&gt;&amp;lt;/label&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;将样式放在独立的文件&lt;/h4&gt;
+
+&lt;p&gt;为了给开发者提供便利，Riot.js 允许在模块中&lt;a href="http://riotjs.com/guide/#tag-styling"&gt;嵌套 &lt;code&gt;&amp;lt;style&amp;gt;&lt;/code&gt;&lt;/a&gt;，并提供了 &lt;a href="http://riotjs.com/guide/#scoped-css"&gt;scope&lt;/a&gt; 功能来限制样式的作用域，但这并不是真正的样式隔离。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;独立的样式文件可以让浏览器更容易的读取，并且避免因模块加载出错或者未加载而导致问题；&lt;/li&gt;
+&lt;li&gt;独立的样式文件可以方便的进行预编译（如 Sass、PostCSS 等）；&lt;/li&gt;
+&lt;li&gt;独立的样式文件可以独立地进行压缩、构建和缓存，这样有利于提升性能；&lt;/li&gt;
+&lt;li&gt;Riot.js 并没有额外的功能提供给内嵌样式。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;将样式拆分为独立文件放在模块文件夹内：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;my-example/
+├── my-example.tag.html
+├── my-example.(css|less|scss)    &amp;lt;-- external stylesheet next to tag file
+└── ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;使用标签名字作为样式的作用域&lt;/h4&gt;
+
+&lt;p&gt;Riot.js 的模块是一个自定义标签，标签名非常适合作为样式的作用域。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;使用标签名作为样式的作用域，可以让样式效果更可预期；&lt;/li&gt;
+&lt;li&gt;统一的名字便于开发者理解。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;使用标签名作为样式的父类或作用域。&lt;/p&gt;
+&lt;pre class="highlight css"&gt;&lt;code&gt;&lt;span class="c"&gt;/* 推荐 */&lt;/span&gt;
+&lt;span class="nt"&gt;my-example&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="nt"&gt;my-example&lt;/span&gt; &lt;span class="nt"&gt;li&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="nc"&gt;.my-example__item&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c"&gt;/* 避免 */&lt;/span&gt;
+&lt;span class="nc"&gt;.my-alternative&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="c"&gt;/* not scoped to tag or module name */&lt;/span&gt;
+&lt;span class="nc"&gt;.my-parent&lt;/span&gt; &lt;span class="nc"&gt;.my-example&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="c"&gt;/* .my-parent is outside scope, so should not be used in this file */&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;小贴士&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;如果使用 2.3.17 之后的版本，可以使用 &lt;a href="http://riotjs.com/guide/#html-elements-as-tags"&gt;&lt;code&gt;[data-is=&amp;quot;my-example&amp;quot;]&lt;/code&gt;&lt;/a&gt; 来替代 &lt;code&gt;.my-example&lt;/code&gt;&lt;/p&gt;
+
+&lt;h4&gt;为模块添加说明文档&lt;/h4&gt;
+
+&lt;p&gt;一个模块包括了属性和方法，为了便于其他开发人员使用，需要写一份文档来说明这些属性和方法。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;文档帮助开发者快速了解模块的整体情况，而不需要阅读具体的代码。这使得模块更易于使用；&lt;/li&gt;
+&lt;li&gt;文档里标明了模块的属性信息，可以让只想使用（而非开发）它的人快速上手；&lt;/li&gt;
+&lt;li&gt;文档帮助开发者理清哪些内容是对外暴露的，更新时需要考虑兼容性；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;README.md&lt;/code&gt; 是标准的说明文件格式，像 Github 之类的代码托管工具，可以方便的展示和阅读这份文件。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;添加 &lt;code&gt;README.md&lt;/code&gt; 到模块文件夹：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;range-slider/
+├── range-slider.tag.html
+├── range-slider.less
+└── README.md
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在文档中，描述该模块的功能和使用方法，并说明其自定义属性和方法的含义和用法。&lt;/p&gt;
+&lt;pre class="highlight markdown"&gt;&lt;code&gt;&lt;span class="gh"&gt;# Range slider&lt;/span&gt;
+
+&lt;span class="gu"&gt;## Functionality&lt;/span&gt;
+
+The range slider lets the user to set a numeric range by dragging a handle on a slider rail for both the start and end value.
+
+This module uses the &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;noUiSlider&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="sx"&gt;http://refreshless.com/nouislider/&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; for cross browser and touch support.
+
+&lt;span class="gu"&gt;## Usage&lt;/span&gt;
+
+&lt;span class="sb"&gt;`&amp;lt;range-slider&amp;gt;`&lt;/span&gt; supports the following custom tag attributes:
+
+| attribute | type | description
+| --- | --- | ---
+| &lt;span class="sb"&gt;`min`&lt;/span&gt; | Number | number where range starts (lower limit).
+| &lt;span class="sb"&gt;`max`&lt;/span&gt; | Number | Number where range ends (upper limit).
+| &lt;span class="sb"&gt;`values`&lt;/span&gt; | Number&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;] *optional* | Array containing start and end value.  E.g. `values="[10, 20&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;"&lt;span class="sb"&gt;`. Defaults to `&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;opts.min, opts.max&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="err"&gt;`&lt;/span&gt;.
+| &lt;span class="sb"&gt;`step`&lt;/span&gt; | Number &lt;span class="ge"&gt;*optional*&lt;/span&gt; | Number to increment / decrement values by. Defaults to 1.
+| &lt;span class="sb"&gt;`on-slide`&lt;/span&gt; | Function &lt;span class="ge"&gt;*optional*&lt;/span&gt; | Function called with &lt;span class="sb"&gt;`(values, HANDLE)`&lt;/span&gt; while a user drags the start (&lt;span class="sb"&gt;`HANDLE == 0`&lt;/span&gt;) or end (&lt;span class="sb"&gt;`HANDLE == 1`&lt;/span&gt;) handle. E.g. &lt;span class="sb"&gt;`on-slide={ updateInputs }`&lt;/span&gt;, with &lt;span class="sb"&gt;`tag.updateInputs = (values, HANDLE) =&amp;gt; { const value = values[HANDLE]; }`&lt;/span&gt;.
+| &lt;span class="sb"&gt;`on-end`&lt;/span&gt; | Function &lt;span class="ge"&gt;*optional*&lt;/span&gt; | Function called with &lt;span class="sb"&gt;`(values, HANDLE)`&lt;/span&gt; when user stops dragging a handle.
+
+For customising the slider appearance see the &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nv"&gt;Styling section in the noUiSlider docs&lt;/span&gt;&lt;span class="p"&gt;](&lt;/span&gt;&lt;span class="sx"&gt;http://refreshless.com/nouislider/more/#section-styling&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;增加模块示例&lt;/h4&gt;
+
+&lt;p&gt;增加 &lt;code&gt;*.demo.html&lt;/code&gt; 示例文件，来表示模块该如何被使用。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;模块示例证明该模块可以被独立使用；&lt;/li&gt;
+&lt;li&gt;模块示例让使用者在查看文档和代码前就对模块有个大体概念；&lt;/li&gt;
+&lt;li&gt;示例中可以展示该模块所有可能的使用方法。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;添加 &lt;code&gt;*.demo.html&lt;/code&gt; 文件到模块文件夹：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;city-map/
+├── city-map.tag.html
+├── city-map.demo.html
+├── city-map.css
+└── ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在示例文件中，需要：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;引入 &lt;code&gt;riot+compiler.min.js&lt;/code&gt; 来解析和执行示例；&lt;/li&gt;
+&lt;li&gt;引入模块文件，如 &lt;code&gt;./city-map.tag.html&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;创建一个 &lt;code&gt;demo&lt;/code&gt; 标签用于嵌入模块；&lt;/li&gt;
+&lt;li&gt;在 &lt;code&gt;&amp;lt;demo&amp;gt;&lt;/code&gt; 中编写示例；&lt;/li&gt;
+&lt;li&gt;可以给 &lt;code&gt;demo&lt;/code&gt; 标签加上 &lt;code&gt;aria-label&lt;/code&gt; 属性来说明示例的内容；&lt;/li&gt;
+&lt;li&gt;使用 &lt;code&gt;riot.mount(&amp;#39;demo&amp;#39;, {})&lt;/code&gt; 来初始化。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;下面是一个例子：&lt;/p&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="c"&gt;&amp;lt;!-- modules/city-map/city-map.demo.html: --&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;city-map demos&lt;span class="nt"&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+
+    &lt;span class="nt"&gt;&amp;lt;demo&lt;/span&gt; &lt;span class="na"&gt;aria-label=&lt;/span&gt;&lt;span class="s"&gt;"City map of London"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;city-map&lt;/span&gt; &lt;span class="na"&gt;location=&lt;/span&gt;&lt;span class="s"&gt;"London"&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;    
+    &lt;span class="nt"&gt;&amp;lt;/demo&amp;gt;&lt;/span&gt;
+
+    &lt;span class="nt"&gt;&amp;lt;demo&lt;/span&gt; &lt;span class="na"&gt;aria-label=&lt;/span&gt;&lt;span class="s"&gt;"City map of Paris"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="nt"&gt;&amp;lt;city-map&lt;/span&gt; &lt;span class="na"&gt;location=&lt;/span&gt;&lt;span class="s"&gt;"Paris"&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;    
+    &lt;span class="nt"&gt;&amp;lt;/demo&amp;gt;&lt;/span&gt;
+
+    &lt;span class="nt"&gt;&amp;lt;link&lt;/span&gt; &lt;span class="na"&gt;rel=&lt;/span&gt;&lt;span class="s"&gt;"stylesheet"&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;"./city-map.css"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+
+    &lt;span class="nt"&gt;&amp;lt;script &lt;/span&gt;&lt;span class="na"&gt;src=&lt;/span&gt;&lt;span class="s"&gt;"path/to/riot+compiler.min.js"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;script &lt;/span&gt;&lt;span class="na"&gt;type=&lt;/span&gt;&lt;span class="s"&gt;"riot/tag"&lt;/span&gt; &lt;span class="na"&gt;src=&lt;/span&gt;&lt;span class="s"&gt;"./city-map.tag.html"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;script&amp;gt;&lt;/span&gt;
+        &lt;span class="nx"&gt;riot&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;tag&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'demo'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'&amp;lt;yield/&amp;gt;'&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="nx"&gt;riot&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;mount&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'demo'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{});&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+
+    &lt;span class="nt"&gt;&amp;lt;style&amp;gt;&lt;/span&gt;
+        &lt;span class="c"&gt;/* add a grey bar with the `aria-label` as demo title */&lt;/span&gt;
+        &lt;span class="nt"&gt;demo&lt;/span&gt;&lt;span class="nd"&gt;:before&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nl"&gt;content&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;"Demo: "&lt;/span&gt; &lt;span class="n"&gt;attr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;aria-label&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+            &lt;span class="nl"&gt;display&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;block&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="nl"&gt;background&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;#F3F5F5&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="nl"&gt;padding&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="m"&gt;.5em&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="nl"&gt;clear&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;both&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;检查模块文件的代码风格&lt;/h4&gt;
+
+&lt;p&gt;检查工具可以改进代码风格的一致性并找出语法错误。通过一些额外的配置，我们可以检查 Riot.js 模块的代码风格。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;保证开发者们有一致的代码风格；&lt;/li&gt;
+&lt;li&gt;提前发现语法错误。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;使用 &lt;a href="http://eslint.org/"&gt;ESLint&lt;/a&gt; 和 &lt;a href="http://jshint.com/"&gt;JSHint&lt;/a&gt; 来检查代码风格。&lt;/p&gt;
+
+&lt;h4&gt;给你的项目加上 &lt;code&gt;RiotJS Style Guide&lt;/code&gt; 标识&lt;/h4&gt;
+
+&lt;p&gt;给项目加上标识，并链接到本指南。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="https://github.com/voorhoede/riotjs-style-guide"&gt;&lt;img src="https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg" alt="RiotJS Style Guide badge" /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么这么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;让其他开发人员知道和了解本指南。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;怎么做？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在 markdown 文件中引入：&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[![RiotJS Style Guide badge](https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg)](https://github.com/voorhoede/riotjs-style-guide)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在 html 文件中引入：&lt;/p&gt;
+&lt;pre class="highlight html"&gt;&lt;code&gt;&lt;span class="nt"&gt;&amp;lt;a&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;"https://github.com/voorhoede/riotjs-style-guide"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;img&lt;/span&gt; &lt;span class="na"&gt;alt=&lt;/span&gt;&lt;span class="s"&gt;"RiotJS Style Guide badge"&lt;/span&gt;
+         &lt;span class="na"&gt;src=&lt;/span&gt;&lt;span class="s"&gt;"https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg"&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;</content>
+  </entry>
   <entry>
     <title>WebView·开车指南</title>
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-31.html"/>

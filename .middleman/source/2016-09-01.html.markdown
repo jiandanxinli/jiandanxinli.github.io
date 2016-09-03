@@ -37,7 +37,7 @@ __为什么要这么做？__
 
 __如何做？__
 
-每个模块都需要符合[FIRST](https://addyosmani.com/first/)原则：专注（Focused，[单一职责](http://en.wikipedia.org/wiki/Single_responsibility_principle)）、独立（Independent，避免耦合）、可复用（Reusable）、简洁（Small）和可测试（Testable）。
+每个模块都需要符合 [FIRST](https://addyosmani.com/first/) 原则：专注（Focused，[单一职责](http://en.wikipedia.org/wiki/Single_responsibility_principle)）、独立（Independent）、可复用（Reusable）、简洁（Small）和可测试（Testable）。
 
 如果你的模块功能太多，导致体积臃肿，请把它切分成多个小模块。比如确保每个模块的代码不超过 100 行，并使其与其它模块隔离。
 
@@ -241,9 +241,9 @@ __如何做？__
     <a href="{ opts.url }">{ opts.text }</a>
     <ul if="{ opts.items }">
         <li each="{ item in opts.items }">
-            <menu-item 
-                text="{ item.text }" 
-                url="{ item.url }" 
+            <menu-item
+                text="{ item.text }"
+                url="{ item.url }"
                 items="{ item.items }" />
         </li>
     </ul>
@@ -327,13 +327,13 @@ __如何做？__
 
 // ES5 的赋值写法
 var tag = this;
-window.onresize = function() { 
+window.onresize = function() {
     tag.adjust();
 }
 
 // ES6 中可以把 tag 赋值为常量
 const tag = this;
-window.onresize = function() { 
+window.onresize = function() {
     tag.adjust();
 }
 
@@ -719,7 +719,7 @@ city-map/
     <link rel="stylesheet" href="./city-map.css">
 
     <script src="path/to/riot+compiler.min.js"></script>
-    <script type="riot/tag" src="./city-map.tag.html"></script> 
+    <script type="riot/tag" src="./city-map.tag.html"></script>
     <script>
         riot.tag('demo','<yield/>');
         riot.mount('demo', {});
@@ -755,7 +755,7 @@ __如何做？__
 
 给项目加上标识，并链接到本指南。
 
-[![标识](https://camo.githubusercontent.com/2e3d813affd34478b05714b3dacfea98cbb4a0ec/68747470733a2f2f63646e2e7261776769742e636f6d2f766f6f72686f6564652f72696f746a732d7374796c652d67756964652f6d61737465722f72696f746a732d7374796c652d67756964652e737667)](https://github.com/voorhoede/riotjs-style-guide)
+[![RiotJS Style Guide badge](https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg)](https://github.com/voorhoede/riotjs-style-guide)
 
 __为什么这么做？__
 

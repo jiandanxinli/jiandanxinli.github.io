@@ -1,0 +1,568 @@
+杂烩Layout
+```XML
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jiandanxinli.smileback.materiallogin.LoginActivity">
+
+    <ScrollView
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/email_login_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="12dp"
+                    android:src="@drawable/ic_perm_identity_black_24dp" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hotchpotch_name_tv">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edit_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="12dp"
+                    android:src="@drawable/ic_phone_black_24dp" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hotchpotch_phone_tv"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="11">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edit_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="phone"
+                        android:maxLength="11" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="12dp"
+                    android:src="@drawable/ic_mail_black_24dp" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hotchpotch_mail_tv">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edit_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="12dp"
+                    android:src="@drawable/ic_security_black_24dp" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hotchpotch_password_tv"
+                    app:passwordToggleDrawable="@drawable/visibility_selector"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/visibility_selector">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edit_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="12dp"
+                    android:src="@drawable/ic_feedback_black_24dp" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hotchpotch_feedback_tv"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="10"
+                    app:hintTextAppearance="@style/FloatingStyle">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edit_feedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/submit_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/btn_selector"
+                android:text="@string/hotchpotch_submit_btn"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+
+
+```
+
+FloatingStyle
+
+```XML
+
+<style name="FloatingStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#FFEB3B</item>
+        <item name="android:textSize">20sp</item>
+</style>
+
+```
+
+btn_selector
+
+```XML
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/colorPrimaryDark" android:state_pressed="true" />
+    <item android:drawable="@color/colorPrimary" />
+</selector>
+
+```
+
+drawable/visibility_selector
+
+```XML
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_visibility_black_24dp" android:state_checked="false" android:state_pressed="true" />
+    <item android:drawable="@drawable/ic_visibility_off_black_24dp" android:state_checked="true" android:state_pressed="true" />
+    <item android:drawable="@drawable/ic_visibility_black_24dp" android:state_checked="true" android:state_pressed="false" />
+    <item android:drawable="@drawable/ic_visibility_off_black_24dp" android:state_checked="false" android:state_pressed="false" />
+</selector>
+
+```
+
+color/visibility_selector
+
+```XML
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/colorAccent" android:state_checked="false" android:state_pressed="true" />
+    <item android:color="@color/colorDivider" android:state_checked="true" android:state_pressed="true" />
+    <item android:color="@color/colorAccent" android:state_checked="true" android:state_pressed="false" />
+    <item android:color="@color/colorDivider" android:state_checked="false" android:state_pressed="false" />
+</selector>
+```
+
+
+
+
+杂烩Activity
+
+```Java
+
+public class HotchpotchActivity extends AppCompatActivity {
+
+    private TextInputEditText mNameEditx;
+    private TextInputEditText mPhoneEditx;
+    private TextInputEditText mEmailEditx;
+    private TextInputEditText mPasswordEditx;
+    private TextInputEditText mFeedbackEditx;
+
+    private String mContentName;
+    private String mContentPhone;
+    private String mContentEmail;
+    private String mContentPassword;
+    private String mContentFeedback;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_hotchpotch);
+
+        initView();
+    }
+
+    private void initView() {
+        mNameEditx = (TextInputEditText) findViewById(R.id.edit_name);
+        mPhoneEditx = (TextInputEditText) findViewById(R.id.edit_phone);
+        mEmailEditx = (TextInputEditText) findViewById(R.id.edit_email);
+        mPasswordEditx = (TextInputEditText) findViewById(R.id.edit_password);
+        mFeedbackEditx = (TextInputEditText) findViewById(R.id.edit_feedback);
+
+        Button submitBtn = (Button) findViewById(R.id.submit_btn);
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                controlAction();
+            }
+        });
+    }
+
+    private void getContent() {
+        mContentName = mNameEditx.getText().toString();
+        mContentPhone = mPhoneEditx.getText().toString();
+        mContentEmail = mEmailEditx.getText().toString();
+        mContentPassword = mPasswordEditx.getText().toString();
+        mContentFeedback = mFeedbackEditx.getText().toString();
+    }
+
+    private void controlAction() {
+        getContent();
+
+        if (mContentName.length() == 0) {
+            showToast("姓名不能为空!");
+        } else if (mContentPhone.length() != 11) {
+            showToast("请正确填写11位手机号码!");
+        } else if (mContentEmail.length() == 0 || !android.util.Patterns.EMAIL_ADDRESS.matcher(mContentEmail).matches()) {
+            showToast("请正确填写邮箱地址!");
+        } else if (mContentPassword.length() == 0) {
+            showToast("密码不能为空");
+        } else if (mContentFeedback.length() == 0) {
+            showToast("反馈意见不能为空!");
+        } else if (mContentFeedback.length() > 10) {
+            showToast("反馈意见长度字数不能大于10!");
+        } else {
+            doSubmission();
+        }
+    }
+
+    private void doSubmission() {
+        showToast("恭喜您,数据正确!");
+    }
+
+
+    private void showToast(String message) {
+        Toast.makeText(HotchpotchActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+}
+
+```
+
+
+登录页面Layout
+```XML
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingEnd="32dp"
+    android:paddingStart="32dp"
+    tools:context="com.jiandanxinli.smileback.materiallogin.LoginActivity">
+
+    <!-- Login progress -->
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/email_login_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="48dp"
+                android:fontFamily="cursive"
+                android:text="@string/app_name"
+                android:textSize="48sp"
+                android:textStyle="bold" />
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp"
+                app:passwordToggleDrawable="@drawable/visibility_selector">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_password"
+                    android:imeActionId="@+id/login"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/email_sign_in_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark"
+                android:text="@string/action_sign_in"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+
+
+```
+
+
+登录页面
+
+```Java
+
+/**
+ * 登录页面
+ *
+ * @author bugdev
+ */
+public class LoginActivity extends AppCompatActivity {
+
+    private AutoCompleteTextView mEmailView;
+    private EditText mPasswordView;
+    private ProgressDialog mProgressDialog;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mPasswordView = (EditText) findViewById(R.id.password);
+
+        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                    //尝试登录
+                    attemptLogin();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        Button emailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        emailSignInButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //尝试登录
+                attemptLogin();
+            }
+        });
+    }
+
+    /**
+     * 说明:获取用户输入的内容并调用相应的验证方法
+     */
+    private void attemptLogin() {
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+
+        if (isEmailValid(email) && isPasswordValid(password)) {
+            login();
+        }
+    }
+
+
+    /**
+     * 说明:验证邮箱格式
+     *
+     * @param email 邮箱地址
+     * @return 邮箱地址格式正确或错误
+     */
+    private boolean isEmailValid(String email) {
+        if (email.length() == 0) {
+            showToast("请输入邮箱!");
+            return false;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            showToast("邮箱格式不正确!");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 说明:验证密码格式
+     *
+     * @param password 密码
+     * @return 密码格式正确或错误
+     */
+    private boolean isPasswordValid(String password) {
+        if (password.length() == 0) {
+            showToast("请输入密码!");
+            return false;
+        } else if (password.length() < 6) {
+            showToast("请输入至少6位密码!");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 说明:显示Toast的方法
+     *
+     * @param message 要显示的消息
+     */
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 说明:登录
+     * <p>
+     * 这里为了展示对话框,将对话框固定显示了3秒
+     */
+    private void login() {
+        showDialog();
+
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                mProgressDialog.dismiss();
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        };
+        timer.schedule(timerTask, 3000);
+    }
+
+    /**
+     * 说明:show一个Dialog
+     */
+    private void showDialog() {
+        mProgressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setMessage("正在验证...");
+        mProgressDialog.show();
+    }
+}
+
+
+```
+
+```XML
+<style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/textPrimary</item>
+        <item name="android:background">@color/colorPrimary</item>
+</style>
+
+```

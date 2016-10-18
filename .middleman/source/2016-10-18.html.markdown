@@ -8,7 +8,7 @@ summary: RecyclerView加载更多与CoordinatorLayout的简单实现
 
 在2015年Google的年度大会上，已经升级了新的Support Library，视觉效果及用户体验毋庸置疑，所以今天主要简单主要介绍Material Design中最主要的二个控件，RecyclerView的上拉加载更多和CoordinatorLayout的结合使用，废话不多说，先上图：
 
-(http://img.blog.csdn.net/20161015194706686)
+(https://cloud.githubusercontent.com/assets/4373787/19464661/b00424f6-9530-11e6-99f9-99c32b35ed9f.gif)
 
 ### CoordinatorLayout
 

@@ -1,5 +1,6 @@
-@import 'normalize.css'
-@import 'syntax.css'
+@import 'libs/normalize'
+@import 'libs/syntax'
+@import 'libs/animate'
 
 $black: #2d3c48
 $blue: #3e8cb7
@@ -24,13 +25,10 @@ img
   display: block
   max-width: 100%
 
-pre.highlight
-  background: $black
-  padding: .5em 1em
-  overflow-x: auto
-
-  code
-    color: #f8f8f2
+blockquote
+  margin: 2em 0
+  border-left: 3px solid $grey
+  padding-left: 1em
 
 body
   font-family: 'Hiragino Sans GB', '华文细黑', 'STHeiti', '微软雅黑', 'Microsoft YaHei', SimHei, 'Helvetica Neue', Helvetica, Arial, sans-serif
@@ -41,6 +39,12 @@ body
   line-height: 1.6
   overflow-x: hidden
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0)
+
+.animated_container
+  overflow: hidden
+
+.animated.delay
+  animation-delay: 1s
 
 .container
   max-width: 868px
@@ -114,17 +118,34 @@ body
   .content
     min-height: 100px
 
+.top
+  display: block
+  margin: 0 auto
+  text-align: center
+  font-size: .9em
+
 .footer
+  margin-top: 2em
   background: #f4f5f6
   border-top: 1px solid #eff0f1
   color: $grey
   font-size: .8em
   text-align: center
   padding-bottom: .5em
+  .links
+    margin-top: .5em
   a
     margin: 0 .5em
-  .copy
-    margin-top: .5em
+  p
+    margin: .5em 0 0
+    font-size: .9em
+  .logo
+    display: block
+    margin: 1.5em auto 1em
+    text-align: center
+    img
+      margin: 0 auto
+      width: 120px
 
 .article
   color: #818486
@@ -141,6 +162,7 @@ body
     margin: .3em 0
 
 .meta
+  margin-bottom: 1em
   font-size: .9em
   font-style: italic
   .author
@@ -148,8 +170,3 @@ body
     margin-left: .5em
   .date
     color: $grey
-
-#uyan_frame
-  margin-top: 2em
-  border-top: 1px solid #eee
-  padding-top: 2em

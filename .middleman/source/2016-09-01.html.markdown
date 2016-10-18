@@ -1,0 +1,779 @@
+---
+title: Riot.js 代码风格指南
+date: 2016-09-01
+tags: Javascript
+author: Ben
+summary: Riot.js 是一个比 React.js 和 Vue.js 更轻量的前端框架。但作为灵活的代价，团队协作时需要一份代码风格指南以保证代码风格的一致。
+---
+
+本文节选翻译自 https://github.com/voorhoede/riotjs-style-guide
+
+### 宗旨
+
+本指南的目标是提供一份统一的 Riot.js 代码风格指南，以使你的项目达到以下效果：
+
+* 帮助开发人员理解和查找代码；
+* 方便 IDE 高亮代码和提供协助；
+* 方便构建工具构建代码；
+* 方便缓存、打包和分离代码。
+
+本指南受 John Papa 的 [AngularJS Style Guide](https://github.com/johnpapa/angular-styleguide) 启发。
+
+### 示例
+
+这些是按照本指南编写的示例项目：https://voorhoede.github.io/riotjs-demos/
+
+### 正文
+
+#### 模块化开发
+
+让你的代码模块化，并保证其业务逻辑小而清晰。
+
+模块是应用的组成部分，Riot.js 可以方便的构建和组织模块。
+
+__为什么要这么做？__
+
+无论对于你还是他人，小模块都是便于阅读、理解、维护、重用和调试的最佳选择。
+
+__如何做？__
+
+每个模块都需要符合 [FIRST](https://addyosmani.com/first/) 原则：专注（Focused，[单一职责](http://en.wikipedia.org/wiki/Single_responsibility_principle)）、独立（Independent）、可复用（Reusable）、简洁（Small）和可测试（Testable）。
+
+如果你的模块功能太多，导致体积臃肿，请把它切分成多个小模块。比如确保每个模块的代码不超过 100 行，并使其与其它模块隔离。
+
+__小贴士__
+
+如果你使用 AMD 或 CommonJS 来加载模块，可以在命令行中加上`--modular`参数
+
+```
+# enable AMD and CommonJS
+riot --modular
+```
+
+#### 模块的命名
+
+模块的名字代表模块的用途，需要遵守以下要求：
+
+* 恰当的含义：避免过于具体或过于抽象；
+* 简短：2 ~ 3 个单词；
+* 顺口：不绕口，方便交流；
+* 符合 W3C 的[自定义标签标准](https://www.w3.org/TR/custom-elements/)，使用连字符，避开保留名称；
+* 以对象作为名字的前缀。除非模块非常通用，否则不要只使用一个词作为名字。
+
+__为什么要这么做？__
+
+* 模块间通过名字来通讯，所以名字必须有恰当的含义、简短且顺口；
+* 名字将作为标签名写入 HTML 中，所以必须符合 HTML 的规范。
+
+__如何做？__
+
+```html
+<!-- 推荐 -->
+<app-header />
+<user-list />
+<range-slider />
+
+<!-- 避免 -->
+<btn-group /> <!-- 虽然简短，但绕口，可以用 `button-group` 替代 -->
+<ui-slider /> <!-- 所有的模块都是 UI 模块，所以 ui 在这里没有意义 -->
+<slider /> <!-- 不符合 W3C 的自定义标签标准 -->
+```
+
+#### 一个模块一个文件夹
+
+构建时把一个模块的所有文件打包成一个文件。
+
+__为什么这么做？__
+
+打包文件方便查找和重用。
+
+__如何做？__
+
+把模块名作为文件夹的名字和文件前缀，后缀为文件类型。
+
+```
+modules/
+└── my-example/
+    ├── my-example.tag.html
+    ├── my-example.less
+    ├── ...
+    └── README.md
+```
+
+如果你的模块里有子模块，可以把子模块作为子文件夹。
+
+```
+modules/
+├── radio-group/
+|   └── radio-group.tag.html
+└── search-form/
+    ├── search-form.tag.html
+    ├── ...
+    └── search-filters/
+        └── search-filters.tag.html
+```
+
+#### 使用 `.tag.html` 作为文件后缀
+
+Riot.js 建议使用 `.tag` 作为模块的文件名后缀，虽然它的本质是一个自定义标签。
+
+__为什么这么做？__
+
+* 告诉开发者这不仅仅是一个 html 文件，而是 Riot.js 模块；
+* 帮助 IDE 识别文件类型。
+
+__如何做？__
+
+如果在[浏览器端使用](http://riotjs.com/guide/compiler/#in-browser-compilation)，可以这么写：
+
+```html
+<script src="path/to/modules/my-example/my-example.tag.html" type="riot/tag"></script>
+```
+
+[预编译](http://riotjs.com/guide/compiler/#pre-compilation)时，需要加上[后缀参数](http://riotjs.com/guide/compiler/#custom-extension)：
+
+```
+riot --ext tag.html modules/ dist/tags.js
+```
+
+如果你使用 [Webpack tag loader](https://github.com/srackham/tag-loader)，需要[设置 loader](http://webpack.github.io/docs/using-loaders.html#configuration)：
+
+```
+{ test: /\.tag.html$/, loader: 'tag' }
+```
+
+#### 在自定义标签里使用 `<script>` 标签
+
+Riot.js 支持在[自定义标签里不使用 `<script>` 标签](http://riotjs.com/guide/#no-script-tag)，但你需要把 Javascript 代码写在 `<script>` 标签里。这可以让代码更易于理解以及避免 IDE 识别混乱。
+
+__为什么这么做？__
+
+* 避免非脚本语言被解读为脚本语言；
+* 便于 IDE 识别；
+* 明确脚本从哪里开始，在哪里结束。
+
+__如何做？__
+
+```html
+<!-- 推荐 -->
+<my-example>
+    <h1>The year is { this.year }</h1>
+
+    <script>
+        this.year = (new Date()).getUTCFullYear();
+    </script>
+</my-example>
+
+<!-- 避免 -->
+<my-example>
+    <h1>The year is { this.year }</h1>
+
+    this.year = (new Date()).getUTCFullYear();
+</my-example>
+```
+
+#### 保持自定义标签中的逻辑简洁
+
+Riot.js 提供的标签内置语法支持 Javascript 语法，但这并不表示建议你在其中编写复杂的代码。
+
+__为什么这么做？__
+
+* 复杂的内置脚本会导致难以阅读；
+* 复杂的内置脚本难以重用；
+* IDE 无法准确识别内置脚本。
+
+__如何做？__
+
+把复杂的内置脚本移到模块变量或模块方法里。
+
+```html
+<!-- 推荐 -->
+<my-example>
+    { year() + '-' + month() }
+
+    <script>
+        const twoDigits = (num) => ('0' + num).slice(-2);
+        this.month = () => twoDigits((new Date()).getUTCMonth() +1);
+        this.year  = () => (new Date()).getUTCFullYear();
+    </script>
+</my-example>
+
+<!-- 避免 -->
+<my-example>
+    { (new Date()).getUTCFullYear() + '-' + ('0' + ((new Date()).getUTCMonth()+1)).slice(-2) }
+</my-example>
+```
+
+#### 保持参数简洁
+
+Riot.js 支持通过自定义属性给模块添加参数，比如 `<my-tag my-attr="{ value }" />`，可以在模块中通过 `opts.MyAttr` 获取参数。
+
+尽管 Riot.js 支持使用复杂的原生 Javascript 语法来传递参数，但我们应保持参数的简洁，只使用标准的[Javascript 类型](https://developer.mozilla.org/en-US/docs/Glossary/Primitive)，如字符串、数字、函数等。
+
+允许的例外情况是只能使用复杂对象来传递参数（如一组对象、递归模块等）或通用的业务对象（如 `Product`）。
+
+__为什么这么做？__
+
+* 每个属性作为一个独立参数，可以让参数易于阅读和理解；
+* 只使用默认的 Javascript 类型可以让代码风格更接近 HTML 的原生风格；
+* 复杂的参数会导致难以理解和重构，导致技术债务。
+
+__如何做？__
+
+每个属性作为一个独立的参数，参数值为 Javascript 原生类型。
+
+```html
+<!-- 推荐 -->
+<range-slider
+    values="[10, 20]"
+    min="0"
+    max="100"
+    step="5"
+    on-slide="{ updateInputs }"
+    on-end="{ updateResults }"
+    />
+
+<!-- 避免 -->
+<range-slider config="{ complexConfigObject }">
+
+<!-- 例外: 迭代菜单模块 -->
+<menu-item>
+    <a href="{ opts.url }">{ opts.text }</a>
+    <ul if="{ opts.items }">
+        <li each="{ item in opts.items }">
+            <menu-item
+                text="{ item.text }"
+                url="{ item.url }"
+                items="{ item.items }" />
+        </li>
+    </ul>
+</menu-item>
+```
+
+#### 初始化参数
+
+在 Riot.js 中，参数是模块的 API。一个健壮的参数初始化过程，可以方便他人使用你的模块。
+
+模块的参数可能是 Riot.js 的表达式（`attr="{ var }"`）、纯字符串（`attr="value"`）或不存在。你需要初始化处理这些情况。
+
+__为什么这么做？__
+
+初始化参数可以确保你的模块总是可以正常运行。哪怕其他开发者将其用于超出你预期的用途。
+
+__如何做？__
+
+* 给参数设置默认值；
+* 使用类型转换，将值转换成期望的类型；
+* 在使用参数前，先检查参数是否存在。
+
+在 [Riot.js 的示例](http://riotjs.com/guide/#example) 中，可以把代码进行如下改进：
+
+```javascript
+this.items = opts.items || []; // 设置默认值为空数组
+```
+
+这样改进后，可以让模块在以下情况中正常运作：
+
+```html
+<todo items="{ [{ title:'Apples' }, { title:'Oranges', done:true }] }"> <!-- 传入参数时 -->
+<todo> <!-- 未传入参数时 -->
+```
+
+对于 `<range-slider>` 这种模块，我们预期其参数都是数字类型，可以这么写：
+
+```javascript
+// 如果没有传入 step，就设为默认值
+this.step = !isNaN(Number(opts.step)) ? Number(opts.step) : 1;
+```
+
+以此确保以下情况都可以正常运行：
+
+```html
+<range-slider> <!-- 全部使用默认值 -->
+<range-slider step="5"> <!-- 将字符串 "5" 转变成数字 5 -->
+<range-slider step="{ x }"> <!-- 使用变量 x -->
+```
+
+当 `<range-slider>` 模块支持可选的 `on-slide` 事件时，需要在使用前确认是否传入了回调：
+
+```javascript
+slider.on('slide', (values, handle) => {
+    if (typeof opts.onSlide === 'function') {
+        opts.onSlide(values, handle);
+    }
+}
+```
+
+以此确保以下情况可以正常运行：
+
+```html
+<range-slider> <!-- 什么都不触发 -->
+<range-slider on-slide="{ updateInputs }"> <!-- 触发 updateInputs -->
+<range-slider on-slide="invalid option"> <!-- 什么都不触发 -->
+```
+
+#### 将 this 改名为 tag
+
+在 Riot.js 模块内，`this` 指向模块实例，把 `tag` 赋值为 `this` 后，可以在不同的作用域下调用模块实例。
+
+__为什么这么做？__
+
+将 `tag` 赋值为实例变量，其它开发者就可以方便的调用了。
+
+__如何做？__
+
+```javascript
+/* 推荐 */
+
+// ES5 的赋值写法
+var tag = this;
+window.onresize = function() {
+    tag.adjust();
+}
+
+// ES6 中可以把 tag 赋值为常量
+const tag = this;
+window.onresize = function() {
+    tag.adjust();
+}
+
+// ES6 中也可以使用 => 来继续使用 this
+window.onresize = () => {
+    this.adjust();
+}
+
+/* 避免 */
+var self = this;
+var _this = this;
+// 等等
+```
+
+#### 在顶部声明变量
+
+在 Riot.js 的模块中，你可以任意声明变量和方法，但这会导致可读性问题。所以建议把变量和方法按顺序在顶部声明。
+
+__为什么这么做？__
+
+* 在顶部声明变量和方法，可以方便开发者得知可以使用哪些变量和方法；
+* 按字母顺序排列可以便于查找；
+* 将方法放在后面，可以隐藏执行细节，便于一瞥全局。
+
+__如何做？__
+
+把变量声明和方法移到顶部。
+
+```javascript
+/* 推荐 */
+var tag = this;
+tag.text = '';
+tag.todos = [];
+tag.add = add;
+tag.edit = edit;
+tag.toggle = toggle;
+
+function add(event) {
+    /* ... */
+}
+
+function edit(event) {
+    /* ... */
+}
+
+function toggle(event) {
+    /* ... */
+}   
+
+/* 避免 */
+var tag = this;
+
+tag.todos = [];
+tag.add = function(event) {
+    /* ... */
+}
+
+tag.text = '';
+tag.edit = function(event) {
+    /* ... */
+}
+
+tag.toggle = function(event) {
+    /* ... */
+}
+```
+
+你也可以把 `mixins` 和 `observables` 放在顶部：
+
+```javascript
+/* recommended */
+var tag = this;
+// alphabetized properties
+// alphabetized methods
+tag.mixin('someBehaviour');
+tag.on('mount', onMount);
+tag.on('update', onUpdate);
+// etc
+```
+
+#### 避免使用非标准的 ES6 语法
+
+Riot.js 支持[模仿 ES6 的方法声明语法](http://riotjs.com/guide/#tag-syntax)，把 `methodName() { }` 编译成 `this.methodName = function() {}.bind(this)`。但这并不是 ES6 的标准语法。
+
+__为什么这么做？__
+
+* 这并不是 ES6 的标准语法，会造成开发者的困扰；
+* IDE 无法准确识别这种语法；
+* 这种语法无法清晰表达其作用。
+
+__如何做？__
+
+使用 `tag.methodName =` 替代 `methodName() { }`。
+
+```javascript
+/* 推荐 */
+var tag = this;
+tag.todos = [];
+tag.add = add;
+
+function add() {
+    if (tag.text) {
+        tag.todos.push({ title: tag.text });
+        tag.text = tag.input.value = '';
+    }
+}
+
+/* 避免 */
+todos = [];
+
+add() {
+    if (this.text) {
+        this.todos.push({ title: this.text });
+        this.text = this.input.value = '';
+    }
+}
+```
+
+__小贴士__
+
+可以加上[禁用 ES6 的参数](http://riotjs.com/guide/compiler/#no-transformation)，来避免编译这种语法：
+
+```
+riot --type none
+```
+
+#### 避免使用 `tag.parent`
+
+Riot.js 支持[嵌套模块](http://riotjs.com/guide/#nested-tags)，可以通过 `tag.parent` 访问父模块。但这种行为违反了 [FIRST](https://addyosmani.com/first/) 原则，应当避免使用。
+
+例外的情况是在循环中，且子对象是匿名模块。
+
+__为什么这么做？__
+
+* 每个模块需运行在自己的作用域中，不同模块间保持隔离；
+* 如果一个模块需要访问父模块，那它将无法在不同的环境下复用；
+* 允许访问和修改父模块，可能会导致不可预期的错误。
+
+__如何做？__
+
+* 把需要的值从父模块传入子模块；
+* 父模块以回调的形式监听子模块的事件，以修改自身。
+
+```html
+<!-- 推荐 -->
+<parent-tag>
+    <child-tag value="{ value }" /> <!-- 把值传入子模块 -->
+</parent-tag>
+
+<child-tag>
+    <span>{ opts.value }</span> <!-- 使用父模块传入的值 -->
+</child-tag>
+
+<!-- 避免 -->
+<parent-tag>
+    <child-tag />
+</parent-tag>
+
+<child-tag>
+    <span>value: { parent.value }</span> <!-- 不要这么做 -->
+</child-tag>
+```
+
+```html
+<!-- 推荐 -->
+<parent-tag>
+    <child-tag on-event="{ methodToCallOnEvent }" /> <!-- 传入回调函数 -->
+    <script>this.methodToCallOnEvent = () => { /*...*/ };</script>
+<parent-tag>
+
+<child-tag>
+    <button onclick="{ opts.onEvent }"></button> <!-- 事件触发时通知父模块 -->
+</child-tag>
+
+<!-- 避免 -->
+<parent-tag>
+    <child-tag />
+    <script>this.methodToCallOnEvent = () => { /*...*/ };</script>
+<parent-tag>
+
+<child-tag>
+    <button onclick="{ parent.methodToCallOnEvent }"></button> <!-- 不要这么做 -->
+</child-tag>
+```
+
+```html
+<!-- 允许的例外情况 -->
+<parent-tag>
+    <button each="{ item in items }"
+        onclick="{ parent.onEvent }"> <!-- button 不是 Riot.js 的模块 -->
+        { item.text }
+    </button>
+    <script>this.onEvent = (e) => { alert(e.item.text); }</script>
+</parent-tag>
+```
+
+#### 使用 `each ... in` 语法
+
+Riot.js 支持多种[循环的语法](http://riotjs.com/guide/#loops)：数组可以写成 `each="{ item in items }"`；对象可以写成 `each="{ key, value in items }"`；以及简写 `each="{ items }"`。但这种简写会导致混淆，所以建议用 `each ... in`。
+
+__为什么这么做？__
+
+当 Riot.js 执行循环语句时，会把当前对象放到 `this` 中，这种做法并不直观，可能会引起开发者的困扰。
+
+__如何做？__
+
+使用 `each="{ item in items }"` 或 `each="{ key, value in items }"` 替代 `each="{ items }"`。
+
+```html
+<!-- 推荐 -->
+<ul>
+    <li each="{ item in items }">
+        <label class="{ completed: item.done }">
+            <input type="checkbox" checked="{ item.done }"> { item.title }
+        </label>
+    </li>
+</ul>
+
+<!-- 推荐 -->
+<ul>
+    <li each="{ key, item in items }">
+        <label class="{ completed: item.done }">
+            <input type="checkbox" checked="{ item.done }"> { key }. { item.title }
+        </label>
+    </li>
+</ul>
+
+<!-- 避免 -->
+<ul>
+    <li each="{ items }">
+        <label class="{ completed: done }">
+            <input type="checkbox" checked="{ done }"> { title }
+        </label>
+    </li>
+</ul>
+```
+
+#### 将样式放在独立的文件
+
+为了给开发者提供便利，Riot.js 允许在模块中[嵌套 `<style>`](http://riotjs.com/guide/#tag-styling)，并提供了 [scope](http://riotjs.com/guide/#scoped-css) 功能来限制样式的作用域，但这并不是真正的样式隔离。
+
+__为什么这么做？__
+
+* 独立的样式文件可以让浏览器更容易的读取，并且避免因模块加载出错或者未加载而导致问题；
+* 独立的样式文件可以方便的进行预编译（如 Sass、PostCSS 等）；
+* 独立的样式文件可以独立地进行压缩、构建和缓存，这样有利于提升性能；
+* Riot.js 并没有额外的功能提供给内嵌样式。
+
+__如何做？__
+
+将样式拆分为独立文件放在模块文件夹内：
+
+```
+my-example/
+├── my-example.tag.html
+├── my-example.(css|less|scss)    <-- external stylesheet next to tag file
+└── ...
+```
+
+#### 使用标签名字作为样式的作用域
+
+Riot.js 的模块是一个自定义标签，标签名非常适合作为样式的作用域。
+
+__为什么这么做？__
+
+* 使用标签名作为样式的作用域，可以让样式效果更可预期；
+* 统一的名字便于开发者理解。
+
+__如何做？__
+
+使用标签名作为样式的父类或作用域。
+
+```css
+/* 推荐 */
+my-example { }
+my-example li { }
+.my-example__item { }
+
+/* 避免 */
+.my-alternative { } /* not scoped to tag or module name */
+.my-parent .my-example { } /* .my-parent is outside scope, so should not be used in this file */
+```
+
+__小贴士__
+
+如果使用 2.3.17 之后的版本，可以使用 [`[data-is="my-example"]`](http://riotjs.com/guide/#html-elements-as-tags) 来替代 `.my-example`
+
+#### 为模块添加说明文档
+
+一个模块包括了属性和方法，为了便于其他开发人员使用，需要写一份文档来说明这些属性和方法。
+
+__为什么这么做？__
+
+* 文档帮助开发者快速了解模块的整体情况，而不需要阅读具体的代码。这使得模块更易于使用；
+* 文档里标明了模块的属性信息，可以让只想使用（而非开发）它的人快速上手；
+* 文档帮助开发者理清哪些内容是对外暴露的，更新时需要考虑兼容性；
+* `README.md` 是标准的说明文件格式，像 Github 之类的代码托管工具，可以方便的展示和阅读这份文件。
+
+__如何做？__
+
+添加 `README.md` 到模块文件夹：
+
+```
+range-slider/
+├── range-slider.tag.html
+├── range-slider.less
+└── README.md
+```
+
+在文档中，描述该模块的功能和使用方法，并说明其自定义属性和方法的含义和用法。
+
+```markdown
+# Range slider
+
+## Functionality
+
+The range slider lets the user to set a numeric range by dragging a handle on a slider rail for both the start and end value.
+
+This module uses the [noUiSlider](http://refreshless.com/nouislider/) for cross browser and touch support.
+
+## Usage
+
+`<range-slider>` supports the following custom tag attributes:
+
+| attribute | type | description
+| --- | --- | ---
+| `min` | Number | number where range starts (lower limit).
+| `max` | Number | Number where range ends (upper limit).
+| `values` | Number[] *optional* | Array containing start and end value.  E.g. `values="[10, 20]"`. Defaults to `[opts.min, opts.max]`.
+| `step` | Number *optional* | Number to increment / decrement values by. Defaults to 1.
+| `on-slide` | Function *optional* | Function called with `(values, HANDLE)` while a user drags the start (`HANDLE == 0`) or end (`HANDLE == 1`) handle. E.g. `on-slide={ updateInputs }`, with `tag.updateInputs = (values, HANDLE) => { const value = values[HANDLE]; }`.
+| `on-end` | Function *optional* | Function called with `(values, HANDLE)` when user stops dragging a handle.
+
+For customising the slider appearance see the [Styling section in the noUiSlider docs](http://refreshless.com/nouislider/more/#section-styling).
+```
+
+#### 增加模块示例
+
+增加 `*.demo.html` 示例文件，来表示模块该如何被使用。
+
+__为什么这么做？__
+
+* 模块示例证明该模块可以被独立使用；
+* 模块示例让使用者在查看文档和代码前就对模块有个大体概念；
+* 示例中可以展示该模块所有可能的使用方法。
+
+__如何做？__
+
+添加 `*.demo.html` 文件到模块文件夹：
+
+```
+city-map/
+├── city-map.tag.html
+├── city-map.demo.html
+├── city-map.css
+└── ...
+```
+
+在示例文件中，需要：
+
+* 引入 `riot+compiler.min.js` 来解析和执行示例；
+* 引入模块文件，如 `./city-map.tag.html`；
+* 创建一个 `demo` 标签用于嵌入模块；
+* 在 `<demo>` 中编写示例；
+* 可以给 `demo` 标签加上 `aria-label` 属性来说明示例的内容；
+* 使用 `riot.mount('demo', {})` 来初始化。
+
+下面是一个例子：
+
+```html
+<!-- modules/city-map/city-map.demo.html: -->
+<body>
+    <h1>city-map demos</h1>
+
+    <demo aria-label="City map of London">
+        <city-map location="London" />    
+    </demo>
+
+    <demo aria-label="City map of Paris">
+        <city-map location="Paris" />    
+    </demo>
+
+    <link rel="stylesheet" href="./city-map.css">
+
+    <script src="path/to/riot+compiler.min.js"></script>
+    <script type="riot/tag" src="./city-map.tag.html"></script>
+    <script>
+        riot.tag('demo','<yield/>');
+        riot.mount('demo', {});
+    </script>
+
+    <style>
+        /* add a grey bar with the `aria-label` as demo title */
+        demo:before {
+            content: "Demo: " attr(aria-label);
+            display: block;
+            background: #F3F5F5;
+            padding: .5em;
+            clear: both;
+        }
+    </style>
+</body>
+```
+
+#### 检查模块文件的代码风格
+
+检查工具可以改进代码风格的一致性并找出语法错误。通过一些额外的配置，我们可以检查 Riot.js 模块的代码风格。
+
+__为什么这么做？__
+
+* 保证开发者们有一致的代码风格；
+* 提前发现语法错误。
+
+__如何做？__
+
+使用 [ESLint](http://eslint.org/) 和 [JSHint](http://jshint.com/) 来检查代码风格。
+
+#### 给你的项目加上 `RiotJS Style Guide` 标识
+
+给项目加上标识，并链接到本指南。
+
+[![RiotJS Style Guide badge](https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg)](https://github.com/voorhoede/riotjs-style-guide)
+
+__为什么这么做？__
+
+让其他开发人员知道和了解本指南。
+
+__怎么做？__
+
+在 markdown 文件中引入：
+
+```
+[![RiotJS Style Guide badge](https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg)](https://github.com/voorhoede/riotjs-style-guide)
+```
+
+在 html 文件中引入：
+
+```html
+<a href="https://github.com/voorhoede/riotjs-style-guide">
+    <img alt="RiotJS Style Guide badge"
+         src="https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg">
+</a>
+```

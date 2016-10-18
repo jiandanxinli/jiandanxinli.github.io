@@ -1,0 +1,172 @@
+---
+title: Express - 简单介绍 Express
+date: 2016-08-09
+tags: Node,Web
+author: lei.wang
+summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们可以快速的开发一个 Web 应用。
+---
+
+express 是 **Node.js** 上最流行的 Web 开发框架，使用它我们可以快速的开发一个 Web 应用。
+
+安装 express 命令行工具，使用它我们可以初始化一个 express 项目。
+
+![express](https://cloud.githubusercontent.com/assets/6661673/17502822/ba3929ca-5e1d-11e6-9aae-ed48653b03cc.jpg)
+
+## 新建一个项目
+
+执行 `express -e blog`
+
+![new-express](https://cloud.githubusercontent.com/assets/6661673/17502876/137642d4-5e1e-11e6-8df1-08b609f7d670.jpg)
+
+进入项目目录后执行 `npm install`
+
+安装完成后 执行 `DEBUG=blog:* npm start`
+
+![image](https://cloud.githubusercontent.com/assets/6661673/17507925/da030858-5e44-11e6-847a-984bf7a1fbf4.png)
+
+
+在浏览器里访问 `localhost:3000`
+
+你会发现一个简单 web 应用已经搭建起来了
+
+## 目录结构
+
+你可以在第一步执行 `express -e blog` 后看到代码目录结构
+
+* app.js：启动文件，或者说入口文件
+* package.json：存储着工程的信息及模块依赖，当在 dependencies 中添加依赖的模块时，运行npm install，npm 会检查当前目录下的 package.json，并自动安装所有指定的模块
+* node_modules：存放 package.json 中安装的模块，当你在 package.json 添加依赖的模块并安装后，存放在这个文件夹下
+* public：存放 image、css、js 等文件
+* routes：存放路由文件
+* views：存放视图文件或者说模版文件
+* bin：存放可执行文件
+
+### app.js 中的代码
+
+![app](https://cloud.githubusercontent.com/assets/6661673/17502825/bf2e99ce-5e1d-11e6-81fb-8a92b605e3a6.jpg)
+
+在app.js中我们通过require()加载了express、path 等模块,以及 routes 文件夹下的index. js和 users.js 路由文件。
+
+  * var app = express()：生成一个express实例 app。
+  * app.set('views', path.join(__dirname, 'views’))：设置 views 文件夹为存放view文件的目录, 即存放模板文件的地方,__dirname 为全局变量,存储当前正在执行的脚本所在的目录。
+  * app.set('view engine', 'ejs’)：设置视图模板引擎为 ejs。
+  * app.use(bodyParser.json())：加载解析json的中间件。
+  * app.use(bodyParser.urlencoded({ extended: false }))：加载解析urlencoded请求体的中间件。
+  * app.use(cookieParser())：加载解析cookie的中间件。
+  * app.use(express.static(path.join(__dirname, 'public')))：设置public文件夹为存放静态文件的目录。
+  * app.use('/', routes);和app.use('/users', users)：路由控制器。
+  * 捕获404错误，并转发到错误处理器。
+  *
+
+  ```javascript
+  app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+  });
+  ```
+  * 开发环境下的错误处理器。
+  *
+
+  ```javascript
+  if (app.get('env') === 'development') {
+   app.use(function(err, req, res, next) {
+       res.status(err.status || 500);
+       res.render('error', {
+           message: err.message,
+           error: err
+       });
+   });
+  }
+  ```
+  * 生产环境下的错误处理器。
+  *
+
+  ```javascript
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
+  });
+  ```
+  * module.exports = app ：导出app实例供其他模块调用。
+
+## 路由规则
+
+express 封装了多种 http 请求方式，我们主要只使用 `get` 和 `post` 两种，即 `app.get()` 和 `app.post()` 。
+
+`app.get()` 和 `app.post()` 的第一个参数都为请求的路径，第二个参数为处理请求的回调函数，回调函数有两个参数分别是 `req` 和 `res`，代表请求信息和响应信息。路径请求及对应的获取路径有以下几种形式：
+  * `req.query`： 处理 `get` 请求，获取 `get` 请求参数
+  * `req.params`： 处理 `/:xxx` 形式的 `get` 或 `post` 请求，获取请求参数
+  * `req.body`： 处理 `post` 请求，获取 `post` 请求体
+  * `req.param()`： 处理 `get` 和 `post` 请求，但查找优先级由高到低为 `req.params`→`req.body`→`req.query`
+
+  ```javascript
+  /* GET home page. */
+  router.get('/', function(req, res, next) {
+    // ?name=111&phone=111
+    console.log(req.query)
+    // => { name: '111', phone: '111' }
+
+    // ?name=111&user[phone]=111
+    console.log(req.query)
+    // => { name: '111', user: { phone: '111' } }
+
+    res.render('index', { title: 'Express' });
+  });
+
+  router.post('/post', function(req, res, next) {
+    // post name=1111&phone=1111
+    console.log(req.body)
+    // => { name: '1111', phone: '1111' }
+
+    // post user[name]=1111&user[phone]=1111
+    console.log(req.body.user)
+    // => { user: { name : '1111', phone: '1111' } }
+
+    res.render('index', { title: 'Express' });
+  });
+  ```
+
+## 模版引擎
+
+### 什么是模板引擎
+
+模板引擎（Template Engine）是一个将页面模板和要显示的数据结合起来生成 HTML 页面的工具。
+如果说上面讲到的 express 中的路由控制方法相当于 MVC 中的控制器的话，那模板引擎就相当于 MVC 中的视图。
+
+什么是 ejs ?
+
+ejs 是模板引擎的一种，因为它使用起来十分简单，而且与 express 集成良好。
+
+### 使用模板引擎
+
+通过以下两行代码设置了模板文件的存储位置和使用的模板引擎：
+
+```javascript
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+```
+我们通过 `express -e blog` 只是初始化了一个使用 `ejs` 模板引擎的工程而已，比如 `node_modules` 下添加了 `ejs` 模块，`views` 文件夹下有 `index.ejs` 。并不是说强制该工程只能使用 `ejs` 不能使用其他的模板引擎比如 `jade`，真正指定使用哪个模板引擎的是 `app.set('view engine', 'ejs');` 。
+
+在 `routes/index.js` 中通过调用 `res.render()` 渲染模版，并将其产生的页面直接返回给客户端。它接受两个参数，第一个是模板的名称，即 `views` 目录下的模板文件名，扩展名 `.ejs` 可选。第二个参数是传递给模板的数据对象，用于模板翻译。
+
+ejs 的标签系统非常简单，它只有以下三种标签：
+
+ * <% code %>：JavaScript 代码。
+ * <%= code %>：显示替换过 HTML 特殊字符的内容。
+ * <%- code %>：显示原始 HTML 内容。
+
+`<%= code %>` 和 `<%- code %>` 的区别，当变量 code 为普通字符串时，两者没有区别。当 `code` 比如为 `<h1>hello</h1>` 这种字符串时，`<%= code %>` 会原样输出 `<h1>hello</h1>`，而 `<%- code %>` 则会显示 H1 大的 hello 字符串。
+
+我们可以在 `<% %>` 内使用 JavaScript 代码
+
+ ```javascript
+ <ul>
+ <% for(var i=0; i<supplies.length; i++) {%>
+    <li><%= supplies[i] %></li>
+ <% } %>
+ </ul>
+ ```

@@ -1,21 +1,20 @@
 ---
-title: RecyclerView加载更多与CoordinatorLayout
+title: RecyclerView 加载更多与 CoordinatorLayout
 date: 2016-10-18
-tags: android,RecyclerView, CoordinatorLayout
+tags: Android
 author: zhangyao
-summary: RecyclerView加载更多与CoordinatorLayout的简单实现
+summary: RecyclerView 加载更多与 CoordinatorLayout 的简单实现
 ---
 
 在2015年Google的年度大会上，已经升级了新的Support Library，视觉效果及用户体验毋庸置疑，所以今天主要简单主要介绍Material Design中最主要的二个控件，RecyclerView的上拉加载更多和CoordinatorLayout的结合使用，废话不多说，先上图：
 
-(https://cloud.githubusercontent.com/assets/4373787/19464661/b00424f6-9530-11e6-99f9-99c32b35ed9f.gif)
+![demo](https://cloud.githubusercontent.com/assets/4373787/19464661/b00424f6-9530-11e6-99f9-99c32b35ed9f.gif)
 
 ### CoordinatorLayout
 
 CoordinatorLayout 从字面上理解，它是一个协调view，主要处理子view之间的相互依赖关系，增加交互体验，通过layoutDependsOn（）来判断子view（child）是否依赖dependency，通过onDependentViewChanged（）来判断子view（child）在所依赖view发生改变后的是否要做处理，好，我们看一下源码：
 
-```
-
+```java
 /**
  * Determine whether the supplied child view has another specific sibling view as a
 * layout dependency.
@@ -31,24 +30,26 @@ public boolean layoutDependsOn(CoordinatorLayout parent, V child, View dependenc
 public boolean onDependentViewChanged(CoordinatorLayout parent, V child, View dependency) {
             return false;
         }
-        
 ```
 
 如果有自定义功能我们可以extends CoordinatorLayout.Behavior，今天我们介绍简单使用，后续会对CoordinatorLayout.Behavior做详细探讨：
 
 1. 首先要在Gradle中加入Library
-```
+
+```java
 compile 'com.android.support:design:24.2.1'
 ```
 
 2. 在布局文件中加入CoordinatorLayout，如果是新建项目的话选择Navigation Drawer Actiivty模版会包含，这里加入了开源库NavigationTabStrip对[demo](https://github.com/zhangyao0328/RecyclerViewMore)中的viewpage做绑定
 3. 需要注意的是，如果要实现图片中的Toolbar隐藏效果必须加入，Toolbar其实就是我们的上面提到的子view
-```
+
+```xml
 app:layout_scrollFlags="scroll|enterAlways"
 ```
 
 4. 加入所依赖的behavior可以用ViewPager
-```
+
+```xml
 <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/vp"
@@ -60,12 +61,14 @@ app:layout_scrollFlags="scroll|enterAlways"
 ```
 
 5. 同样必须加入
-```
+
+```xml
 app:layout_behavior="@string/appbar_scrolling_view_behavior"
 ```
 
 6. ok，至于下拉加载更多用SwipeRefreshLayout
-```
+
+```xml
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swiprefreshlayout"
     android:layout_width="match_parent"
@@ -84,7 +87,8 @@ app:layout_behavior="@string/appbar_scrolling_view_behavior"
 以上简单实现了CoordinatorLayout的效果下面再介绍RecyclerView的上拉加载更多，与CoordinatorLayout配合使用，其实相对与大家比较熟悉的listview来说RecyclerView更灵活，是完美的替代品，所有效果都可以自定义 布局管理（LayoutManager）下面是最简单的用法，要特殊需求需要自定义LayoutManager
 
 1. 布局管理（LayoutManager）下面是最简单的用法，要特殊需求需要自定义LayoutManager
-```
+
+```java
 mRecyclerView.setLayoutManager(newLinearLayoutManager(getActivity()));
 
 mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
@@ -95,61 +99,63 @@ mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
  （同样RecyclerView 实现 RecyclerView.Adapter可以实现丰富的ui效果，上拉加载更多就是利用Adapter中的viewtype来实现）
 
 4. 重写RecyclerView的onScrollStateChanged
-```
 
-@Override
-    public void onScrollStateChanged(int state) {
-        super.onScrollStateChanged(state);
-        if (state == RecyclerView.SCROLL_STATE_IDLE && loadMoreListener != null && !isLoadingData && canloadMore) {
-            LayoutManager layoutManager = getLayoutManager();
-            int lastVisibleItemPosition;
-            if (layoutManager instanceof GridLayoutManager) {
-                lastVisibleItemPosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
-            } else if (layoutManager instanceof StaggeredGridLayoutManager) {
-                int[] into = new int[((StaggeredGridLayoutManager) layoutManager).getSpanCount()];
-                ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(into);
-                lastVisibleItemPosition = last(into);
-            } else {
-                lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-            }
-
-            if (layoutManager.getChildCount() > 0
-                    && lastVisibleItemPosition >= layoutManager.getItemCount() - 1) {
-                if (loadingMoreFooter != null) {
-                    loadingMoreFooter.setVisible();
+    ```java
+    @Override
+        public void onScrollStateChanged(int state) {
+            super.onScrollStateChanged(state);
+            if (state == RecyclerView.SCROLL_STATE_IDLE && loadMoreListener != null && !isLoadingData && canloadMore) {
+                LayoutManager layoutManager = getLayoutManager();
+                int lastVisibleItemPosition;
+                if (layoutManager instanceof GridLayoutManager) {
+                    lastVisibleItemPosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
+                } else if (layoutManager instanceof StaggeredGridLayoutManager) {
+                    int[] into = new int[((StaggeredGridLayoutManager) layoutManager).getSpanCount()];
+                    ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(into);
+                    lastVisibleItemPosition = last(into);
+                } else {
+                    lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
                 }
-                isLoadingData = true;
-                loadMoreListener.onLoadMore();
+
+                if (layoutManager.getChildCount() > 0
+                        && lastVisibleItemPosition >= layoutManager.getItemCount() - 1) {
+                    if (loadingMoreFooter != null) {
+                        loadingMoreFooter.setVisible();
+                    }
+                    isLoadingData = true;
+                    loadMoreListener.onLoadMore();
+                }
             }
         }
-    }
     ```
 
 5. 根据viewType来显示FooterView
-```
- @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+    ```java
+    @Override
+      public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == FOOTER) {
-            return new SimpleViewHolder(loadingMoreFooter);
+          return new SimpleViewHolder(loadingMoreFooter);
         }
         return adapter.onCreateViewHolder(parent, viewType);
-    }
+      }
     ```
 
 6. 绑定数据
-```
-@Override
+
+    ```java
+    @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        holder.itemView.setOnClickListener(this);
-        holder.itemView.setOnLongClickListener(this);
-        if (adapter != null) {
-            int count = adapter.getItemCount();
-            if (position < count) {
-                adapter.onBindViewHolder(holder, position);
-                return;
-            }
+      holder.itemView.setOnClickListener(this);
+      holder.itemView.setOnLongClickListener(this);
+      if (adapter != null) {
+        int count = adapter.getItemCount();
+        if (position < count) {
+          adapter.onBindViewHolder(holder, position);
+          return;
         }
+      }
     }
-```
+    ```
 
 另外事件处理需要自定义 初来乍到，有写的不合理之处请多指正，具体简单实现见[demo](https://github.com/zhangyao0328/RecyclerViewMore)

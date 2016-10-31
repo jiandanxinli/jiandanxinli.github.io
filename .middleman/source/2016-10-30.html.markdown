@@ -31,8 +31,9 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
 1. 当然，首先你要准备好`MySQL`环境。这里不多做描述，可自行Google
 2. 创建表，这里创建个需要用到的post表
 3. 安装`Node`的`MySQL`驱动
-在`package.json`文件中添加 `"mysql": "latest"`
-``` javascript
+
+  在`package.json`文件中添加 `"mysql": "latest"`
+  ``` javascript
   "dependencies": {
     "body-parser": "~1.15.1",
     "cookie-parser": "~1.4.3",
@@ -43,8 +44,8 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
     "serve-favicon": "~2.3.0",
     "mysql": "latest"
   }
-```
-并执行 `npm install` 安装依赖包
+  ```
+  并执行 `npm install` 安装依赖包
 
 ## 编写相关代码，整合Express+MySQL
 

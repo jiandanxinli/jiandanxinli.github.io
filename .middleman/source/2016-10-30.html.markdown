@@ -47,7 +47,7 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
   ```
   并执行 `npm install` 安装依赖包
 
-## 编写相关代码，整合Express+MySQL
+## 整合Express+MySQL
 
   首先，我们先建几个目录
   

@@ -1,0 +1,243 @@
+---
+title: 利用Express与MySQL搭建超简洁的Blog
+date: 2016-10-30
+tags: Node
+author: lei.wang
+summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们可以快速的开发一个 Web 应用。
+---
+
+上一篇介绍了如何创建一个简单的`Express` 应用, 以及目录结构和模板引擎。
+本篇文章将介绍 如何搭建一个简单的bolg网站
+
+# 搭建博客
+
+## 功能分析和路由控制
+
+搭建一个简单的具有发表文章功能的博客。
+
+路由规划是整个网站的骨架部分，因为它处于整个架构的枢纽位置，相当于各个接口之间的粘合剂，所以应该优先考虑。
+
+因为我们现在搭建的仅仅是一个具有发表功能的博客，并不具有注册登录，所以会简单很多
+```
+/ ：首页
+/posts ：文章
+```
+我们要求 /posts 能看到文章并且发布文章。
+
+## 使用数据库
+
+涉及到文章储存以及访问，所以我们需要一个数据库，这里我们介绍的是`MySQL`
+
+1. 当然，首先你要准备好`MySQL`环境。这里不多做描述，可自行Google
+2. 创建表，这里创建个需要用到的post表
+3. 安装`Node`的`MySQL`驱动
+在`package.json`文件中添加 `"mysql": "latest"`
+``` javascript
+  "dependencies": {
+    "body-parser": "~1.15.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "ejs": "~2.4.1",
+    "express": "~4.13.4",
+    "morgan": "~1.7.0",
+    "serve-favicon": "~2.3.0",
+    "mysql": "latest"
+  }
+```
+并执行 `npm install` 安装依赖包
+
+## 编写相关代码，整合Express+MySQL
+
+  首先，我们先建几个目录
+  
+  在根目录新增三个文件夹：
+  
+  util – 工具方法
+  
+  conf – 配置
+  
+  mutual – 与数据库交互
+ 
+  在 util文件夹中新建`util.js`文件，加入如下代码
+  
+   ``` javascript
+  // 提升性能
+  module.exports = {
+    extend: function(target, source, flag) {
+      for(var key in source) {
+        if(source.hasOwnProperty(key)){
+          flag ? (target[key] = source[key]) : (target[key] === void 0 && (target[key] = source[key]));
+        }
+      }
+      return target;
+    }
+  };
+  ```
+  
+  在 conf 文件夹中新建 `db.js` 文件，加入如下代码
+  ``` javascript
+  // conf/db.js
+  // MySQL数据库联接配置
+  module.exports = {
+    mysql: {
+      host: '127.0.0.1',
+      user: 'root',
+      password: '',
+      database:'test', // 前面建的post表位于这个数据库中
+      port: 3306
+    }
+  };
+  ```
+  
+  在 mutual 文件夹中新建 `post.js` 和 `postSqlMapping.js`文件，加入如下代码
+  
+  ``` javascript
+  // mutual/postSqlMapping.js
+  // SQL语句
+  var post = {
+    insert:'INSERT INTO post(id, title, content) VALUES(0,?,?)',
+    update:'update post set title=?, content=? where id=?',
+    delete: 'delete from post where id=?',
+    queryById: 'select * from post where id=?',
+    queryAll: 'select * from post'
+  };
+
+  module.exports = post;
+  ```
+  
+  ``` javascript
+  // mutual/post.js
+  // 实现与MySQL交互
+  var mysql = require('mysql');
+  var $conf = require('../conf/db');
+  var $util = require('../util/util');
+  var $sql = require('./postSqlMapping');
+
+  // 使用连接池，提升性能
+  var pool  = mysql.createPool($util.extend({}, $conf.mysql));
+
+  // 向前台返回JSON方法的简单封装
+  var jsonWrite = function (res, ret) {
+    if(typeof ret === 'undefined') {
+      res.json({
+        code:'1',
+        msg: '操作失败'
+      });
+    } else {
+      res.json(ret);
+    }
+  };
+
+  module.exports = {
+    add: function (req, res, next) {
+      pool.getConnection(function(err, connection) {
+        // 获取前台页面传过来的参数
+        var param = req.query || req.params;
+
+        // 建立连接，向表中插入值
+        // 'INSERT INTO post(id, title, content) VALUES(0,?,?)',
+        connection.query($sql.insert, [param.title, param.content], function(err, result) {
+          if(result) {
+            result = {
+              code: 200,
+              msg:'创建成功'
+            };
+          }
+
+          // 以json形式，把操作结果返回给前台页面
+          jsonWrite(res, result);
+
+          // 释放连接
+          connection.release();
+        });
+      });
+    }
+  };
+  ```
+  
+  MySQL部分代码已经添加好了，现在需要在`/routes`中新建 `posts.js` 文件，添加如下代码 
+  
+  ``` javascript
+  var express = require('express');
+  var post = require('../mutual/post');
+  var router = express.Router();
+
+  /* GET posts listing. */
+  router.get('/', function(req, res, next) {
+    res.send('respond with a resource');
+  });
+
+  // 增加文章
+  router.post('/posts', function(req, res, next) {
+    post.add(req, res, next);
+  });
+
+  module.exports = router;
+  ``` 
+  
+  到这里后台部分已经新建完成了。
+  
+## 发布文章
+
+### 页面设计
+  在 views 文件夹下新建 `posts.ejs` ，添加如下代码：
+  ``` html
+  <%- include title %>
+  <form method="post">
+    标题：<br />
+    <input type="text" name="title" /><br />
+    正文：<br />
+    <textarea name="post" rows="20" cols="100"></textarea><br />
+    <input type="submit" value="发表" />
+  </form>
+  <%- include footer %>
+  ```
+
+### 发表文章
+  我们之前已经写好了路由，现在只要访问 `/posts` 就可以创建文章了
+  
+### 显示文章
+  最后，我们修改`index.ejs`，让主页右侧显示发表过的文章及其相关信息。
+  
+  打开`index.ejs`，修改如下
+  ``` html
+  <%- include title %>
+  <% posts.forEach(function (post, index) { %>
+    <p><h2><a href="#"><%= post.title %></a></h2></p>
+    <p><%- post.content %></p>
+  <% }) %>
+  <%- include footer %>
+  ```
+  
+  我们还需要在`/routes/posts.js` 中添加`index` 的路由
+  ``` javascript
+  // index
+  router.get('/posts', function(req, res, next) {
+    post.queryAll((req, res, next), function (err, posts) {
+      if (err) {
+        posts = [];
+      }
+      res.render('index', {
+        title: '文章',
+        posts: posts,
+        success: req.flash('success').toString(),
+        error: req.flash('error').toString()
+      });
+    });
+  });
+  ```
+  
+  同时还需要在 `/mutual/post.js` 中添加 queryAll 方法
+  ``` javascript
+  // index
+  queryAll: function (req, res, next) {
+		pool.getConnection(function(err, connection) {
+			connection.query($sql.queryAll, function(err, result) {
+				jsonWrite(res, result);
+				connection.release();
+			});
+		});
+  }
+  ```
+
+至此，我们的博客就建成了。

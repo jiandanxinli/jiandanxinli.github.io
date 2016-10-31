@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>常用有用的 Git Tips · 简单心理技术团队</title><meta content="Git 除了 add, commit, push, 其实还有好多有用有意思的方法" name="description" /><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>常用有用的 Git Tips</h2><div class="meta"><span class="date">2016-08-25</span><span class="author">fengd</span></div><blockquote>Git 除了 add, commit, push, 其实还有好多有用有意思的方法</blockquote><h3>用好Git Log</h3>
+
+<p>你应该用过 git log, 但是 log 支持很多有用的参数也许你不知道，下面列出一些比较有用的</p>
+
+<ol>
+<li>--author=&quot;jack&quot; : 只显示jack提交的commit</li>
+<li>--name-only : 只显示改动了的文件名</li>
+<li>--oneline : 在一行内显示信息</li>
+<li>--grath : 显示一些分支信息</li>
+<li>--reverse : 倒序显示commits</li>
+<li>--after : 显示这个时间之后的commits</li>
+<li>--before : 显示这个时间之前的commits</li>
+</ol>
+
+<p>这些参数组合起来挺有用的，比如</p>
+<pre class="highlight plaintext"><code>git log --author="jack" --after="1 week ago" -- oneline
+</code></pre>
+<h3>查看还没有合并到Master/父分之中的改动</h3>
+<pre class="highlight plaintext"><code>git log --no-merges masters..
+</code></pre>
+<h3>从另一个分支中获取文件</h3>
+
+<p>先看另一个分支的某个文件，其实可以不用切换到那个分支，执行下面的命令就可以直接查看</p>
+<pre class="highlight plaintext"><code>git show some-branch:somefile.js
+</code></pre>
+<p>如果你想和某个分支上的版本进行对比</p>
+<pre class="highlight plaintext"><code>git diff some-branch some-file.js
+</code></pre>
+<h3>关于 rebasing</h3>
+
+<p>Rebase其实比较复杂，单独写一篇文章都未必讲的清楚明白, 当时有一个很实用的技巧不得不提</p>
+<pre class="highlight plaintext"><code>`git pull --rebase`
+</code></pre>
+<p>这是什么？
+当你在本地改完，想要把代码push上去，如果主分支上已经有改动，这时候push失败，而且会提示你使用<code>git pull</code> 来获取最新的代码, 和本地的代码合并，产生log</p>
+<pre class="highlight plaintext"><code>&gt; Merge remote-tracking branch 'origin/master'
+</code></pre>
+<p>这时rebase就是更好的选择，<code>git pull --rebase</code>, git 会先从remote获取最新的代码，然后在push本地的改动，不会有merge产生.</p>
+
+<h3>修改上一个 Commit</h3>
+
+<p>发现刚刚提交的Commit有一个Typo或者其它很小的改动，Well，当然可以提交个新的Commit， 然后log写上 “fix typo”.</p>
+
+<p>当时其实应该这么做，</p>
+
+<ol>
+<li>Fix Typo</li>
+<li>Stage 这个文件</li>
+<li>执行 <code>git commit --amend</code> 这会把这一次的改动提交到上一个Commit中</li>
+<li>Push</li>
+</ol>
+
+<h3>Git的三个状态，三个状态之间如何切换</h3>
+
+<h4>三个状态：</h4>
+
+<ol>
+<li>没有Staged, 没有执行<code>git add</code></li>
+<li>Staged, 当时没有Commit的， 执行了 <code>git add</code> , 当时没有执行 <code>git commit</code></li>
+<li>Commit的, 执行了 <code>git commit</code></li>
+</ol>
+
+<p>用 <code>git status</code> 可以查看处在1， 2状态的文件</p>
+
+<h4>如何在三个状态之间切换</h4>
+
+<ol>
+<li><code>git reset --head {{some-commit-hash}}</code> 返回到某一个Commit， 所有这个commit之后的改动都丢弃</li>
+<li><code>git reset {{some-commit-hash}}</code> 返回到某一个commit，所有这个commit之后的改动都归到状态1， 没有staged，</li>
+<li><code>git reset --soft {{some-commit-hash}}</code> 返回到某一个commit， 这个commit之后的改动都归到状态2</li>
+</ol>
+
+<p>最常用的一个可能是第一个, 放弃本地所有的改动</p>
+<pre class="highlight plaintext"><code>git reset --hard HEAD
+</code></pre>
+<h3>Revert Commit</h3>
+<pre class="highlight plaintext"><code>git revert -n
+</code></pre>
+<p>取消之前的Commit</p>
+
+<h3>为常用的git命令设置别名</h3>
+<pre class="highlight plaintext"><code>git l = git log --online --grath
+</code></pre>
+<p>等等等等</p>
+
+<p>来自文章 <a href="http://www.alexkras.com/19-git-tips-for-everyday-use/">Top 19 Tips For everyday git use</a></p>
+</div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><a class="logo" href="https://www.jiandanxinli.com"><img src="/images/logo_text.png" alt="简单心理" /></a><div class="links"><a href="/">Home</a><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">About</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>

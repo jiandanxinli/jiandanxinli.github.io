@@ -172,6 +172,11 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
   router.post('/posts', function(req, res, next) {
     post.add(req, res, next);
   });
+  
+  // 填写
+  router.get('/posts/new', function(req, res, next) {
+    res.render('posts_new');
+  });
 
   module.exports = router;
   ``` 
@@ -181,7 +186,7 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
 ## 发布文章
 
 ### 页面设计
-  在 views 文件夹下新建 `posts.ejs` ，添加如下代码：
+  在 views 文件夹下新建 `posts_new.ejs` ，添加如下代码：
   ``` html
   <%- include title %>
   <form method="post">
@@ -198,9 +203,9 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
   我们之前已经写好了路由，现在只要访问 `/posts` 就可以创建文章了
   
 ### 显示文章
-  最后，我们修改`index.ejs`，让主页右侧显示发表过的文章及其相关信息。
+  最后，我们修改`posts.ejs`，让页面显示发表过的文章及其相关信息。
   
-  打开`index.ejs`，修改如下
+  代码如下
   ``` html
   <%- include title %>
   <% posts.forEach(function (post, index) { %>
@@ -218,11 +223,9 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
       if (err) {
         posts = [];
       }
-      res.render('index', {
+      res.render('post_index', {
         title: '文章',
-        posts: posts,
-        success: req.flash('success').toString(),
-        error: req.flash('error').toString()
+        posts: posts
       });
     });
   });
@@ -232,12 +235,12 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
   ``` javascript
   // index
   queryAll: function (req, res, next) {
-		pool.getConnection(function(err, connection) {
-			connection.query($sql.queryAll, function(err, result) {
-				jsonWrite(res, result);
-				connection.release();
-			});
-		});
+    pool.getConnection(function(err, connection) {
+      connection.query($sql.queryAll, function(err, result) {
+        jsonWrite(res, result);
+	connection.release();
+      });
+    });
   }
   ```
 

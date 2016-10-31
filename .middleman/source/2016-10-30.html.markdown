@@ -11,7 +11,7 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
 
 # 搭建博客
 
-## 功能分析和路由控制
+## 路由控制
 
 搭建一个简单的具有发表文章功能的博客。
 
@@ -19,8 +19,10 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
 
 因为我们现在搭建的仅仅是一个具有发表功能的博客，并不具有注册登录，所以会简单很多
 ```
-/ ：首页
-/posts ：文章
+GET / ：首页
+GET /posts ：文章列表
+POST /posts ：创建文章
+GET /posts : 填写文章
 ```
 我们要求 /posts 能看到文章并且发布文章。
 
@@ -184,12 +186,13 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
   到这里后台部分已经新建完成了。
   
 ## 发布文章
-
+  我们需要一个页面来填写文章内容
 ### 页面设计
+  
   在 views 文件夹下新建 `posts_new.ejs` ，添加如下代码：
   ``` html
   <%- include title %>
-  <form method="post">
+  <form method="post" action="/posts">
     标题：<br />
     <input type="text" name="title" /><br />
     正文：<br />
@@ -200,7 +203,7 @@ summary: Express 是 Node.js 上最流行的 Web 开发框架，使用它我们�
   ```
 
 ### 发表文章
-  我们之前已经写好了路由，现在只要访问 `/posts` 就可以创建文章了
+  我们之前已经写好了路由，现在只要访问 `/posts/new` 就可以创建文章了
   
 ### 显示文章
   最后，我们修改`posts.ejs`，让页面显示发表过的文章及其相关信息。

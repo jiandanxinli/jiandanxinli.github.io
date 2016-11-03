@@ -8,7 +8,7 @@ summary: 以一个三张imageView的轮播图为例，具体到如何实现轮�
 
 ### 前言
 
-见过很多的iOS应用，都有无限轮播图，之前也看到过很多相关实现的文章，可是仅仅就是一看而过罢了。当自己在项目中用到这个，真正去写的时候才发现不是很容易，遇到了一些问题，这篇文章就记录下自己最后成功实现轮播图的历程。
+见过很多的iOS应用，都有无限轮播图，之前也看到过相关实现的文章，可是仅仅就是一看而过罢了。当自己在项目中用到这个，真正去写的时候才发现不是很容易，遇到了一些问题，这篇文章就记录下自己最后成功实现轮播图的历程。
 
 ### 原理
 
@@ -25,7 +25,7 @@ summary: 以一个三张imageView的轮播图为例，具体到如何实现轮�
 
 #### 原理二：利用`UICollectionView`实现轮播图。
 
-你当然可以利用**原理一**再用`UICollectionView`实现一次。但是我这里采用一种偷懒的方式，利用`UICollectionView`的cell重用机制。创建个无数个cell，比如3x20000。当用户第一次进来的我们就将UICollectionView滑到3x20000x0.5的位置。然后利用`cell.indexPath.item % 3`来对cell上的UIImageView进行image显示。这种方式比较偷懒，在后来添加NSTimer自动轮播和点击事件的时候也比较简单，不过有点大炮打小鸟的感觉。所以我在这里也只是介绍下原理，如果你有兴趣，可以自己尝试去实现下。而且UICollectionView自带一个方法`- scrollToItemAtIndexPath:atScrollPosition:animated:`还比较厉害。
+你当然可以利用**原理一**再用`UICollectionView`实现一次。但是我这里采用一种偷懒的方式，利用`UICollectionView`的cell重用机制。创建个无数个cell，比如3x20000。当用户第一次进来的我们就将UICollectionView滑到3x20000x0.5的位置。然后利用`cell.indexPath.item % 3`来对cell上的UIImageView进行image显示。这种方式比较偷懒，在后来添加NSTimer自动轮播和点击事件的时候也比较简单，不过有点大炮打小鸟的感觉。所以我在这里也只是介绍下原理，如果你有兴趣，可以自己尝试去实现下。而且UICollectionView自带一个方法`- scrollToItemAtIndexPath:atScrollPosition:animated:`还比较实用。
 
 ### 具体实现
 
@@ -136,7 +136,8 @@ func scrollViewDidScroll(scrollView: UIScrollView) {
        }
        /// 这里设置的滚动间隔为2秒
        timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(autoScroll), userInfo: nil, repeats: true)
-       NSRunLoop.currentRunLoop().addTimer(timer!, forMode: NSDefaultRunLoopMode)
+       NSRunLoop.currentRunLoop().addTimer(timer!, forMode: NSEventTrackingRunLoopMode)
+       /// 这里使用了NSEventTrackingRunLoopMode模式，避免页面滚动时timer会停掉。
    }
    private func stopTimer() {
        timer?.invalidate()
@@ -145,8 +146,9 @@ func scrollViewDidScroll(scrollView: UIScrollView) {
    func autoScroll() {
        if i == imageNames.count + 1 {
            i = 1
+       } else {
+           i += 1
        }
-       i += 1
        /// 在处理无限轮番的时候设置contentOffset没有添加animated，这里要添加上来，不然有种很突兀的感觉。
        scrollView.setContentOffset(CGPoint(x: self.width * CGFloat(i), y: 0), animated: true)
    }
@@ -165,7 +167,7 @@ func scrollViewDidScroll(scrollView: UIScrollView) {
 具体到点击事件的话，我是放在初始化imageView那里处理的，给imageVIew添加一个UITapGestureRecognizer，在这里最好再写一个代理方法，将imageView的点击事件传递出去。然后根据当前`contentOffet.x / self.width`来将具体哪张图片的事件传递出去。我就不用代码展示了。
 
 ### 结尾
-
+我这里使用了代码来布局，当然你也可以使用Xib或者Storyboard来弄，
 还是比较简单的。但是我这个复用性比较差，封装的也不好，可是具体要看思路😂。代码实现放在了Github Wiki上了[BannerView.Swift](https://github.com/qiuncheng/qiuncheng.github.io/wiki/BannerView.Swift)，由于工程量太小，就没将工程文件上传了。
 
 #### 关于作者

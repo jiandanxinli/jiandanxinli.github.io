@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>iOS上简易轮播图的实现 · 简单心理技术团队</title><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div><div class="subheader container"><a href="/tags/ruby.html">Ruby</a><a href="/tags/web.html">Web</a><a href="/tags/api.html">API</a><a href="/tags/ubuntu.html">Ubuntu</a><a href="/tags/nginx.html">Nginx</a><a href="/tags/ipv6.html">IPv6</a><a href="/tags/node.html">Node</a><a href="/tags/css.html">CSS</a><a href="/tags/ios.html" class="active">iOS</a><a href="https://www.jiandanxinli.com/pages/37">Join Us</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>iOS上简易轮播图的实现</h2><div class="meta"><span class="date">2016-07-29</span><span class="author">Qiuncheng</span></div><h3>前言</h3>
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>iOS上简易轮播图的实现 · 简单心理技术团队</title><meta content="以一个三张imageView的轮播图为例，具体到如何实现轮播图，添加自动轮播器，添加手势点击事件等。" name="description" /><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>iOS上简易轮播图的实现</h2><div class="meta"><span class="date">2016-07-29</span><span class="author">Qiuncheng</span></div><blockquote>以一个三张imageView的轮播图为例，具体到如何实现轮播图，添加自动轮播器，添加手势点击事件等。</blockquote><h3>前言</h3>
 
-<p>见过很多的iOS应用，都有无限轮播图，之前也看到过很多相关实现的文章，可是仅仅就是一看而过罢了。当自己在项目中用到这个，真正去写的时候才发现不是很容易，遇到了一些问题，这篇文章就记录下自己最后成功实现轮播图的历程。</p>
+<p>见过很多的iOS应用，都有无限轮播图，之前也看到过相关实现的文章，可是仅仅就是一看而过罢了。当自己在项目中用到这个，真正去写的时候才发现不是很容易，遇到了一些问题，这篇文章就记录下自己最后成功实现轮播图的历程。</p>
 
 <h3>原理</h3>
 
@@ -17,7 +17,7 @@
 
 <h4>原理二：利用<code>UICollectionView</code>实现轮播图。</h4>
 
-<p>你当然可以利用<strong>原理一</strong>再用<code>UICollectionView</code>实现一次。但是我这里采用一种偷懒的方式，利用<code>UICollectionView</code>的cell重用机制。创建个无数个cell，比如3x20000。当用户第一次进来的我们就将UICollectionView滑到3x20000x0.5的位置。然后利用<code>cell.indexPath.item % 3</code>来对cell上的UIImageView进行image显示。这种方式比较偷懒，在后来添加NSTimer自动轮播和点击事件的时候也比较简单，不过有点大炮打小鸟的感觉。所以我在这里也只是介绍下原理，如果你有兴趣，可以自己尝试去实现下。而且UICollectionView自带一个方法<code>- scrollToItemAtIndexPath:atScrollPosition:animated:</code>还比较厉害。</p>
+<p>你当然可以利用<strong>原理一</strong>再用<code>UICollectionView</code>实现一次。但是我这里采用一种偷懒的方式，利用<code>UICollectionView</code>的cell重用机制。创建个无数个cell，比如3x20000。当用户第一次进来的我们就将UICollectionView滑到3x20000x0.5的位置。然后利用<code>cell.indexPath.item % 3</code>来对cell上的UIImageView进行image显示。这种方式比较偷懒，在后来添加NSTimer自动轮播和点击事件的时候也比较简单，不过有点大炮打小鸟的感觉。所以我在这里也只是介绍下原理，如果你有兴趣，可以自己尝试去实现下。而且UICollectionView自带一个方法<code>- scrollToItemAtIndexPath:atScrollPosition:animated:</code>还比较实用。</p>
 
 <h3>具体实现</h3>
 
@@ -119,7 +119,8 @@ lazy var scrollView: UIScrollView = {
        }
        /// 这里设置的滚动间隔为2秒
        timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: #selector(autoScroll), userInfo: nil, repeats: true)
-       NSRunLoop.currentRunLoop().addTimer(timer!, forMode: NSDefaultRunLoopMode)
+       NSRunLoop.currentRunLoop().addTimer(timer!, forMode: NSEventTrackingRunLoopMode)
+       /// 这里使用了NSEventTrackingRunLoopMode模式，避免页面滚动时timer会停掉。
    }
    private func stopTimer() {
        timer?.invalidate()
@@ -128,8 +129,9 @@ lazy var scrollView: UIScrollView = {
    func autoScroll() {
        if i == imageNames.count + 1 {
            i = 1
+       } else {
+           i += 1
        }
-       i += 1
        /// 在处理无限轮番的时候设置contentOffset没有添加animated，这里要添加上来，不然有种很突兀的感觉。
        scrollView.setContentOffset(CGPoint(x: self.width * CGFloat(i), y: 0), animated: true)
    }
@@ -148,9 +150,10 @@ lazy var scrollView: UIScrollView = {
 
 <h3>结尾</h3>
 
-<p>还是比较简单的。但是我这个复用性比较差，封装的也不好，可是具体要看思路😂。代码实现放在了Github Wiki上了<a href="https://github.com/qiuncheng/qiuncheng.github.io/wiki/BannerView.Swift">BannerView.Swift</a>，由于工程量太小，就没将工程文件上传了。</p>
+<p>我这里使用了代码来布局，当然你也可以使用Xib或者Storyboard来弄，
+还是比较简单的。但是我这个复用性比较差，封装的也不好，可是具体要看思路😂。代码实现放在了Github Wiki上了<a href="https://github.com/qiuncheng/qiuncheng.github.io/wiki/BannerView.Swift">BannerView.Swift</a>，由于工程量太小，就没将工程文件上传了。</p>
 
 <h4>关于作者</h4>
 
 <p><a href="http://qiuncheng.com">Qiuncheng</a>，一位正在iOS路上前行的初学者，正在努力成为一名合格的iOS开发者。</p>
-</div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><p>提升价值，而非估值</p><div class="links"><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">关于我们</a><a href="https://www.jiandanxinli.com">简单心理</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>
+</div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><a class="logo" href="https://www.jiandanxinli.com"><img src="/images/logo_text.png" alt="简单心理" /></a><div class="links"><a href="/">Home</a><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">About</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>

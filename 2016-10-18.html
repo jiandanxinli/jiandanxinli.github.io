@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>RecyclerView 加载更多与 CoordinatorLayout · 简单心理技术团队</title><meta content="RecyclerView 加载更多与 CoordinatorLayout 的简单实现" name="description" /><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>RecyclerView 加载更多与 CoordinatorLayout</h2><div class="meta"><span class="date">2016-10-18</span><span class="author">zhangyao</span></div><blockquote>RecyclerView 加载更多与 CoordinatorLayout 的简单实现</blockquote><p>在2015年Google的年度大会上，已经升级了新的Support Library，视觉效果及用户体验毋庸置疑，所以今天主要简单主要介绍Material Design中最主要的二个控件，RecyclerView的上拉加载更多和CoordinatorLayout的结合使用，废话不多说，先上图：</p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/4373787/19464661/b00424f6-9530-11e6-99f9-99c32b35ed9f.gif" alt="demo" /></p>
+
+<h3>CoordinatorLayout</h3>
+
+<p>CoordinatorLayout 从字面上理解，它是一个协调view，主要处理子view之间的相互依赖关系，增加交互体验，通过layoutDependsOn（）来判断子view（child）是否依赖dependency，通过onDependentViewChanged（）来判断子view（child）在所依赖view发生改变后的是否要做处理，好，我们看一下源码：</p>
+<pre class="highlight java"><code><span class="o">/**</span>
+ <span class="o">*</span> <span class="n">Determine</span> <span class="n">whether</span> <span class="n">the</span> <span class="n">supplied</span> <span class="n">child</span> <span class="n">view</span> <span class="n">has</span> <span class="n">another</span> <span class="n">specific</span> <span class="n">sibling</span> <span class="n">view</span> <span class="n">as</span> <span class="n">a</span>
+<span class="o">*</span> <span class="n">layout</span> <span class="n">dependency</span><span class="o">.</span>
+<span class="o">*</span> <span class="err">／</span>
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">layoutDependsOn</span><span class="o">(</span><span class="n">CoordinatorLayout</span> <span class="n">parent</span><span class="o">,</span> <span class="n">V</span> <span class="n">child</span><span class="o">,</span> <span class="n">View</span> <span class="n">dependency</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+
+<span class="o">/**</span>
+<span class="o">*</span> <span class="n">Respond</span> <span class="n">to</span> <span class="n">a</span> <span class="n">change</span> <span class="n">in</span> <span class="n">a</span> <span class="n">child</span><span class="err">'</span><span class="n">s</span> <span class="n">dependent</span> <span class="n">view</span>
+<span class="o">*</span><span class="err">／</span>
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">onDependentViewChanged</span><span class="o">(</span><span class="n">CoordinatorLayout</span> <span class="n">parent</span><span class="o">,</span> <span class="n">V</span> <span class="n">child</span><span class="o">,</span> <span class="n">View</span> <span class="n">dependency</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+</code></pre>
+<p>如果有自定义功能我们可以extends CoordinatorLayout.Behavior，今天我们介绍简单使用，后续会对CoordinatorLayout.Behavior做详细探讨：</p>
+
+<ol>
+<li>首先要在Gradle中加入Library</li>
+</ol>
+<pre class="highlight java"><code><span class="n">compile</span> <span class="err">'</span><span class="n">com</span><span class="o">.</span><span class="na">android</span><span class="o">.</span><span class="na">support</span><span class="o">:</span><span class="nl">design:</span><span class="mf">24.2</span><span class="o">.</span><span class="mi">1</span><span class="err">'</span>
+</code></pre>
+<ol>
+<li>在布局文件中加入CoordinatorLayout，如果是新建项目的话选择Navigation Drawer Actiivty模版会包含，这里加入了开源库NavigationTabStrip对<a href="https://github.com/zhangyao0328/RecyclerViewMore">demo</a>中的viewpage做绑定</li>
+<li>需要注意的是，如果要实现图片中的Toolbar隐藏效果必须加入，Toolbar其实就是我们的上面提到的子view</li>
+</ol>
+<pre class="highlight xml"><code>app:layout_scrollFlags="scroll|enterAlways"
+</code></pre>
+<ol>
+<li>加入所依赖的behavior可以用ViewPager</li>
+</ol>
+<pre class="highlight xml"><code><span class="nt">&lt;android.support.v4.view.ViewPager</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">xmlns:app=</span><span class="s">"http://schemas.android.com/apk/res-auto"</span>
+    <span class="na">android:id=</span><span class="s">"@+id/vp"</span>
+    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+    <span class="na">app:layout_behavior=</span><span class="s">"@string/appbar_scrolling_view_behavior"</span>
+    <span class="nt">&gt;</span>
+<span class="nt">&lt;/android.support.v4.view.ViewPager&gt;</span>
+</code></pre>
+<ol>
+<li>同样必须加入</li>
+</ol>
+<pre class="highlight xml"><code>app:layout_behavior="@string/appbar_scrolling_view_behavior"
+</code></pre>
+<ol>
+<li>ok，至于下拉加载更多用SwipeRefreshLayout</li>
+</ol>
+<pre class="highlight xml"><code><span class="nt">&lt;android.support.v4.widget.SwipeRefreshLayout</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">android:id=</span><span class="s">"@+id/swiprefreshlayout"</span>
+    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;com.recyclerviewmore.widget.RecyclerViewUpRefresh</span>
+        <span class="na">android:id=</span><span class="s">"@+id/recyclerview"</span>
+        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+        <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">&gt;&lt;/com.recyclerviewmore.widget.RecyclerViewUpRefresh&gt;</span>
+
+<span class="nt">&lt;/android.support.v4.widget.SwipeRefreshLayout&gt;</span>
+</code></pre>
+<h3>RecyclerView</h3>
+
+<p>以上简单实现了CoordinatorLayout的效果下面再介绍RecyclerView的上拉加载更多，与CoordinatorLayout配合使用，其实相对与大家比较熟悉的listview来说RecyclerView更灵活，是完美的替代品，所有效果都可以自定义 布局管理（LayoutManager）下面是最简单的用法，要特殊需求需要自定义LayoutManager</p>
+
+<ol>
+<li>布局管理（LayoutManager）下面是最简单的用法，要特殊需求需要自定义LayoutManager</li>
+</ol>
+<pre class="highlight java"><code><span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setLayoutManager</span><span class="o">(</span><span class="n">newLinearLayoutManager</span><span class="o">(</span><span class="n">getActivity</span><span class="o">()));</span>
+
+<span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setLayoutManager</span><span class="o">(</span><span class="k">new</span> <span class="n">GridLayoutManager</span><span class="o">(</span><span class="n">getActivity</span><span class="o">(),</span> <span class="mi">3</span><span class="o">));</span>
+</code></pre>
+<ol>
+<li>设置分割线（ItemDecoration） 要extends RecyclerView.ItemDecoration</li>
+<li><p>ItemAnimator 动画效果
+（同样RecyclerView 实现 RecyclerView.Adapter可以实现丰富的ui效果，上拉加载更多就是利用Adapter中的viewtype来实现）</p></li>
+<li><p>重写RecyclerView的onScrollStateChanged</p>
+<pre class="highlight java"><code><span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onScrollStateChanged</span><span class="o">(</span><span class="kt">int</span> <span class="n">state</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onScrollStateChanged</span><span class="o">(</span><span class="n">state</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">RecyclerView</span><span class="o">.</span><span class="na">SCROLL_STATE_IDLE</span> <span class="o">&amp;&amp;</span> <span class="n">loadMoreListener</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">isLoadingData</span> <span class="o">&amp;&amp;</span> <span class="n">canloadMore</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">LayoutManager</span> <span class="n">layoutManager</span> <span class="o">=</span> <span class="n">getLayoutManager</span><span class="o">();</span>
+            <span class="kt">int</span> <span class="n">lastVisibleItemPosition</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">layoutManager</span> <span class="k">instanceof</span> <span class="n">GridLayoutManager</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">lastVisibleItemPosition</span> <span class="o">=</span> <span class="o">((</span><span class="n">GridLayoutManager</span><span class="o">)</span> <span class="n">layoutManager</span><span class="o">).</span><span class="na">findLastVisibleItemPosition</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">layoutManager</span> <span class="k">instanceof</span> <span class="n">StaggeredGridLayoutManager</span><span class="o">)</span> <span class="o">{</span>
+                <span class="kt">int</span><span class="o">[]</span> <span class="n">into</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[((</span><span class="n">StaggeredGridLayoutManager</span><span class="o">)</span> <span class="n">layoutManager</span><span class="o">).</span><span class="na">getSpanCount</span><span class="o">()];</span>
+                <span class="o">((</span><span class="n">StaggeredGridLayoutManager</span><span class="o">)</span> <span class="n">layoutManager</span><span class="o">).</span><span class="na">findLastVisibleItemPositions</span><span class="o">(</span><span class="n">into</span><span class="o">);</span>
+                <span class="n">lastVisibleItemPosition</span> <span class="o">=</span> <span class="n">last</span><span class="o">(</span><span class="n">into</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="n">lastVisibleItemPosition</span> <span class="o">=</span> <span class="o">((</span><span class="n">LinearLayoutManager</span><span class="o">)</span> <span class="n">layoutManager</span><span class="o">).</span><span class="na">findLastVisibleItemPosition</span><span class="o">();</span>
+            <span class="o">}</span>
+
+            <span class="k">if</span> <span class="o">(</span><span class="n">layoutManager</span><span class="o">.</span><span class="na">getChildCount</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                    <span class="o">&amp;&amp;</span> <span class="n">lastVisibleItemPosition</span> <span class="o">&gt;=</span> <span class="n">layoutManager</span><span class="o">.</span><span class="na">getItemCount</span><span class="o">()</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">loadingMoreFooter</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">loadingMoreFooter</span><span class="o">.</span><span class="na">setVisible</span><span class="o">();</span>
+                <span class="o">}</span>
+                <span class="n">isLoadingData</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+                <span class="n">loadMoreListener</span><span class="o">.</span><span class="na">onLoadMore</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></li>
+<li><p>根据viewType来显示FooterView</p>
+<pre class="highlight java"><code><span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="n">RecyclerView</span><span class="o">.</span><span class="na">ViewHolder</span> <span class="nf">onCreateViewHolder</span><span class="o">(</span><span class="n">ViewGroup</span> <span class="n">parent</span><span class="o">,</span> <span class="kt">int</span> <span class="n">viewType</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">viewType</span> <span class="o">==</span> <span class="n">FOOTER</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="nf">SimpleViewHolder</span><span class="o">(</span><span class="n">loadingMoreFooter</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">adapter</span><span class="o">.</span><span class="na">onCreateViewHolder</span><span class="o">(</span><span class="n">parent</span><span class="o">,</span> <span class="n">viewType</span><span class="o">);</span>
+  <span class="o">}</span>
+</code></pre></li>
+<li><p>绑定数据</p>
+<pre class="highlight java"><code><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">onBindViewHolder</span><span class="o">(</span><span class="n">RecyclerView</span><span class="o">.</span><span class="na">ViewHolder</span> <span class="n">holder</span><span class="o">,</span> <span class="kt">int</span> <span class="n">position</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">holder</span><span class="o">.</span><span class="na">itemView</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+  <span class="n">holder</span><span class="o">.</span><span class="na">itemView</span><span class="o">.</span><span class="na">setOnLongClickListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">adapter</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="na">getItemCount</span><span class="o">();</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">position</span> <span class="o">&lt;</span> <span class="n">count</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">adapter</span><span class="o">.</span><span class="na">onBindViewHolder</span><span class="o">(</span><span class="n">holder</span><span class="o">,</span> <span class="n">position</span><span class="o">);</span>
+      <span class="k">return</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></li>
+</ol>
+
+<p>另外事件处理需要自定义 初来乍到，有写的不合理之处请多指正，具体简单实现见<a href="https://github.com/zhangyao0328/RecyclerViewMore">demo</a></p>
+</div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><a class="logo" href="https://www.jiandanxinli.com"><img src="/images/logo_text.png" alt="简单心理" /></a><div class="links"><a href="/">Home</a><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">About</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>

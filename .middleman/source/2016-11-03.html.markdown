@@ -1,0 +1,11 @@
+---
+title: Turbolinks-iOS 上路实用手册
+date: 2016-11-03
+tags: iOS
+author: fengd
+summary: 如何使用Turbolinks-iOS, 结合Turbolinks，实现一个Hybrid的iOS App
+---
+
+###前提
+
+要用 turbolinks-iOS 来写一个 Hybrid 的 App 的前提是你的网站使用了 [turbolinks](https://github.com/turbolinks/turbolinks)，

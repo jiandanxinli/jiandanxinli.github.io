@@ -6,6 +6,23 @@ author: fengd
 summary: 如何使用Turbolinks-iOS, 结合Turbolinks，实现一个Hybrid的iOS App
 ---
 
-###前提
+### 前提
 
-要用 turbolinks-iOS 来写一个 Hybrid 的 App 的前提是你的网站使用了 [turbolinks](https://github.com/turbolinks/turbolinks)，
+要用 turbolinks-iOS 来写一个 Hybrid 的 App 的前提是你的网站使用了 [turbolinks](https://github.com/turbolinks/turbolinks)， 如何使用 turbolinks, 请看这里
+
+
+### 安装
+
+通过 Cocoapods 或者 Carthage 安装，都是直接引用了 github 上的地址。 
+
+```
+github "turbolinks/turbolinks-ios" "3.0"
+```
+
+或者
+
+```
+pod 'Turbolinks', :git => 'https://github.com/turbolinks/turbolinks-ios.git', branch: 'swift-3.0'
+```
+
+turbolinks-iOS 是使用纯 swift 写的，支持 iOS 8.0 以上的版本。如果项目已经使用了 swift 3.0， 需要使用 3.0 的分支。

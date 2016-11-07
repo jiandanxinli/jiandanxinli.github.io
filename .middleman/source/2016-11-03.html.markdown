@@ -56,11 +56,7 @@ turbolinks-iOS 是使用纯 swift 写的，支持 iOS 8.0 以上的版本。如�
 iOS 里适合做前进后退这件事最合适的就是 UINavigationController 了，因此通常会在 navigationController 中新建 session 实例，并把自身作为这个session 的 delegate。作为 session 的delegate，必须实现两个方法。
 
 
-第一个 <code>func session(_ session: Session, didProposeVisitToURL URL: URL, withAction action: Action)</code>, 网页上任何的访问新网页的事件，都会回调这个方法。
-
-代码很直观，每次访问一个新的URL时，都根据 action 值来判断是 push 进一个新的 viewcontroller, 还是替换当前的 viewcontroller。 替换也就是 pop 出当前的controller，push进新的。
-
-在处理完 viewcontroller 之间的关系之后，还要调用 session.visit(visitable)，通知背后的 WKWebView 访问新的地址。
+1. <code>func session(_ session: Session, didProposeVisitToURL URL: URL, withAction action: Action)</code>, 网页上任何的访问新网页的事件，都会回调这个方法。
 
 ```
   func session(_ session: Session, didProposeVisitToURL URL: URL, withAction action: Action) {
@@ -84,7 +80,12 @@ iOS 里适合做前进后退这件事最合适的就是 UINavigationController �
   }
 ```
 
-第二个是 <code>func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)</code>
+代码很直观，每次访问一个新的URL时，都根据 action 值来判断是 push 进一个新的 viewcontroller, 还是替换当前的 viewcontroller。 替换也就是 pop 出当前的controller，push进新的。
+
+在处理完 viewcontroller 之间的关系之后，还要调用 session.visit(visitable)，通知背后的 WKWebView 访问新的地址。
+
+
+2. <code>func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)</code>
 这是当请求失败时，处理回调的函数。 比如服务器端返回 401， 可以弹出登陆界面。 网络不好，或者404时，可以显示自定义的错误页面。
 
 ```
@@ -150,15 +151,59 @@ function WebView(controller, messageHandler) {
 this.webView = new WebView(Turbolinks.controller, webkit.messageHandlers.turbolinks)
 ```
 
-因为网页是基于Turbolinks，因此网页上有任何"风吹草动"都会通过controller，传到这个adapter上来。 adapter 在通过 webkit.messageHandlers 把消息传递给 iOS，比如: <code>visitRequestStarted</code>
+因为网页是基于Turbolinks，因此网页上有任何"风吹草动"都会通过controller，传到这个adapter上来。比如，访问一个新的地址是:
 
 ```
-visitRequestStarted: function(visit) {
-  this.postMessage("visitRequestStarted", { identifier: visit.identifier })
+visit: (location, options = {}) ->
+  location = Turbolinks.Location.wrap(location)
+  if @applicationAllowsVisitingLocation(location)
+    if @locationIsVisitable(location)
+      action = options.action ? "advance"
+      @adapter.visitProposedToLocationWithAction(location, action)
+    else
+      window.location = location
+```
+
+而 adapter 在通过 webkit.messageHandlers 把消息传递给 iOS，比如: <code>visitRequestStarted</code>
+
+```
+visitProposedToLocationWithAction: function(location, action) {
+  this.postMessage("visitProposed", { location: location.absoluteURL, action: action })
+},
+
+postMessage: function(name, data) {
+  this.messageHandler.postMessage({ name: name, data: data || {} })
+},
+```
+
+这个 messageHandler 就是 初始化传进来的 <code>webkit.messageHandlers.turbolinks</code>
+
+
+iOS 原生代码，再通过 WKScriptMessageHandler 捕获这些事件后,通过 VisitDelegate 和 SessionDelegate，
+
+```
+func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+    guard let message = ScriptMessage.parse(message) else { return }
+    switch message.name {
+    //....some codes....
+    case .VisitProposed:
+        delegate?.webView(self, didProposeVisitToLocation: message.location!, withAction: message.action!)
+    //....some other codes...
+    case .ErrorRaised:
+        let error = message.data["error"] as? String
+        NSLog("JavaScript error: %@", error ?? "<unknown error>")
+    }
 }
 ```
 
-iOS 原生代码，再通过 WKScriptMessageHandler 捕获这些事件，然后通过 VisitDelegate 和 SessionDelegate，传到 ViewController 这里，就回到了本文开头的两个 SessionDelegate 方法。
+session 就是这里的这个delegate，并且在这个delegate的实现方法中
 
+```
+func webView(_ webView: WebView, didProposeVisitToLocation location: URL, withAction action: Action) {
+  delegate?.session(self, didProposeVisitToURL: location, withAction: action)
+}
+```
+
+这就回到了最初实现的 SessionDelegate 了，就是我们的 UINavigationController
 
 

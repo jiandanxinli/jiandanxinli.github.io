@@ -1,3 +1,21 @@
+---
+title: TextInput详解·Material Design Part 1
+date: 2016-11-14
+tags: Android·Material Design
+author: BugDev
+---
+<br/><br/>
+#TextInput详解 · Material Design Part 1
+<br/><br/>
+这是一个系列文章，在这个系列里，我会按打造一个Material Design App的路线介绍所有应当掌握和值得掌握的系统组件。
+你会在这些文章里了解到这些组件的使用和内部实现原理，以及它们背后所反映的Material Design的设计思想，希望你会喜欢。
+<br/><br/><br/>
+**Tips**
+<br/>
+我的每一篇博客都会提供详尽的API介绍，如果你想快速查阅某个功能的API或如何实现，建议Ctrl+F（Commad+F）在本页面搜索关键字查找。
+<br/>
+Thanks for reading~!
+<br/><br/><br/>
 杂烩Layout
 ```XML
 

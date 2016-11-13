@@ -6,7 +6,7 @@ author: BugDev
 ---
 <br/><br/>
 #TextInput详解 · Material Design Part 1
-<br/><br/>
+<br/>
 这是一个系列文章，在这个系列里，我会按打造一个Material Design App的路线介绍所有应当掌握和值得掌握的系统组件。
 你会在这些文章里了解到这些组件的使用和内部实现原理，以及它们背后所反映的Material Design的设计思想，希望你会喜欢。
 <br/><br/><br/>
@@ -16,7 +16,108 @@ author: BugDev
 <br/>
 Thanks for reading~!
 <br/><br/><br/>
-杂烩Layout
+## 目录
+
+  1. 基本介绍
+  2. TextInputLayout详解
+  3. 代码杂烩
+  4. 登录页面实战
+
+<br/>
+
+## 基本介绍
+
+文本输入框通常都有提示语，告知用户这里需要输入什么。提示语通常有两种形式，**位于输入框内，输入文字后即消失** 或 **固定浮于输入框上方或左侧**。
+
+将提示置于输入框内能够节省空间，但有个致命的缺点就是容易导致用户失去上下文。想象一下，当我们有十个文本框需要输入的时候，如果无法始终看到提示语，很容易忘记这里该填入什么样的数据。
+
+提示语固定于输入框上方或左侧，让人能够非常明确的知道这里该填入的内容，但在动画效果和焦点区分上却不是十分出色。
+
+结合这两种类型的输入框优点，Material Design推出了一种优秀的文本输入框形式——**当用户点击空内容的文本输入框时，原本位于输入框内的提示语会经由一个动画浮动至输入框上方，文本颜色同时变成强调色，明确显示此时该组件获得焦点**。
+
+为了让开发者更加方便地实现这种效果，Google推出了**TextInputLayout**组件。向该组件中放入一个**EditText**组件（或其扩展类也可，比如**TextInputEditText**），便可轻松实现Material Design文档中所要求的效果。
+
+其中，要提一下的是TextInputEditText。相比于其他的EditText类，使用该类作为子View放入TextInputLayout可以在**全屏模式时依然在编辑器里展示hint**。
+
+接下来就让我们一起来详细地整理学习一下TextInputLayout。
+<br/>
+<br/>
+<br/>
+
+
+## TextInputLayout详解
+
+XML属性&常用方法
+  <br/>
+  - **counterEnabled**：false or true，用于设置字符计数器的开启或关闭。
+  <br/>对应方法：***setCounterEnabled(boolean)***
+  <br/>
+  <br/>
+  - **counterMaxLength**：设置字符计数器的最大长度。**（仅用于设置计数器最大值，并不影响文本实际能输入的最大长度）**
+  <br/>对应方法：***setCounterMaxLength(int)***
+  <br/>
+  <br/>
+  - **errorEnabled**：false or true，用于设置错误提示是否开启。
+  <br/>对应方法：***setErrorEnabled(boolean)***
+  <br/>
+  <br/>
+  - **hint**：设置输入框的提示语。
+  <br/>对应方法：***setHint(CharSequence)***
+  <br/>
+  <br/>
+  - **hintAnimationEnabled**：true or false，开启或关闭hint浮动成标签的动画效果。
+  <br/>对应方法：***setHintAnimationEnabled(boolean)***
+  <br/>
+  <br/>
+  - **hintEnabled**：true or false，开启或关闭hint浮动的功能，设为false的话就和之前的EditText一样，在输入文字后，提示语就消失了。
+  <br/>对应方法：***setHintEnabled(boolean)***
+  <br/>
+  <br/>
+  - **hintTextAppearance**：设置hint的style，字体颜色，字体大小等，可引用系统自带的也可以自定义。**若要使用请统一使用，以保证APP体验的统一性。**
+  <br/>对应方法：***setHintTextAppearance(int)***
+  <br/>
+  <br/>
+  
+当文本输入类型为密码时，系统提供了一个开关来控制密码是否可见（默认为眼睛👁）。此为design包24.2.0新提供的功能。
+  <br/>
+  - **passwordToggleEnabled**：**控制密码可见开关是否启用。**设为false则该功能不启用，密码输入框右侧也没有控制密码可见与否的开关。
+  <br/>对应方法：***setPasswordVisibilityToggleEnabled(boolean)***
+  <br/>
+  <br/>
+  - **passwordToggleDrawable**：**设置密码可见开关的图标。通常我们会在不同的情况下设定不同的图标，可通过自定义一个selector，根据“state_checked”属性来控制图标的切换。后面代码实践里会有示范。**
+  <br/>对应方法：***setPasswordVisibilityToggleDrawable(Drawable)***
+  <br/>
+  <br/>
+  - **passwordToggleTint**：**控制密码可见开关图标的颜色。在开启或关闭的状态下我们可以设定不同的颜色，可通过自定义一个color的selector，根据“state_checked”和“state_selected”属性来控制颜色的切换。后面代码实践里会有示范。**
+  <br/>对应方法：***setPasswordVisibilityToggleTintList(ColorStateList)***
+  <br/>
+  <br/>
+  - **passwordToggleTintMode**：控制密码可见开关图标的背景颜色混合模式。这个地方我不是很能理解，暂作标记，希望有人可以指教。不过可以肯定的是正常需求都用不到这个属性。
+    分别是：
+        1. multiply[Sa*Da,Sc*Dc]
+        2.screen[Sa+Da-Sa*Da,Sc+Dc-Sc*Dc]
+        3.src_atop[Da,Sc*Da+(1-Sa)*Dc]
+        4.src_in[Sa*Da,Sc*Da]
+        5.src_over[Sa+(1-Sa)*Da , Rc=Sc+(1-Sa)*Dc]
+
+  <br/>对应方法：***setPasswordVisibilityToggleTintMode(PorterDuff.Mode)***
+  <br/>
+  **注**：关于这方面的知识有兴趣请参考[Xfermode in android](http://weishu.me/2015/09/23/Xfermode-in-android/)其中有关于这方面概念的解释。
+  <br/>
+  <br/>
+  - **passwordToggleContentDescription**：该功能是为Talkback或其他无障碍功能提供的。TalkBack会去读contentDescription的值，告诉用户这个操作是什么。
+  <br/>对应方法：***setPasswordVisibilityToggleContentDescription(int)***
+  <br/>
+  <br/>
+  
+  
+## 代码杂烩
+<br/>
+**效果图**
+<br/>
+ <img src="https://cloud.githubusercontent.com/assets/12692071/17649176/5ffb5b44-6260-11e6-84dc-2ac41be1b858.gif" width="300" height="550" />
+<br/>
+**Layout布局**
 ```XML
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -206,7 +307,7 @@ Thanks for reading~!
 
 ```
 
-FloatingStyle
+**FloatingStyle**
 
 ```XML
 
@@ -217,7 +318,7 @@ FloatingStyle
 
 ```
 
-btn_selector
+**btn_selector**
 
 ```XML
 
@@ -228,7 +329,7 @@ btn_selector
 
 ```
 
-drawable/visibility_selector
+**drawable/visibility_selector**
 
 ```XML
 
@@ -241,7 +342,7 @@ drawable/visibility_selector
 
 ```
 
-color/visibility_selector
+**color/visibility_selector**
 
 ```XML
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
@@ -255,10 +356,9 @@ color/visibility_selector
 
 
 
-杂烩Activity
+**HotchpotchActivity.java**
 
 ```Java
-
 public class HotchpotchActivity extends AppCompatActivity {
 
     private TextInputEditText mNameEditx;

@@ -9,13 +9,13 @@ author: BugDev
 <br/>
 这是一个系列文章，在这个系列里，我会按打造一个Material Design App的路线介绍所有应当掌握和值得掌握的系统组件。
 你会在这些文章里了解到这些组件的使用和内部实现原理，以及它们背后所反映的Material Design的设计思想，希望你会喜欢。
-<br/><br/><br/>
+<br/><br/><br/><br/>
 **Tips**
-<br/>
+<br/><br/>
 我的每一篇博客都会提供详尽的API介绍，如果你想快速查阅某个功能的API或如何实现，建议Ctrl+F（Commad+F）在本页面搜索关键字查找。
-<br/>
+<br/><br/>
 Thanks for reading~!
-<br/><br/><br/>
+<br/><br/><br/><br/>
 ## 目录
 
   1. 基本介绍
@@ -23,7 +23,7 @@ Thanks for reading~!
   3. 代码杂烩
   4. 登录页面实战
 
-<br/>
+<br/><br/><br/><br/>
 
 ## 基本介绍
 
@@ -40,10 +40,7 @@ Thanks for reading~!
 其中，要提一下的是TextInputEditText。相比于其他的EditText类，使用该类作为子View放入TextInputLayout可以在**全屏模式时依然在编辑器里展示hint**。
 
 接下来就让我们一起来详细地整理学习一下TextInputLayout。
-<br/>
-<br/>
-<br/>
-
+<br/><br/><br/><br/>
 
 ## TextInputLayout详解
 
@@ -77,7 +74,7 @@ Thanks for reading~!
   <br/>对应方法：***setHintTextAppearance(int)***
   <br/>
   <br/>
-  
+<br/>  
 当文本输入类型为密码时，系统提供了一个开关来控制密码是否可见（默认为眼睛👁）。此为design包24.2.0新提供的功能。
   <br/>
   - **passwordToggleEnabled**：**控制密码可见开关是否启用。**设为false则该功能不启用，密码输入框右侧也没有控制密码可见与否的开关。
@@ -92,13 +89,17 @@ Thanks for reading~!
   <br/>对应方法：***setPasswordVisibilityToggleTintList(ColorStateList)***
   <br/>
   <br/>
-  - **passwordToggleTintMode**：控制密码可见开关图标的背景颜色混合模式。这个地方我不是很能理解，暂作标记，希望有人可以指教。不过可以肯定的是正常需求都用不到这个属性。
-    分别是：
+  - **passwordToggleTintMode**：控制密码可见开关图标的背景颜色混合模式。这个地方我不是很能理解，暂作标记，希望有人可以指教。不过可以肯定的是正常需求都用不到这个属性。<br/>
+    分别是：<br/>
         1. multiply[Sa*Da,Sc*Dc]
-        2.screen[Sa+Da-Sa*Da,Sc+Dc-Sc*Dc]
-        3.src_atop[Da,Sc*Da+(1-Sa)*Dc]
-        4.src_in[Sa*Da,Sc*Da]
-        5.src_over[Sa+(1-Sa)*Da , Rc=Sc+(1-Sa)*Dc]
+        <br/>
+        2. screen[Sa+Da-Sa*Da,Sc+Dc-Sc*Dc]
+        <br/>
+        3. src_atop[Da,Sc*Da+(1-Sa)*Dc]
+        <br/>
+        4. src_in[Sa*Da,Sc*Da]
+        <br/>
+        5. src_over[Sa+(1-Sa)*Da , Rc=Sc+(1-Sa)*Dc]
 
   <br/>对应方法：***setPasswordVisibilityToggleTintMode(PorterDuff.Mode)***
   <br/>
@@ -108,19 +109,18 @@ Thanks for reading~!
   - **passwordToggleContentDescription**：该功能是为Talkback或其他无障碍功能提供的。TalkBack会去读contentDescription的值，告诉用户这个操作是什么。
   <br/>对应方法：***setPasswordVisibilityToggleContentDescription(int)***
   <br/>
-  <br/>
+  <br/><br/><br/>
   
   
 ## 代码杂烩
-<br/>
 **效果图**
 <br/>
  <img src="https://cloud.githubusercontent.com/assets/12692071/20247096/cb1e4a76-a9ff-11e6-935c-3ef67e1ed79c.png" width="300" height="550" />
-<br/>
+<br/><br/>
 **效果视频**
 <br/>
-[效果视频1](http://v.youku.com/v_show/id_XMTczMTQyMDYwNA==.html)
-<br/>
+[点这里](http://v.youku.com/v_show/id_XMTczMTQyMDYwNA==.html)
+<br/><br/>
 **Layout布局**
 ```XML
 
@@ -310,7 +310,7 @@ Thanks for reading~!
 
 
 ```
-
+<br/>
 **FloatingStyle**
 
 ```XML
@@ -321,7 +321,7 @@ Thanks for reading~!
 </style>
 
 ```
-
+<br/>
 **btn_selector**
 
 ```XML
@@ -332,7 +332,7 @@ Thanks for reading~!
 </selector>
 
 ```
-
+<br/>
 **drawable/visibility_selector**
 
 ```XML
@@ -345,7 +345,7 @@ Thanks for reading~!
 </selector>
 
 ```
-
+<br/>
 **color/visibility_selector**
 
 ```XML
@@ -357,9 +357,7 @@ Thanks for reading~!
 </selector>
 ```
 
-
-
-
+<br/><br/>
 **HotchpotchActivity.java**
 
 ```Java
@@ -440,6 +438,7 @@ public class HotchpotchActivity extends AppCompatActivity {
 }
 
 ```
+<br/>
 <br/>
 <br/>
 <br/>
@@ -548,7 +547,6 @@ public class HotchpotchActivity extends AppCompatActivity {
 
 <br/>
 **LoginActivity.java**
-<br/>
 ```Java
 
 /**
@@ -684,9 +682,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
 ```
-<br/>
+<br/><br/>
 **Dialog Style**
-<br/>
 ```XML
 <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
         <item name="colorAccent">@color/colorAccent</item>
@@ -699,28 +696,29 @@ public class LoginActivity extends AppCompatActivity {
 <br/>
 **效果图**
 <br/>
-<img src="https://cloud.githubusercontent.com/assets/12692071/20247102/d1328fe4-a9ff-11e6-8f6e-513f79d2446c.png" width="300" height="550" />
-<br/>
+<img src="https://cloud.githubusercontent.com/assets/12692071/20247102/d1328fe4-a9ff-11e6-8f6e-513f79d2446c.png" width="320" height="550" />
+<br/><br/>
 **效果视频**
 <br/>
-[效果视频2](http://v.youku.com/v_show/id_XMTczMjA1MzY4NA==.html)
+[点这里](http://v.youku.com/v_show/id_XMTczMjA1MzY4NA==.html)
+<br/>
 <br/>
 <br/>
 <br/>
 ## 参考文章
 [Mobile Form Usability](http://babich.biz/mobile-form-usability/)
-<br/>
+<br/><br/>
 [Android官方文档](https://developer.android.com/guide/index.html)
-<br/>
+<br/><br/>
 [Text fields | Material Design](https://developer.android.com/guide/index.html)
-<br/>
+<br/><br/>
 [Creating a Login Screen Using TextInputLayout](https://code.tutsplus.com/tutorials/creating-a-login-screen-using-textinputlayout--cms-24168)
-<br/>
+<br/><br/>
 <br/>
 <br/>
 <br/>
 ## 关于
- <img src="https://cloud.githubusercontent.com/assets/12692071/20247234/0341c3f4-aa02-11e6-8eba-fe355635411e.jpg" width="100" height="100" />
+ <img src="https://cloud.githubusercontent.com/assets/12692071/20247234/0341c3f4-aa02-11e6-8eba-fe355635411e.jpg" width="260" height="260" />
 <br/>
 **微信公众号: BugDev「bugdev」**
 <br/>

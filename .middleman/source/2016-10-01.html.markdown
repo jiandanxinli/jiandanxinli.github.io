@@ -115,11 +115,9 @@ Thanks for reading~!
 ## 代码杂烩
 **效果图**
 <br/>
- <img src="https://cloud.githubusercontent.com/assets/12692071/20247096/cb1e4a76-a9ff-11e6-935c-3ef67e1ed79c.png" width="300" height="550" />
+ <img src="https://cloud.githubusercontent.com/assets/12692071/20247096/cb1e4a76-a9ff-11e6-935c-3ef67e1ed79c.png" width="305" height="530" />
 <br/><br/>
-**效果视频**
-<br/>
-[点这里](http://v.youku.com/v_show/id_XMTczMTQyMDYwNA==.html)
+**效果视频→**[点这里](http://v.youku.com/v_show/id_XMTczMTQyMDYwNA==.html)
 <br/><br/>
 **Layout布局**
 ```XML
@@ -445,7 +443,7 @@ public class HotchpotchActivity extends AppCompatActivity {
 ## 登录页面实战
 
 就像文章开头说的，这是一个系列文章，路线是一个APP打开的路线。那么这第一篇就用来写登录页面吧，代码如下：
-<br/>
+<br/><br/>
 **Layout布局**
 ```XML
 
@@ -696,11 +694,9 @@ public class LoginActivity extends AppCompatActivity {
 <br/>
 **效果图**
 <br/>
-<img src="https://cloud.githubusercontent.com/assets/12692071/20247102/d1328fe4-a9ff-11e6-8f6e-513f79d2446c.png" width="320" height="550" />
+<img src="https://cloud.githubusercontent.com/assets/12692071/20247102/d1328fe4-a9ff-11e6-8f6e-513f79d2446c.png" width="305" height="530" />
 <br/><br/>
-**效果视频**
-<br/>
-[点这里](http://v.youku.com/v_show/id_XMTczMjA1MzY4NA==.html)
+**效果视频→**[点这里](http://v.youku.com/v_show/id_XMTczMjA1MzY4NA==.html)
 <br/>
 <br/>
 <br/>
@@ -713,16 +709,15 @@ public class LoginActivity extends AppCompatActivity {
 [Text fields | Material Design](https://developer.android.com/guide/index.html)
 <br/><br/>
 [Creating a Login Screen Using TextInputLayout](https://code.tutsplus.com/tutorials/creating-a-login-screen-using-textinputlayout--cms-24168)
-<br/><br/>
 <br/>
 <br/>
 <br/>
 ## 关于
  <img src="https://cloud.githubusercontent.com/assets/12692071/20247234/0341c3f4-aa02-11e6-8eba-fe355635411e.jpg" width="260" height="260" />
-<br/>
-**微信公众号: BugDev「bugdev」**
-<br/>
-**知乎专栏[BugDev](https://code.tutsplus.com/tutorials/creating-a-login-screen-using-textinputlayout--cms-24168)**
+<br/><br/>
+**微信公众号： BugDev「bugdev」**
+<br/><br/><br/>
+**知乎专栏：[BugDev](https://code.tutsplus.com/tutorials/creating-a-login-screen-using-textinputlayout--cms-24168)**
 <br/>
 <br/>
 欢迎关注啦~ ！

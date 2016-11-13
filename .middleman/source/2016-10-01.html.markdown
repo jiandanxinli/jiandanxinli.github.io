@@ -47,7 +47,7 @@ Thanks for reading~!
 
 ## TextInputLayout详解
 
-XML属性&常用方法
+**XML属性&常用方法**
   <br/>
   - **counterEnabled**：false or true，用于设置字符计数器的开启或关闭。
   <br/>对应方法：***setCounterEnabled(boolean)***
@@ -115,7 +115,11 @@ XML属性&常用方法
 <br/>
 **效果图**
 <br/>
- <img src="https://cloud.githubusercontent.com/assets/12692071/17649176/5ffb5b44-6260-11e6-84dc-2ac41be1b858.gif" width="300" height="550" />
+ <img src="https://cloud.githubusercontent.com/assets/12692071/20247096/cb1e4a76-a9ff-11e6-935c-3ef67e1ed79c.png" width="300" height="550" />
+<br/>
+**效果视频**
+<br/>
+[效果视频1](http://v.youku.com/v_show/id_XMTczMTQyMDYwNA==.html)
 <br/>
 **Layout布局**
 ```XML
@@ -436,9 +440,14 @@ public class HotchpotchActivity extends AppCompatActivity {
 }
 
 ```
+<br/>
+<br/>
+<br/>
+## 登录页面实战
 
-
-登录页面Layout
+就像文章开头说的，这是一个系列文章，路线是一个APP打开的路线。那么这第一篇就用来写登录页面吧，代码如下：
+<br/>
+**Layout布局**
 ```XML
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -537,9 +546,9 @@ public class HotchpotchActivity extends AppCompatActivity {
 
 ```
 
-
-登录页面
-
+<br/>
+**LoginActivity.java**
+<br/>
 ```Java
 
 /**
@@ -675,7 +684,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
 ```
-
+<br/>
+**Dialog Style**
+<br/>
 ```XML
 <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
         <item name="colorAccent">@color/colorAccent</item>
@@ -684,3 +695,36 @@ public class LoginActivity extends AppCompatActivity {
 </style>
 
 ```
+<br/>
+<br/>
+**效果图**
+<br/>
+<img src="https://cloud.githubusercontent.com/assets/12692071/20247102/d1328fe4-a9ff-11e6-8f6e-513f79d2446c.png" width="300" height="550" />
+<br/>
+**效果视频**
+<br/>
+[效果视频2](http://v.youku.com/v_show/id_XMTczMjA1MzY4NA==.html)
+<br/>
+<br/>
+<br/>
+## 参考文章
+[Mobile Form Usability](http://babich.biz/mobile-form-usability/)
+<br/>
+[Android官方文档](https://developer.android.com/guide/index.html)
+<br/>
+[Text fields | Material Design](https://developer.android.com/guide/index.html)
+<br/>
+[Creating a Login Screen Using TextInputLayout](https://code.tutsplus.com/tutorials/creating-a-login-screen-using-textinputlayout--cms-24168)
+<br/>
+<br/>
+<br/>
+<br/>
+## 关于
+ <img src="https://cloud.githubusercontent.com/assets/12692071/20247234/0341c3f4-aa02-11e6-8eba-fe355635411e.jpg" width="100" height="100" />
+<br/>
+**微信公众号: BugDev「bugdev」**
+<br/>
+**知乎专栏[BugDev](https://code.tutsplus.com/tutorials/creating-a-login-screen-using-textinputlayout--cms-24168)**
+<br/>
+<br/>
+欢迎关注啦~ ！

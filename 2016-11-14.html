@@ -1,0 +1,656 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>TextInput 详解 · Material Design Part 1 · 简单心理技术团队</title><meta content="Material Design 文本输入详解" name="description" /><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>TextInput 详解 · Material Design Part 1</h2><div class="meta"><span class="date">2016-11-14</span><span class="author">BugDev</span></div><blockquote>Material Design 文本输入详解</blockquote><p>这是一个系列文章，在这个系列里，我会按打造一个 Material Design App 的路线介绍所有应当掌握和值得掌握的系统组件。
+你会在这些文章里了解到这些组件的使用和内部实现原理，以及它们背后所反映的 Material Design 的设计思想，希望你会喜欢。</p>
+
+<p><strong>Tips</strong></p>
+
+<p>我的每一篇博客都会提供详尽的API介绍，如果你想快速查阅某个功能的API或如何实现，建议Ctrl+F（Commad+F）在本页面搜索关键字查找。</p>
+
+<p>Thanks for reading~!</p>
+
+<h2>目录</h2>
+
+<ol>
+<li>基本介绍</li>
+<li>TextInputLayout详解</li>
+<li>代码杂烩</li>
+<li>登录页面实战</li>
+</ol>
+
+<h2>基本介绍</h2>
+
+<p>文本输入框通常都有提示语，告知用户这里需要输入什么。提示语通常有两种形式，<strong>位于输入框内，输入文字后即消失</strong> 或 <strong>固定浮于输入框上方或左侧</strong>。</p>
+
+<p>将提示置于输入框内能够节省空间，但有个致命的缺点就是容易导致用户失去上下文。想象一下，当我们有十个文本框需要输入的时候，如果无法始终看到提示语，很容易忘记这里该填入什么样的数据。</p>
+
+<p>提示语固定于输入框上方或左侧，让人能够非常明确的知道这里该填入的内容，但在动画效果和焦点区分上却不是十分出色。</p>
+
+<p>结合这两种类型的输入框优点，Material Design推出了一种优秀的文本输入框形式——<strong>当用户点击空内容的文本输入框时，原本位于输入框内的提示语会经由一个动画浮动至输入框上方，文本颜色同时变成强调色，明确显示此时该组件获得焦点</strong>。</p>
+
+<p>为了让开发者更加方便地实现这种效果，Google推出了<strong>TextInputLayout</strong>组件。向该组件中放入一个<strong>EditText</strong>组件（或其扩展类也可，比如<strong>TextInputEditText</strong>），便可轻松实现Material Design文档中所要求的效果。</p>
+
+<p>其中，要提一下的是TextInputEditText。相比于其他的EditText类，使用该类作为子View放入TextInputLayout可以在<strong>全屏模式时依然在编辑器里展示hint</strong>。</p>
+
+<p>接下来就让我们一起来详细地整理学习一下TextInputLayout。</p>
+
+<h2>TextInputLayout详解</h2>
+
+<p><strong>xml属性&amp;常用方法</strong></p>
+
+<ul>
+<li><p><strong>counterEnabled</strong>：false or true，用于设置字符计数器的开启或关闭。</p>
+
+<p>对应方法：<strong><em>setCounterEnabled(boolean)</em></strong></p></li>
+<li><p><strong>counterMaxLength</strong>：设置字符计数器的最大长度。<strong>（仅用于设置计数器最大值，并不影响文本实际能输入的最大长度）</strong></p>
+
+<p>对应方法：<strong><em>setCounterMaxLength(int)</em></strong></p></li>
+<li><p><strong>errorEnabled</strong>：false or true，用于设置错误提示是否开启。</p>
+
+<p>对应方法：<strong><em>setErrorEnabled(boolean)</em></strong></p></li>
+<li><p><strong>hint</strong>：设置输入框的提示语。</p>
+
+<p>对应方法：<strong><em>setHint(CharSequence)</em></strong></p></li>
+<li><p><strong>hintAnimationEnabled</strong>：true or false，开启或关闭hint浮动成标签的动画效果。</p>
+
+<p>对应方法：<strong><em>setHintAnimationEnabled(boolean)</em></strong></p></li>
+<li><p><strong>hintEnabled</strong>：true or false，开启或关闭hint浮动的功能，设为false的话就和之前的EditText一样，在输入文字后，提示语就消失了。</p>
+
+<p>对应方法：<strong><em>setHintEnabled(boolean)</em></strong></p></li>
+<li><p><strong>hintTextAppearance</strong>：设置hint的style，字体颜色，字体大小等，可引用系统自带的也可以自定义。<strong>若要使用请统一使用，以保证APP体验的统一性。</strong></p>
+
+<p>对应方法：<strong><em>setHintTextAppearance(int)</em></strong></p></li>
+</ul>
+
+<p>当文本输入类型为密码时，系统提供了一个开关来控制密码是否可见（默认为眼睛👁）。此为design包24.2.0新提供的功能。</p>
+
+<ul>
+<li><p><strong>passwordToggleEnabled</strong>：<strong>控制密码可见开关是否启用。</strong>设为false则该功能不启用，密码输入框右侧也没有控制密码可见与否的开关。</p>
+
+<p>对应方法：<strong><em>setPasswordVisibilityToggleEnabled(boolean)</em></strong></p></li>
+<li><p><strong>passwordToggleDrawable</strong>：<strong>设置密码可见开关的图标。通常我们会在不同的情况下设定不同的图标，可通过自定义一个selector，根据“state_checked”属性来控制图标的切换。后面代码实践里会有示范。</strong></p>
+
+<p>对应方法：<strong><em>setPasswordVisibilityToggleDrawable(Drawable)</em></strong></p></li>
+<li><p><strong>passwordToggleTint</strong>：<strong>控制密码可见开关图标的颜色。在开启或关闭的状态下我们可以设定不同的颜色，可通过自定义一个color的selector，根据“state_checked”和“state_selected”属性来控制颜色的切换。后面代码实践里会有示范。</strong></p>
+
+<p>对应方法：<strong><em>setPasswordVisibilityToggleTintList(ColorStateList)</em></strong></p></li>
+<li><p><strong>passwordToggleTintMode</strong>：控制密码可见开关图标的背景颜色混合模式。这个地方我不是很能理解，暂作标记，希望有人可以指教。不过可以肯定的是正常需求都用不到这个属性。</p>
+
+<p>分别是：</p>
+
+<blockquote>
+<ol>
+<li>multiply[Sa*Da, Sc*Dc]</li>
+<li>screen[Sa+Da-Sa*Da, Sc+Dc-Sc*Dc]</li>
+<li>src_atop[Da, Sc*Da+(1-Sa)*Dc]</li>
+<li>src_in[Sa*Da, Sc*Da]</li>
+<li>src_over[Sa+(1-Sa)<em>Da, Rc=Sc+(1-Sa)</em>Dc]</li>
+</ol>
+</blockquote>
+
+<p>对应方法：<strong><em>setPasswordVisibilityToggleTintMode(PorterDuff.Mode)</em></strong></p>
+
+<p><strong>注</strong>：关于这方面的知识有兴趣请参考<a href="http://weishu.me/2015/09/23/Xfermode-in-android/">Xfermode in android</a>其中有关于这方面概念的解释。</p></li>
+<li><p><strong>passwordToggleContentDescription</strong>：该功能是为Talkback或其他无障碍功能提供的。TalkBack会去读contentDescription的值，告诉用户这个操作是什么。</p></li>
+</ul>
+
+<p>对应方法：<strong><em>setPasswordVisibilityToggleContentDescription(int)</em></strong></p>
+
+<h2>代码杂烩</h2>
+
+<p><strong>效果图</strong>
+ <img src="https://cloud.githubusercontent.com/assets/12692071/20247096/cb1e4a76-a9ff-11e6-935c-3ef67e1ed79c.png" alt="效果图" /></p>
+
+<p><strong>效果视频→</strong><a href="http://v.youku.com/v_show/id_XMTczMTQyMDYwNA==.html">点这里</a></p>
+
+<p><strong>Layout布局</strong></p>
+<pre class="highlight xml"><code><span class="nt">&lt;LinearLayout</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">xmlns:app=</span><span class="s">"http://schemas.android.com/apk/res-auto"</span>
+    <span class="na">xmlns:tools=</span><span class="s">"http://schemas.android.com/tools"</span>
+    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+    <span class="na">tools:context=</span><span class="s">"com.jiandanxinli.smileback.materiallogin.LoginActivity"</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;ScrollView</span>
+        <span class="na">android:id=</span><span class="s">"@+id/login_form"</span>
+        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+        <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+        <span class="na">android:scrollbars=</span><span class="s">"none"</span><span class="nt">&gt;</span>
+
+        <span class="nt">&lt;LinearLayout</span>
+            <span class="na">android:id=</span><span class="s">"@+id/email_login_form"</span>
+            <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+            <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+            <span class="na">android:focusableInTouchMode=</span><span class="s">"true"</span>
+            <span class="na">android:orientation=</span><span class="s">"vertical"</span>
+            <span class="na">android:paddingEnd=</span><span class="s">"16dp"</span>
+            <span class="na">android:paddingStart=</span><span class="s">"16dp"</span><span class="nt">&gt;</span>
+
+            <span class="nt">&lt;LinearLayout</span>
+                <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                <span class="na">android:layout_marginTop=</span><span class="s">"18dp"</span>
+                <span class="na">android:orientation=</span><span class="s">"horizontal"</span><span class="nt">&gt;</span>
+
+                <span class="nt">&lt;ImageView</span>
+                    <span class="na">android:layout_width=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:layout_gravity=</span><span class="s">"center_vertical"</span>
+                    <span class="na">android:layout_marginEnd=</span><span class="s">"12dp"</span>
+                    <span class="na">android:src=</span><span class="s">"@drawable/ic_perm_identity_black_24dp"</span> <span class="nt">/&gt;</span>
+
+                <span class="nt">&lt;android.support.design.widget.TextInputLayout</span>
+                    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:hint=</span><span class="s">"@string/hotchpotch_name_tv"</span><span class="nt">&gt;</span>
+
+                    <span class="nt">&lt;android.support.design.widget.TextInputEditText</span>
+                        <span class="na">android:id=</span><span class="s">"@+id/edit_name"</span>
+                        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                        <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                        <span class="na">android:inputType=</span><span class="s">"text"</span> <span class="nt">/&gt;</span>
+
+                <span class="nt">&lt;/android.support.design.widget.TextInputLayout&gt;</span>
+            <span class="nt">&lt;/LinearLayout&gt;</span>
+
+            <span class="nt">&lt;LinearLayout</span>
+                <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                <span class="na">android:layout_marginTop=</span><span class="s">"8dp"</span>
+                <span class="na">android:orientation=</span><span class="s">"horizontal"</span><span class="nt">&gt;</span>
+
+                <span class="nt">&lt;ImageView</span>
+                    <span class="na">android:layout_width=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:layout_gravity=</span><span class="s">"center_vertical"</span>
+                    <span class="na">android:layout_marginEnd=</span><span class="s">"12dp"</span>
+                    <span class="na">android:src=</span><span class="s">"@drawable/ic_phone_black_24dp"</span> <span class="nt">/&gt;</span>
+
+                <span class="nt">&lt;android.support.design.widget.TextInputLayout</span>
+                    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:hint=</span><span class="s">"@string/hotchpotch_phone_tv"</span>
+                    <span class="na">app:counterEnabled=</span><span class="s">"true"</span>
+                    <span class="na">app:counterMaxLength=</span><span class="s">"11"</span><span class="nt">&gt;</span>
+
+                    <span class="nt">&lt;android.support.design.widget.TextInputEditText</span>
+                        <span class="na">android:id=</span><span class="s">"@+id/edit_phone"</span>
+                        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                        <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                        <span class="na">android:inputType=</span><span class="s">"phone"</span>
+                        <span class="na">android:maxLength=</span><span class="s">"11"</span> <span class="nt">/&gt;</span>
+
+                <span class="nt">&lt;/android.support.design.widget.TextInputLayout&gt;</span>
+
+            <span class="nt">&lt;/LinearLayout&gt;</span>
+
+            <span class="nt">&lt;LinearLayout</span>
+                <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                <span class="na">android:orientation=</span><span class="s">"horizontal"</span><span class="nt">&gt;</span>
+
+                <span class="nt">&lt;ImageView</span>
+                    <span class="na">android:layout_width=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:layout_gravity=</span><span class="s">"center_vertical"</span>
+                    <span class="na">android:layout_marginEnd=</span><span class="s">"12dp"</span>
+                    <span class="na">android:src=</span><span class="s">"@drawable/ic_mail_black_24dp"</span> <span class="nt">/&gt;</span>
+
+                <span class="nt">&lt;android.support.design.widget.TextInputLayout</span>
+                    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:hint=</span><span class="s">"@string/hotchpotch_mail_tv"</span><span class="nt">&gt;</span>
+
+                    <span class="nt">&lt;android.support.design.widget.TextInputEditText</span>
+                        <span class="na">android:id=</span><span class="s">"@+id/edit_email"</span>
+                        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                        <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                        <span class="na">android:inputType=</span><span class="s">"textEmailAddress"</span> <span class="nt">/&gt;</span>
+
+                <span class="nt">&lt;/android.support.design.widget.TextInputLayout&gt;</span>
+
+            <span class="nt">&lt;/LinearLayout&gt;</span>
+
+            <span class="nt">&lt;LinearLayout</span>
+                <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                <span class="na">android:layout_marginTop=</span><span class="s">"8dp"</span>
+                <span class="na">android:orientation=</span><span class="s">"horizontal"</span><span class="nt">&gt;</span>
+
+                <span class="nt">&lt;ImageView</span>
+                    <span class="na">android:layout_width=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:layout_gravity=</span><span class="s">"center_vertical"</span>
+                    <span class="na">android:layout_marginEnd=</span><span class="s">"12dp"</span>
+                    <span class="na">android:src=</span><span class="s">"@drawable/ic_security_black_24dp"</span> <span class="nt">/&gt;</span>
+
+                <span class="nt">&lt;android.support.design.widget.TextInputLayout</span>
+                    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:hint=</span><span class="s">"@string/hotchpotch_password_tv"</span>
+                    <span class="na">app:passwordToggleDrawable=</span><span class="s">"@drawable/visibility_selector"</span>
+                    <span class="na">app:passwordToggleEnabled=</span><span class="s">"true"</span>
+                    <span class="na">app:passwordToggleTint=</span><span class="s">"@color/visibility_selector"</span><span class="nt">&gt;</span>
+
+                    <span class="nt">&lt;android.support.design.widget.TextInputEditText</span>
+                        <span class="na">android:id=</span><span class="s">"@+id/edit_password"</span>
+                        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                        <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                        <span class="na">android:inputType=</span><span class="s">"textPassword"</span> <span class="nt">/&gt;</span>
+
+                <span class="nt">&lt;/android.support.design.widget.TextInputLayout&gt;</span>
+
+            <span class="nt">&lt;/LinearLayout&gt;</span>
+
+            <span class="nt">&lt;LinearLayout</span>
+                <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                <span class="na">android:orientation=</span><span class="s">"horizontal"</span><span class="nt">&gt;</span>
+
+                <span class="nt">&lt;ImageView</span>
+                    <span class="na">android:layout_width=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:layout_gravity=</span><span class="s">"center_vertical"</span>
+                    <span class="na">android:layout_marginEnd=</span><span class="s">"12dp"</span>
+                    <span class="na">android:src=</span><span class="s">"@drawable/ic_feedback_black_24dp"</span> <span class="nt">/&gt;</span>
+
+                <span class="nt">&lt;android.support.design.widget.TextInputLayout</span>
+                    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:hint=</span><span class="s">"@string/hotchpotch_feedback_tv"</span>
+                    <span class="na">app:counterEnabled=</span><span class="s">"true"</span>
+                    <span class="na">app:counterMaxLength=</span><span class="s">"10"</span>
+                    <span class="na">app:hintTextAppearance=</span><span class="s">"@style/FloatingStyle"</span><span class="nt">&gt;</span>
+
+                    <span class="nt">&lt;android.support.design.widget.TextInputEditText</span>
+                        <span class="na">android:id=</span><span class="s">"@+id/edit_feedback"</span>
+                        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                        <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                        <span class="na">android:inputType=</span><span class="s">"text"</span> <span class="nt">/&gt;</span>
+
+                <span class="nt">&lt;/android.support.design.widget.TextInputLayout&gt;</span>
+
+            <span class="nt">&lt;/LinearLayout&gt;</span>
+
+            <span class="nt">&lt;Button</span>
+                <span class="na">android:id=</span><span class="s">"@+id/submit_btn"</span>
+                <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                <span class="na">android:layout_marginEnd=</span><span class="s">"16dp"</span>
+                <span class="na">android:layout_marginStart=</span><span class="s">"16dp"</span>
+                <span class="na">android:layout_marginTop=</span><span class="s">"30dp"</span>
+                <span class="na">android:background=</span><span class="s">"@drawable/btn_selector"</span>
+                <span class="na">android:text=</span><span class="s">"@string/hotchpotch_submit_btn"</span>
+                <span class="na">android:textColor=</span><span class="s">"@color/colorWhite"</span>
+                <span class="na">android:textSize=</span><span class="s">"20sp"</span> <span class="nt">/&gt;</span>
+
+        <span class="nt">&lt;/LinearLayout&gt;</span>
+    <span class="nt">&lt;/ScrollView&gt;</span>
+<span class="nt">&lt;/LinearLayout&gt;</span>
+</code></pre>
+<p><strong>FloatingStyle</strong></p>
+<pre class="highlight xml"><code><span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">"FloatingStyle"</span> <span class="na">parent=</span><span class="s">"@android:style/TextAppearance"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"android:textColor"</span><span class="nt">&gt;</span>#FFEB3B<span class="nt">&lt;/item&gt;</span>
+        <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"android:textSize"</span><span class="nt">&gt;</span>20sp<span class="nt">&lt;/item&gt;</span>
+<span class="nt">&lt;/style&gt;</span>
+</code></pre>
+<p><strong>btn_selector</strong></p>
+<pre class="highlight xml"><code><span class="nt">&lt;selector</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">android:drawable=</span><span class="s">"@color/colorPrimaryDark"</span> <span class="na">android:state_pressed=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">android:drawable=</span><span class="s">"@color/colorPrimary"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/selector&gt;</span>
+</code></pre>
+<p><strong>drawable/visibility_selector</strong></p>
+<pre class="highlight xml"><code><span class="nt">&lt;selector</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">android:drawable=</span><span class="s">"@drawable/ic_visibility_black_24dp"</span> <span class="na">android:state_checked=</span><span class="s">"false"</span> <span class="na">android:state_pressed=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">android:drawable=</span><span class="s">"@drawable/ic_visibility_off_black_24dp"</span> <span class="na">android:state_checked=</span><span class="s">"true"</span> <span class="na">android:state_pressed=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">android:drawable=</span><span class="s">"@drawable/ic_visibility_black_24dp"</span> <span class="na">android:state_checked=</span><span class="s">"true"</span> <span class="na">android:state_pressed=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">android:drawable=</span><span class="s">"@drawable/ic_visibility_off_black_24dp"</span> <span class="na">android:state_checked=</span><span class="s">"false"</span> <span class="na">android:state_pressed=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/selector&gt;</span>
+</code></pre>
+<p><strong>color/visibility_selector</strong></p>
+<pre class="highlight xml"><code><span class="nt">&lt;selector</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">android:color=</span><span class="s">"@color/colorAccent"</span> <span class="na">android:state_checked=</span><span class="s">"false"</span> <span class="na">android:state_pressed=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">android:color=</span><span class="s">"@color/colorDivider"</span> <span class="na">android:state_checked=</span><span class="s">"true"</span> <span class="na">android:state_pressed=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">android:color=</span><span class="s">"@color/colorAccent"</span> <span class="na">android:state_checked=</span><span class="s">"true"</span> <span class="na">android:state_pressed=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">android:color=</span><span class="s">"@color/colorDivider"</span> <span class="na">android:state_checked=</span><span class="s">"false"</span> <span class="na">android:state_pressed=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/selector&gt;</span>
+</code></pre>
+<p><strong>HotchpotchActivity.java</strong></p>
+<pre class="highlight java"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HotchpotchActivity</span> <span class="kd">extends</span> <span class="n">AppCompatActivity</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">TextInputEditText</span> <span class="n">mNameEditx</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">TextInputEditText</span> <span class="n">mPhoneEditx</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">TextInputEditText</span> <span class="n">mEmailEditx</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">TextInputEditText</span> <span class="n">mPasswordEditx</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">TextInputEditText</span> <span class="n">mFeedbackEditx</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">mContentName</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">mContentPhone</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">mContentEmail</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">mContentPassword</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">mContentFeedback</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+        <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_hotchpotch</span><span class="o">);</span>
+
+        <span class="n">initView</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">initView</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">mNameEditx</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextInputEditText</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">edit_name</span><span class="o">);</span>
+        <span class="n">mPhoneEditx</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextInputEditText</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">edit_phone</span><span class="o">);</span>
+        <span class="n">mEmailEditx</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextInputEditText</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">edit_email</span><span class="o">);</span>
+        <span class="n">mPasswordEditx</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextInputEditText</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">edit_password</span><span class="o">);</span>
+        <span class="n">mFeedbackEditx</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextInputEditText</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">edit_feedback</span><span class="o">);</span>
+
+        <span class="n">Button</span> <span class="n">submitBtn</span> <span class="o">=</span> <span class="o">(</span><span class="n">Button</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">submit_btn</span><span class="o">);</span>
+        <span class="n">submitBtn</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">controlAction</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">});</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">getContent</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">mContentName</span> <span class="o">=</span> <span class="n">mNameEditx</span><span class="o">.</span><span class="na">getText</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+        <span class="n">mContentPhone</span> <span class="o">=</span> <span class="n">mPhoneEditx</span><span class="o">.</span><span class="na">getText</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+        <span class="n">mContentEmail</span> <span class="o">=</span> <span class="n">mEmailEditx</span><span class="o">.</span><span class="na">getText</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+        <span class="n">mContentPassword</span> <span class="o">=</span> <span class="n">mPasswordEditx</span><span class="o">.</span><span class="na">getText</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+        <span class="n">mContentFeedback</span> <span class="o">=</span> <span class="n">mFeedbackEditx</span><span class="o">.</span><span class="na">getText</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">controlAction</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">getContent</span><span class="o">();</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">mContentName</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">showToast</span><span class="o">(</span><span class="s">"姓名不能为空!"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">mContentPhone</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">!=</span> <span class="mi">11</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">showToast</span><span class="o">(</span><span class="s">"请正确填写11位手机号码!"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">mContentEmail</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="o">!</span><span class="n">android</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Patterns</span><span class="o">.</span><span class="na">EMAIL_ADDRESS</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="n">mContentEmail</span><span class="o">).</span><span class="na">matches</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">showToast</span><span class="o">(</span><span class="s">"请正确填写邮箱地址!"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">mContentPassword</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">showToast</span><span class="o">(</span><span class="s">"密码不能为空"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">mContentFeedback</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">showToast</span><span class="o">(</span><span class="s">"反馈意见不能为空!"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">mContentFeedback</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">showToast</span><span class="o">(</span><span class="s">"反馈意见长度字数不能大于10!"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">doSubmission</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">doSubmission</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">showToast</span><span class="o">(</span><span class="s">"恭喜您,数据正确!"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">showToast</span><span class="o">(</span><span class="n">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="n">HotchpotchActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="n">message</span><span class="o">,</span> <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_SHORT</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+<h2>登录页面实战</h2>
+
+<p>就像文章开头说的，这是一个系列文章，路线是一个APP打开的路线。那么这第一篇就用来写登录页面吧，代码如下：</p>
+
+<p><strong>Layout布局</strong></p>
+<pre class="highlight xml"><code><span class="nt">&lt;LinearLayout</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">xmlns:app=</span><span class="s">"http://schemas.android.com/apk/res-auto"</span>
+    <span class="na">xmlns:tools=</span><span class="s">"http://schemas.android.com/tools"</span>
+    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+    <span class="na">android:background=</span><span class="s">"@color/colorPrimary"</span>
+    <span class="na">android:gravity=</span><span class="s">"center_horizontal"</span>
+    <span class="na">android:orientation=</span><span class="s">"vertical"</span>
+    <span class="na">android:paddingEnd=</span><span class="s">"32dp"</span>
+    <span class="na">android:paddingStart=</span><span class="s">"32dp"</span>
+    <span class="na">tools:context=</span><span class="s">"com.jiandanxinli.smileback.materiallogin.LoginActivity"</span><span class="nt">&gt;</span>
+
+    <span class="c">&lt;!-- Login progress --&gt;</span>
+    <span class="nt">&lt;ProgressBar</span>
+        <span class="na">android:id=</span><span class="s">"@+id/login_progress"</span>
+        <span class="na">style=</span><span class="s">"?android:attr/progressBarStyleLarge"</span>
+        <span class="na">android:layout_width=</span><span class="s">"wrap_content"</span>
+        <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+        <span class="na">android:visibility=</span><span class="s">"gone"</span> <span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;ScrollView</span>
+        <span class="na">android:id=</span><span class="s">"@+id/login_form"</span>
+        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+        <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">&gt;</span>
+
+        <span class="nt">&lt;LinearLayout</span>
+            <span class="na">android:id=</span><span class="s">"@+id/email_login_form"</span>
+            <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+            <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+            <span class="na">android:layout_gravity=</span><span class="s">"center"</span>
+            <span class="na">android:layout_marginBottom=</span><span class="s">"24dp"</span>
+            <span class="na">android:focusableInTouchMode=</span><span class="s">"true"</span>
+            <span class="na">android:orientation=</span><span class="s">"vertical"</span><span class="nt">&gt;</span>
+
+            <span class="nt">&lt;TextView</span>
+                <span class="na">android:layout_width=</span><span class="s">"wrap_content"</span>
+                <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                <span class="na">android:layout_gravity=</span><span class="s">"center_horizontal"</span>
+                <span class="na">android:layout_marginBottom=</span><span class="s">"48dp"</span>
+                <span class="na">android:fontFamily=</span><span class="s">"cursive"</span>
+                <span class="na">android:text=</span><span class="s">"@string/app_name"</span>
+                <span class="na">android:textSize=</span><span class="s">"48sp"</span>
+                <span class="na">android:textStyle=</span><span class="s">"bold"</span> <span class="nt">/&gt;</span>
+
+
+            <span class="nt">&lt;android.support.design.widget.TextInputLayout</span>
+                <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                <span class="na">android:layout_marginBottom=</span><span class="s">"24dp"</span><span class="nt">&gt;</span>
+
+                <span class="nt">&lt;AutoCompleteTextView</span>
+                    <span class="na">android:id=</span><span class="s">"@+id/email"</span>
+                    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:hint=</span><span class="s">"@string/prompt_email"</span>
+                    <span class="na">android:inputType=</span><span class="s">"textEmailAddress"</span>
+                    <span class="na">android:maxLines=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+
+            <span class="nt">&lt;/android.support.design.widget.TextInputLayout&gt;</span>
+
+            <span class="nt">&lt;android.support.design.widget.TextInputLayout</span>
+                <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                <span class="na">android:layout_marginBottom=</span><span class="s">"40dp"</span>
+                <span class="na">app:passwordToggleDrawable=</span><span class="s">"@drawable/visibility_selector"</span><span class="nt">&gt;</span>
+
+                <span class="nt">&lt;android.support.design.widget.TextInputEditText</span>
+                    <span class="na">android:id=</span><span class="s">"@+id/password"</span>
+                    <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                    <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                    <span class="na">android:hint=</span><span class="s">"@string/prompt_password"</span>
+                    <span class="na">android:imeActionId=</span><span class="s">"@+id/login"</span>
+                    <span class="na">android:imeActionLabel=</span><span class="s">"@string/action_sign_in_short"</span>
+                    <span class="na">android:imeOptions=</span><span class="s">"actionUnspecified"</span>
+                    <span class="na">android:inputType=</span><span class="s">"textPassword"</span>
+                    <span class="na">android:maxLines=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+
+            <span class="nt">&lt;/android.support.design.widget.TextInputLayout&gt;</span>
+
+            <span class="nt">&lt;Button</span>
+                <span class="na">android:id=</span><span class="s">"@+id/email_sign_in_button"</span>
+                <span class="na">style=</span><span class="s">"?android:textAppearanceSmall"</span>
+                <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+                <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+                <span class="na">android:background=</span><span class="s">"@color/colorPrimaryDark"</span>
+                <span class="na">android:text=</span><span class="s">"@string/action_sign_in"</span>
+                <span class="na">android:textSize=</span><span class="s">"18sp"</span>
+                <span class="na">android:textStyle=</span><span class="s">"bold"</span> <span class="nt">/&gt;</span>
+
+        <span class="nt">&lt;/LinearLayout&gt;</span>
+    <span class="nt">&lt;/ScrollView&gt;</span>
+<span class="nt">&lt;/LinearLayout&gt;</span>
+</code></pre>
+<p><strong>LoginActivity.java</strong></p>
+<pre class="highlight java"><code><span class="cm">/**
+ * 登录页面
+ *
+ * @author bugdev
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LoginActivity</span> <span class="kd">extends</span> <span class="n">AppCompatActivity</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">AutoCompleteTextView</span> <span class="n">mEmailView</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">EditText</span> <span class="n">mPasswordView</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">ProgressDialog</span> <span class="n">mProgressDialog</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+        <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_login</span><span class="o">);</span>
+
+        <span class="n">mEmailView</span> <span class="o">=</span> <span class="o">(</span><span class="n">AutoCompleteTextView</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">email</span><span class="o">);</span>
+        <span class="n">mPasswordView</span> <span class="o">=</span> <span class="o">(</span><span class="n">EditText</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">password</span><span class="o">);</span>
+
+        <span class="n">mPasswordView</span><span class="o">.</span><span class="na">setOnEditorActionListener</span><span class="o">(</span><span class="k">new</span> <span class="n">TextView</span><span class="o">.</span><span class="na">OnEditorActionListener</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">onEditorAction</span><span class="o">(</span><span class="n">TextView</span> <span class="n">textView</span><span class="o">,</span> <span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="n">KeyEvent</span> <span class="n">keyEvent</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">==</span> <span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">login</span> <span class="o">||</span> <span class="n">id</span> <span class="o">==</span> <span class="n">EditorInfo</span><span class="o">.</span><span class="na">IME_NULL</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="c1">//尝试登录</span>
+                    <span class="n">attemptLogin</span><span class="o">();</span>
+                    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">});</span>
+
+        <span class="n">Button</span> <span class="n">emailSignInButton</span> <span class="o">=</span> <span class="o">(</span><span class="n">Button</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">email_sign_in_button</span><span class="o">);</span>
+        <span class="n">emailSignInButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">view</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">//尝试登录</span>
+                <span class="n">attemptLogin</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">});</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 说明:获取用户输入的内容并调用相应的验证方法
+     */</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">attemptLogin</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">email</span> <span class="o">=</span> <span class="n">mEmailView</span><span class="o">.</span><span class="na">getText</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+        <span class="n">String</span> <span class="n">password</span> <span class="o">=</span> <span class="n">mPasswordView</span><span class="o">.</span><span class="na">getText</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">isEmailValid</span><span class="o">(</span><span class="n">email</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">isPasswordValid</span><span class="o">(</span><span class="n">password</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">login</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+
+    <span class="cm">/**
+     * 说明:验证邮箱格式
+     *
+     * @param email 邮箱地址
+     * @return 邮箱地址格式正确或错误
+     */</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">isEmailValid</span><span class="o">(</span><span class="n">String</span> <span class="n">email</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">email</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">showToast</span><span class="o">(</span><span class="s">"请输入邮箱!"</span><span class="o">);</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(!</span><span class="n">android</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Patterns</span><span class="o">.</span><span class="na">EMAIL_ADDRESS</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="n">email</span><span class="o">).</span><span class="na">matches</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">showToast</span><span class="o">(</span><span class="s">"邮箱格式不正确!"</span><span class="o">);</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 说明:验证密码格式
+     *
+     * @param password 密码
+     * @return 密码格式正确或错误
+     */</span>
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">isPasswordValid</span><span class="o">(</span><span class="n">String</span> <span class="n">password</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">password</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">showToast</span><span class="o">(</span><span class="s">"请输入密码!"</span><span class="o">);</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">password</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">showToast</span><span class="o">(</span><span class="s">"请输入至少6位密码!"</span><span class="o">);</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 说明:显示Toast的方法
+     *
+     * @param message 要显示的消息
+     */</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">showToast</span><span class="o">(</span><span class="n">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">(),</span> <span class="n">message</span><span class="o">,</span> <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_SHORT</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 说明:登录
+     * &lt;p&gt;
+     * 这里为了展示对话框,将对话框固定显示了3秒
+     */</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">login</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">showDialog</span><span class="o">();</span>
+
+        <span class="n">Timer</span> <span class="n">timer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Timer</span><span class="o">();</span>
+        <span class="n">TimerTask</span> <span class="n">timerTask</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TimerTask</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+                <span class="n">mProgressDialog</span><span class="o">.</span><span class="na">dismiss</span><span class="o">();</span>
+                <span class="n">Intent</span> <span class="n">intent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Intent</span><span class="o">(</span><span class="n">LoginActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="n">HomeActivity</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                <span class="n">startActivity</span><span class="o">(</span><span class="n">intent</span><span class="o">);</span>
+                <span class="n">finish</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+        <span class="n">timer</span><span class="o">.</span><span class="na">schedule</span><span class="o">(</span><span class="n">timerTask</span><span class="o">,</span> <span class="mi">3000</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * 说明:show一个Dialog
+     */</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">showDialog</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">mProgressDialog</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProgressDialog</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">R</span><span class="o">.</span><span class="na">style</span><span class="o">.</span><span class="na">AppTheme_Dark_Dialog</span><span class="o">);</span>
+        <span class="n">mProgressDialog</span><span class="o">.</span><span class="na">setIndeterminate</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">mProgressDialog</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">"正在验证..."</span><span class="o">);</span>
+        <span class="n">mProgressDialog</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+<p><strong>Dialog Style</strong></p>
+<pre class="highlight xml"><code><span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">"AppTheme.Dark.Dialog"</span> <span class="na">parent=</span><span class="s">"Theme.AppCompat.Dialog"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"colorAccent"</span><span class="nt">&gt;</span>@color/colorAccent<span class="nt">&lt;/item&gt;</span>
+        <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"android:textColorPrimary"</span><span class="nt">&gt;</span>@color/textPrimary<span class="nt">&lt;/item&gt;</span>
+        <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"android:background"</span><span class="nt">&gt;</span>@color/colorPrimary<span class="nt">&lt;/item&gt;</span>
+<span class="nt">&lt;/style&gt;</span>
+</code></pre>
+<p><strong>效果图</strong></p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/12692071/20247102/d1328fe4-a9ff-11e6-8f6e-513f79d2446c.png" alt="效果图" /></p>
+
+<p><strong>效果视频→</strong><a href="http://v.youku.com/v_show/id_XMTczMjA1MzY4NA==.html">点这里</a></p>
+
+<h2>参考文章</h2>
+
+<p><a href="http://babich.biz/mobile-form-usability/">Mobile Form Usability</a></p>
+
+<p><a href="https://developer.android.com/guide/index.html">Android官方文档</a></p>
+
+<p><a href="https://developer.android.com/guide/index.html">Text fields | Material Design</a></p>
+
+<p><a href="https://code.tutsplus.com/tutorials/creating-a-login-screen-using-textinputlayout--cms-24168">Creating a Login Screen Using TextInputLayout</a></p>
+
+<h2>关于</h2>
+
+<p><img src="https://cloud.githubusercontent.com/assets/12692071/20247234/0341c3f4-aa02-11e6-8eba-fe355635411e.jpg" alt="二维码" /></p>
+
+<p><strong>微信公众号： BugDev「bugdev」</strong></p>
+
+<p><strong>知乎专栏：<a href="https://code.tutsplus.com/tutorials/creating-a-login-screen-using-textinputlayout--cms-24168">BugDev</a></strong></p>
+
+<p>欢迎关注啦~ ！</p>
+</div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><a class="logo" href="https://www.jiandanxinli.com"><img src="/images/logo_text.png" alt="简单心理" /></a><div class="links"><a href="/">Home</a><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">About</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>

@@ -8,7 +8,7 @@ summary: 如何使用Turbolinks-iOS, 结合Turbolinks，实现一个Hybrid的iOS
 
 ### 前提
 
-要用 turbolinks-iOS 来写一个 Hybrid 的 App 的前提是你的网站使用了 [turbolinks](https://github.com/turbolinks/turbolinks)， 如何使用 turbolinks, 请看这里
+要用 turbolinks-iOS 来写一个 Hybrid 的 App 的前提是你的网站使用了 [turbolinks](https://github.com/turbolinks/turbolinks)， 如何使用 turbolinks, 请看[这里](https://github.com/turbolinks/turbolinks)
 
 ### 安装
 
@@ -206,4 +206,7 @@ func webView(_ webView: WebView, didProposeVisitToLocation location: URL, withAc
 
 这就回到了最初实现的 SessionDelegate 了，就是我们的 UINavigationController
 
+### 视频介绍
+
+这是在2016年的 Rails Conference 上，Turbolinks 和 Turbolinks-iOS 主要贡献者 [Sam Stephenson](https://github.com/sstephenson) 做的一个演讲，值得一看，[Youtube 地址](https://www.youtube.com/watch?v=SWEts0rlezA)
 

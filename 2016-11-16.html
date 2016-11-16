@@ -1,0 +1,174 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>Turbolinks-iOS 上路实用手册 · Turbolinks Part 3 · 简单心理技术团队</title><meta content="如何使用 Turbolinks-iOS, 结合 Turbolinks，实现一个 Hybrid iOS App。" name="description" /><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>Turbolinks-iOS 上路实用手册 · Turbolinks Part 3</h2><div class="meta"><span class="date">2016-11-16</span><span class="author">fengd</span></div><blockquote>如何使用 Turbolinks-iOS, 结合 Turbolinks，实现一个 Hybrid iOS App。</blockquote><p>PS. Turbolinks 系列的 Part 1、2、4 还在编写中，敬请期待 :P</p>
+
+<h3>前提</h3>
+
+<p>要用 turbolinks-iOS 来写一个 Hybrid 的 App 的前提是你的网站使用了 <a href="https://github.com/turbolinks/turbolinks">turbolinks</a>， 如何使用 turbolinks, 请看<a href="https://github.com/turbolinks/turbolinks">这里</a></p>
+
+<h3>安装</h3>
+
+<p>通过 Cocoapods 或者 Carthage 安装，都是直接引用了 github 上的地址。</p>
+<pre class="highlight ruby"><code><span class="n">github</span> <span class="s2">"turbolinks/turbolinks-ios"</span> <span class="s2">"3.0"</span>
+</code></pre>
+<p>或者</p>
+<pre class="highlight ruby"><code><span class="n">pod</span> <span class="s1">'Turbolinks'</span><span class="p">,</span> <span class="ss">:git</span> <span class="o">=&gt;</span> <span class="s1">'https://github.com/turbolinks/turbolinks-ios.git'</span><span class="p">,</span> <span class="ss">branch: </span><span class="s1">'swift-3.0'</span>
+</code></pre>
+<p>turbolinks-iOS 是使用纯 swift 写的，支持 iOS 8.0 以上的版本。如果项目已经使用了 swift 3.0， 需要使用 3.0 的分支。虽然官方官方说 3.0的分支他们没有在生产环境下用过，但是我们用下来没有什么问题。</p>
+
+<h3>使用</h3>
+
+<p>首先建议把 turbolinks-iOS 的代码都下载下来，先跑一下他的demo，demo 虽然很简单，但是基本上把能碰到的情况都写上去了，比如网页请求失败，遇到需要登录的情况等。</p>
+
+<h4>创建Session</h4>
+
+<p>使用 turbolinks-iOS，最重要的一个概念就是 session， session 控制着网页的前进和返回，也是网页和原生代码之间交互的通道。创建 session, 设置 delegate， 同时设置好 processPool。 如果你有多个 session, 并且想要在多个 session 之间共享 cookies，那就需要创建一个共享的 pool，比如通过 singleton 的方式。</p>
+<pre class="highlight swift"><code><span class="n">fileprivate</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">webViewConfiguration</span><span class="p">:</span> <span class="kt">WKWebViewConfiguration</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">configuration</span> <span class="o">=</span> <span class="kt">WKWebViewConfiguration</span><span class="p">()</span>
+    <span class="n">configuration</span><span class="o">.</span><span class="n">userContentController</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"turbolinksDemo"</span><span class="p">)</span>
+    <span class="n">configuration</span><span class="o">.</span><span class="n">processPool</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">webViewProcessPool</span>
+    <span class="n">configuration</span><span class="o">.</span><span class="n">applicationNameForUserAgent</span> <span class="o">=</span> <span class="s">"TurbolinksDemo"</span>
+    <span class="k">return</span> <span class="n">configuration</span>
+<span class="p">}()</span>
+
+<span class="n">fileprivate</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">Session</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">session</span> <span class="o">=</span> <span class="kt">Session</span><span class="p">(</span><span class="nv">webViewConfiguration</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">webViewConfiguration</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
+    <span class="k">return</span> <span class="n">session</span>
+<span class="p">}()</span>
+</code></pre>
+<h4>实现 Delegate</h4>
+
+<p>iOS 里适合做前进后退这件事最合适的就是 UINavigationController 了，因此通常会在 navigationController 中新建 session 实例，并把自身作为这个 session 的 delegate。作为 session 的 delegate，必须实现两个方法。</p>
+
+<ol>
+<li><code>func session(_ session: Session, didProposeVisitToURL URL: URL, withAction action: Action)</code>, 网页上任何的访问新网页的事件，都会回调这个方法。</li>
+</ol>
+<pre class="highlight swift"><code>  <span class="kd">func</span> <span class="nf">session</span><span class="p">(</span><span class="n">_</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">Session</span><span class="p">,</span> <span class="n">didProposeVisitToURL</span> <span class="kt">URL</span><span class="p">:</span> <span class="kt">URL</span><span class="p">,</span> <span class="n">withAction</span> <span class="nv">action</span><span class="p">:</span> <span class="kt">Action</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">visitable</span> <span class="o">=</span> <span class="kt">JDXLVisitableViewController</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="kt">URL</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="o">.</span><span class="kt">Advance</span> <span class="p">{</span>
+      <span class="nf">pushViewController</span><span class="p">(</span><span class="n">visitable</span><span class="p">,</span> <span class="nv">animated</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="o">.</span><span class="kt">Replace</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="n">viewControllers</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">controllers</span> <span class="o">=</span> <span class="n">viewControllers</span>
+        <span class="n">controllers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">visitable</span>
+        <span class="nf">setViewControllers</span><span class="p">(</span><span class="n">controllers</span><span class="p">,</span> <span class="nv">animated</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nf">popViewController</span><span class="p">(</span><span class="nv">animated</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+        <span class="nf">pushViewController</span><span class="p">(</span><span class="n">visitable</span><span class="p">,</span> <span class="nv">animated</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// DO NOT FORGET TO CALL visit</span>
+    <span class="n">session</span><span class="o">.</span><span class="nf">visit</span><span class="p">(</span><span class="n">visitable</span><span class="p">)</span>
+  <span class="p">}</span>
+</code></pre>
+<p>代码很直观，每次访问一个新的URL时，都根据 action 值来判断是 push 进一个新的 viewcontroller, 还是替换当前的 viewcontroller。 替换也就是 pop 出当前的 controller，push 进新的。</p>
+
+<p>在处理完 viewcontroller 之间的关系之后，还要调用 session.visit(visitable)，通知背后的 WKWebView 访问新的地址。</p>
+
+<ol>
+<li><code>func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)</code>
+这是当请求失败时，处理回调的函数。 比如服务器端返回 401， 可以弹出登陆界面。 网络不好，或者404时，可以显示自定义的错误页面。</li>
+</ol>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">session</span><span class="p">(</span><span class="n">_</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">Session</span><span class="p">,</span> <span class="n">didFailRequestForVisitable</span> <span class="nv">visitable</span><span class="p">:</span> <span class="kt">Visitable</span><span class="p">,</span> <span class="n">withError</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">NSError</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">NSLog</span><span class="p">(</span><span class="s">"ERROR: %@"</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">visitableViewController</span> <span class="o">=</span> <span class="n">visitable</span> <span class="k">as?</span> <span class="kt">JDXLVisitableViewController</span><span class="p">,</span> <span class="k">let</span> <span class="nv">errorCode</span> <span class="o">=</span> <span class="kt">ErrorCode</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="n">error</span><span class="o">.</span><span class="n">code</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+
+    <span class="k">switch</span> <span class="n">errorCode</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nv">httpFailure</span><span class="p">:</span>
+      <span class="k">let</span> <span class="nv">statusCode</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">userInfo</span><span class="p">[</span><span class="s">"statusCode"</span><span class="p">]</span> <span class="k">as!</span> <span class="kt">Int</span>
+      <span class="k">switch</span> <span class="n">statusCode</span> <span class="p">{</span>
+      <span class="k">case</span> <span class="mi">400</span><span class="p">:</span>
+        <span class="o">....</span>
+        <span class="c1">//do something</span>
+      <span class="k">case</span> <span class="mi">401</span><span class="p">:</span>
+          <span class="nf">presentAuthenticationViewController</span><span class="p">(</span><span class="nv">visitable</span><span class="p">:</span> <span class="n">visitableViewController</span><span class="p">)</span>
+      <span class="k">case</span> <span class="mi">404</span><span class="p">:</span>
+          <span class="n">visitableViewController</span><span class="o">.</span><span class="nf">presentError</span><span class="p">(</span><span class="nv">error</span><span class="p">:</span> <span class="o">.</span><span class="kt">HTTPNotFoundError</span><span class="p">)</span>
+      <span class="k">default</span><span class="p">:</span>
+          <span class="n">visitableViewController</span><span class="o">.</span><span class="nf">presentError</span><span class="p">(</span><span class="nv">error</span><span class="p">:</span> <span class="kt">TurbolinkError</span><span class="p">(</span><span class="kt">HTTPStatusCode</span><span class="p">:</span> <span class="n">statusCode</span><span class="p">))</span>
+      <span class="p">}</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nv">networkFailure</span><span class="p">:</span>
+      <span class="n">visitableViewController</span><span class="o">.</span><span class="nf">presentError</span><span class="p">(</span><span class="nv">error</span><span class="p">:</span> <span class="o">.</span><span class="kt">NetworkError</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<h4>处理 Form 提交</h4>
+
+<p>Turbolinks 默认不接受标准的 HTML Form提交， <a href="https://github.com/turbolinks/turbolinks-ios#handling-form-submission">原因如下</a>:</p>
+
+<blockquote>
+<p>By default, Turbolinks for iOS prevents standard HTML form submissions. This is because a form submission often results in redirection to a different URL, which means the Visitable view controller’s URL would change in place.
+Instead, we recommend submitting forms with JavaScript using XMLHttpRequest, and using the response to tell Turbolinks where to navigate afterwards. See Redirecting After a Form Submission in the Turbolinks documentation for more details.</p>
+</blockquote>
+
+<p>官网的这句话就是我 pull request 的，^<em>^， 就不翻译了。 改用 Ajax 的方式提交 Form,  在返回的结果中， 调用 `Turbolinks.visit(some</em>url)` 来指向新的页面。</p>
+
+<h3>Turbolinks 和 Turbolinks-iOS 是如何通信的</h3>
+
+<p>Turbolinks-iOS 使用的 WKWebView 如何捕获网页上的页面访问事件，比如点击一个 a 标签 ? 通过 WKUserScript。</p>
+
+<p>当 webview 加载的页面 &#39;document ready&#39; 时， Turbolinks-iOS 通过 WKUserScript 加载一个定制的 JS 文件.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">bundle</span> <span class="o">=</span> <span class="kt">Bundle</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="nf">type</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="k">self</span><span class="p">))</span>
+<span class="k">let</span> <span class="nv">source</span> <span class="o">=</span> <span class="k">try!</span> <span class="kt">String</span><span class="p">(</span><span class="nv">contentsOf</span><span class="p">:</span> <span class="n">bundle</span><span class="o">.</span><span class="nf">url</span><span class="p">(</span><span class="nv">forResource</span><span class="p">:</span> <span class="s">"WebView"</span><span class="p">,</span> <span class="nv">withExtension</span><span class="p">:</span> <span class="s">"js"</span><span class="p">)</span><span class="o">!</span><span class="p">,</span> <span class="nv">encoding</span><span class="p">:</span> <span class="kt">String</span><span class="o">.</span><span class="kt">Encoding</span><span class="o">.</span><span class="n">utf8</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">userScript</span> <span class="o">=</span> <span class="kt">WKUserScript</span><span class="p">(</span><span class="nv">source</span><span class="p">:</span> <span class="n">source</span><span class="p">,</span> <span class="nv">injectionTime</span><span class="p">:</span> <span class="o">.</span><span class="n">atDocumentEnd</span><span class="p">,</span> <span class="nv">forMainFrameOnly</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+<span class="n">configuration</span><span class="o">.</span><span class="n">userContentController</span><span class="o">.</span><span class="nf">addUserScript</span><span class="p">(</span><span class="n">userScript</span><span class="p">)</span>
+<span class="n">configuration</span><span class="o">.</span><span class="n">userContentController</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"turbolinks"</span><span class="p">)</span>
+</code></pre>
+<p>这个JS文件做了什么？ 他把自己作为一个 adapter 绑定到 Turbolinks 上了。</p>
+<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">WebView</span><span class="p">(</span><span class="nx">controller</span><span class="p">,</span> <span class="nx">messageHandler</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">controller</span> <span class="o">=</span> <span class="nx">controller</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">messageHandler</span> <span class="o">=</span> <span class="nx">messageHandler</span>
+  <span class="nx">controller</span><span class="p">.</span><span class="nx">adapter</span> <span class="o">=</span> <span class="k">this</span>
+<span class="p">}</span>
+
+<span class="c1">//init</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">webView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebView</span><span class="p">(</span><span class="nx">Turbolinks</span><span class="p">.</span><span class="nx">controller</span><span class="p">,</span> <span class="nx">webkit</span><span class="p">.</span><span class="nx">messageHandlers</span><span class="p">.</span><span class="nx">turbolinks</span><span class="p">)</span>
+</code></pre>
+<p>因为网页是基于Turbolinks，因此网页上有任何&quot;风吹草动&quot;都会通过 controller，传到这个 adapter 上来。比如，访问一个新的地址是:</p>
+<pre class="highlight coffeescript"><code><span class="na">visit</span><span class="o">:</span> <span class="p">(</span><span class="nx">location</span><span class="p">,</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">-&gt;</span>
+  <span class="nx">location</span> <span class="o">=</span> <span class="nx">Turbolinks</span><span class="p">.</span><span class="na">Location</span><span class="p">.</span><span class="na">wrap</span><span class="p">(</span><span class="nx">location</span><span class="p">)</span>
+  <span class="k">if</span> <span class="vi">@</span><span class="na">applicationAllowsVisitingLocation</span><span class="p">(</span><span class="nx">location</span><span class="p">)</span>
+    <span class="k">if</span> <span class="vi">@</span><span class="na">locationIsVisitable</span><span class="p">(</span><span class="nx">location</span><span class="p">)</span>
+      <span class="nx">action</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="na">action</span> <span class="o">?</span> <span class="s">"advance"</span>
+      <span class="vi">@</span><span class="na">adapter</span><span class="p">.</span><span class="na">visitProposedToLocationWithAction</span><span class="p">(</span><span class="nx">location</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="nb">window</span><span class="p">.</span><span class="na">location</span> <span class="o">=</span> <span class="nx">location</span>
+</code></pre>
+<p>而 adapter 在通过 webkit.messageHandlers 把消息传递给 iOS，比如: <code>visitRequestStarted</code></p>
+<pre class="highlight javascript"><code><span class="nx">visitProposedToLocationWithAction</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">location</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">postMessage</span><span class="p">(</span><span class="s2">"visitProposed"</span><span class="p">,</span> <span class="p">{</span> <span class="na">location</span><span class="p">:</span> <span class="nx">location</span><span class="p">.</span><span class="nx">absoluteURL</span><span class="p">,</span> <span class="na">action</span><span class="p">:</span> <span class="nx">action</span> <span class="p">})</span>
+<span class="p">},</span>
+
+<span class="nx">postMessage</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">messageHandler</span><span class="p">.</span><span class="nx">postMessage</span><span class="p">({</span> <span class="na">name</span><span class="p">:</span> <span class="nx">name</span><span class="p">,</span> <span class="na">data</span><span class="p">:</span> <span class="nx">data</span> <span class="o">||</span> <span class="p">{}</span> <span class="p">})</span>
+<span class="p">},</span>
+</code></pre>
+<p>这个 messageHandler 就是 初始化传进来的 <code>webkit.messageHandlers.turbolinks</code></p>
+
+<p>iOS 原生代码，再通过 WKScriptMessageHandler 捕获这些事件后,通过 VisitDelegate 和 SessionDelegate，</p>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">userContentController</span><span class="p">(</span><span class="n">_</span> <span class="nv">userContentController</span><span class="p">:</span> <span class="kt">WKUserContentController</span><span class="p">,</span> <span class="n">didReceive</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">WKScriptMessage</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">message</span> <span class="o">=</span> <span class="kt">ScriptMessage</span><span class="o">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+    <span class="k">switch</span> <span class="n">message</span><span class="o">.</span><span class="n">name</span> <span class="p">{</span>
+    <span class="c1">//....some codes....</span>
+    <span class="k">case</span> <span class="o">.</span><span class="kt">VisitProposed</span><span class="p">:</span>
+        <span class="n">delegate</span><span class="p">?</span><span class="o">.</span><span class="nf">webView</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">didProposeVisitToLocation</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">location</span><span class="o">!</span><span class="p">,</span> <span class="nv">withAction</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">action</span><span class="o">!</span><span class="p">)</span>
+    <span class="c1">//....some other codes...</span>
+    <span class="k">case</span> <span class="o">.</span><span class="kt">ErrorRaised</span><span class="p">:</span>
+        <span class="k">let</span> <span class="nv">error</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">"error"</span><span class="p">]</span> <span class="k">as?</span> <span class="kt">String</span>
+        <span class="kt">NSLog</span><span class="p">(</span><span class="s">"JavaScript error: %@"</span><span class="p">,</span> <span class="n">error</span> <span class="p">??</span> <span class="s">"&lt;unknown error&gt;"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<p>session 就是这里的这个delegate，并且在这个delegate的实现方法中</p>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">webView</span><span class="p">(</span><span class="n">_</span> <span class="nv">webView</span><span class="p">:</span> <span class="kt">WebView</span><span class="p">,</span> <span class="n">didProposeVisitToLocation</span> <span class="nv">location</span><span class="p">:</span> <span class="kt">URL</span><span class="p">,</span> <span class="n">withAction</span> <span class="nv">action</span><span class="p">:</span> <span class="kt">Action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">delegate</span><span class="p">?</span><span class="o">.</span><span class="nf">session</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">didProposeVisitToURL</span><span class="p">:</span> <span class="n">location</span><span class="p">,</span> <span class="nv">withAction</span><span class="p">:</span> <span class="n">action</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<p>这就回到了最初实现的 SessionDelegate 了，就是我们的 UINavigationController</p>
+
+<h3>视频介绍</h3>
+
+<p>这是在2016年的 Rails Conference 上，Turbolinks 和 Turbolinks-iOS 主要贡献者 <a href="https://github.com/sstephenson">Sam Stephenson</a> 做的一个演讲，值得一看，<a href="https://www.youtube.com/watch?v=SWEts0rlezA">Youtube 地址</a>。</p>
+</div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><a class="logo" href="https://www.jiandanxinli.com"><img src="/images/logo_text.png" alt="简单心理" /></a><div class="links"><a href="/">Home</a><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">About</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>

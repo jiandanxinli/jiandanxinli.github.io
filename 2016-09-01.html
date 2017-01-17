@@ -119,8 +119,8 @@ riot --modular
 <pre class="highlight plaintext"><code>riot --ext tag.html modules/ dist/tags.js
 </code></pre>
 <p>如果你使用 <a href="https://github.com/srackham/tag-loader">Webpack tag loader</a>，需要<a href="http://webpack.github.io/docs/using-loaders.html#configuration">设置 loader</a>：</p>
-<pre class="highlight json"><code><span class="p">{</span><span class="w"> </span><span class="err">test:</span><span class="w"> </span><span class="err">/\.tag.html$/,</span><span class="w"> </span><span class="err">loader:</span><span class="w"> </span><span class="err">'tag'</span><span class="w"> </span><span class="p">}</span><span class="w">
-</span></code></pre>
+<pre class="highlight plaintext"><code>{ test: /\.tag.html$/, loader: 'tag' }
+</code></pre>
 <h4>在自定义标签里使用 <code>&lt;script&gt;</code> 标签</h4>
 
 <p>Riot.js 支持在<a href="http://riotjs.com/guide/#no-script-tag">自定义标签里不使用 <code>&lt;script&gt;</code> 标签</a>，但你需要把 Javascript 代码写在 <code>&lt;script&gt;</code> 标签里。这可以让代码更易于理解以及避免 IDE 识别混乱。</p>
@@ -598,10 +598,10 @@ This module uses the <span class="p">[</span><span class="nv">noUiSlider</span><
 | --- | --- | ---
 | <span class="sb">`min`</span> | Number | number where range starts (lower limit).
 | <span class="sb">`max`</span> | Number | Number where range ends (upper limit).
-| <span class="sb">`values`</span> | Number<span class="p">[</span><span class="nv">] *optional* | Array containing start and end value.  E.g. `values="[10, 20</span><span class="p">]</span>"<span class="sb">`. Defaults to `</span><span class="p">[</span><span class="nv">opts.min, opts.max</span><span class="p">]</span><span class="err">`</span>.
-| <span class="sb">`step`</span> | Number <span class="ge">*optional*</span> | Number to increment / decrement values by. Defaults to 1.
-| <span class="sb">`on-slide`</span> | Function <span class="ge">*optional*</span> | Function called with <span class="sb">`(values, HANDLE)`</span> while a user drags the start (<span class="sb">`HANDLE == 0`</span>) or end (<span class="sb">`HANDLE == 1`</span>) handle. E.g. <span class="sb">`on-slide={ updateInputs }`</span>, with <span class="sb">`tag.updateInputs = (values, HANDLE) =&gt; { const value = values[HANDLE]; }`</span>.
-| <span class="sb">`on-end`</span> | Function <span class="ge">*optional*</span> | Function called with <span class="sb">`(values, HANDLE)`</span> when user stops dragging a handle.
+| <span class="sb">`values`</span> | Number<span class="p">[</span><span class="nv">] *optional* | Array containing start and end value.  E.g. `values="[10, 20</span><span class="p">]</span>"<span class="sb">`. Defaults to `</span><span class="p">[</span><span class="nv">opts.min, opts.max</span><span class="p">]</span><span class="sb">`.
+| `</span>step<span class="sb">` | Number *optional* | Number to increment / decrement values by. Defaults to 1.
+| `</span>on-slide<span class="sb">` | Function *optional* | Function called with `</span>(values, HANDLE)<span class="sb">` while a user drags the start (`</span>HANDLE == 0<span class="sb">`) or end (`</span>HANDLE == 1<span class="sb">`) handle. E.g. `</span>on-slide={ updateInputs }<span class="sb">`, with `</span>tag.updateInputs = (values, HANDLE) =&gt; { const value = values<span class="p">[</span><span class="nv">HANDLE</span><span class="p">]</span>; }<span class="sb">`.
+| `</span>on-end<span class="sb">` | Function *optional* | Function called with `</span>(values, HANDLE)<span class="err">`</span> when user stops dragging a handle.
 
 For customising the slider appearance see the <span class="p">[</span><span class="nv">Styling section in the noUiSlider docs</span><span class="p">](</span><span class="sx">http://refreshless.com/nouislider/more/#section-styling</span><span class="p">)</span>.
 </code></pre>

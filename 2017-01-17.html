@@ -1,0 +1,139 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>Turbolinks 介绍及使用技巧 · Turbolinks Part 1 · 简单心理技术团队</title><meta content="Turbolinks makes navigating your web application faster." name="description" /><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>Turbolinks 介绍及使用技巧 · Turbolinks Part 1</h2><div class="meta"><span class="date">2017-01-17</span><span class="author">Ben</span></div><blockquote>Turbolinks makes navigating your web application faster.</blockquote><p>Turbolinks 是源自 Ruby on Rails 的 Web 加载优化方案。简单来说就是当用户点击链接时，并不真实的跳转网页，而是通过 ajax 读取目标页的内容，然后替换当前页。这种方式有以下优点：</p>
+
+<ul>
+<li>避免 Javascript 和 CSS 的重新加载</li>
+<li>减少网页的重新渲染的工作量</li>
+<li>对搜索引擎友好</li>
+<li>无须后端改动</li>
+<li>支持 App 端（有 Android 和 iOS SDK）</li>
+</ul>
+
+<p>以上是功能性的优点，除此之外，这种传统的“页面”形式的交互，也能让用户更易于理解（虽然现在更流行应用式的交互，但这对设计师的要求更高，设计的不好很容易让用户迷路）。</p>
+
+<h2>安装 Turbolinks</h2>
+
+<p>见 <a href="https://github.com/turbolinks/turbolinks">https://github.com/turbolinks/turbolinks</a> ，我这里就不重复文档的内容了。</p>
+
+<h2>基本技巧</h2>
+
+<h3>避免巨无霸型的 css 和 js 文件</h3>
+
+<p>因为 Turbolinks 的加载机制，导致使用者倾向于把所有的样式和脚本打包成一个巨无霸型的 css 和 js，这会严重影响首次加载。Turbolinks 是完全支持不同页面加载不同的 css 和 js。</p>
+
+<p>简单心理的项目中，采用了如下方式来自动判断和加载当前页面所需的样式和脚本：</p>
+<pre class="highlight slim"><code><span class="c">/ 加载样式文件，如 pages#home 的 css 文件，存放在 app/assets/stylesheets/www/pages/home.sass</span>
+<span class="p">-</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">exist?</span><span class="p">(</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">"app/assets/stylesheets/</span><span class="si">#{</span><span class="n">request</span><span class="p">.</span><span class="nf">subdomain</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:controller</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:action</span><span class="p">]</span><span class="si">}</span><span class="s2">.sass"</span><span class="p">))</span>
+  <span class="p">=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"</span><span class="si">#{</span><span class="n">request</span><span class="p">.</span><span class="nf">subdomain</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:controller</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:action</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+
+<span class="c">/ 加载脚本文件，如 pages#home 的 js 文件，存放在 app/assets/stylesheets/www/pages/home.coffee</span>
+<span class="p">-</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">exist?</span><span class="p">(</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">"app/assets/javascripts/</span><span class="si">#{</span><span class="n">request</span><span class="p">.</span><span class="nf">subdomain</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:controller</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:action</span><span class="p">]</span><span class="si">}</span><span class="s2">.coffee"</span><span class="p">))</span>
+  <span class="p">=</span> <span class="n">javascript_include_tag</span> <span class="s2">"</span><span class="si">#{</span><span class="n">request</span><span class="p">.</span><span class="nf">subdomain</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:controller</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:action</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+</code></pre>
+<h3>简化页面加载事件</h3>
+
+<p>因为 Turbolinks 的特殊加载机制，我们经常需要手动注册和注销事件。在简单心理，我们通过以下方式来简化这部分的代码：</p>
+<pre class="highlight coffeescript"><code>  <span class="nx">_page_loaded</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="nx">_page_unload</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="nx">_page_unload_once</span> <span class="o">=</span> <span class="p">[]</span>
+
+  <span class="c1"># 网页加载时执行</span>
+  <span class="nb">window</span><span class="p">.</span><span class="na">$loaded</span> <span class="o">=</span> <span class="p">(</span><span class="nx">func</span><span class="p">)</span><span class="o">-&gt;</span>
+    <span class="nx">_page_loaded</span><span class="p">.</span><span class="na">push</span><span class="p">(</span><span class="nx">func</span><span class="p">)</span>
+
+  <span class="c1"># 离开网页时执行</span>
+  <span class="nb">window</span><span class="p">.</span><span class="na">$unload</span> <span class="o">=</span> <span class="p">(</span><span class="nx">func</span><span class="p">)</span><span class="o">-&gt;</span>
+    <span class="nx">_page_unload</span><span class="p">.</span><span class="na">push</span><span class="p">(</span><span class="nx">func</span><span class="p">)</span>
+
+  <span class="c1"># 离开网页时执行，且执行一次</span>
+  <span class="nb">window</span><span class="p">.</span><span class="na">$unload_once</span> <span class="o">=</span> <span class="p">(</span><span class="nx">func</span><span class="p">)</span><span class="o">-&gt;</span>
+    <span class="nx">_page_unload_once</span><span class="p">.</span><span class="na">push</span><span class="p">(</span><span class="nx">func</span><span class="p">)</span>
+
+  <span class="c1"># 下面代码是以上接口的实现</span>
+
+  <span class="nb">window</span><span class="p">.</span><span class="na">addEventListener</span> <span class="s">'turbolinks:load'</span><span class="p">,</span> <span class="o">-&gt;</span>
+    <span class="nx">func</span><span class="p">()</span> <span class="k">for</span> <span class="nx">func</span> <span class="k">in</span> <span class="nx">_page_loaded</span>
+
+  <span class="nb">window</span><span class="p">.</span><span class="na">addEventListener</span> <span class="s">'turbolinks:before-visit'</span><span class="p">,</span> <span class="o">-&gt;</span>
+    <span class="nx">func</span><span class="p">()</span> <span class="k">for</span> <span class="nx">func</span> <span class="k">in</span> <span class="nx">_page_unload_once</span>
+    <span class="nx">_page_unload_once</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="nx">func</span><span class="p">()</span> <span class="k">for</span> <span class="nx">func</span> <span class="k">in</span> <span class="nx">_page_unload</span>
+
+  <span class="nb">window</span><span class="p">.</span><span class="na">addEventListener</span> <span class="s">'beforeunload'</span><span class="p">,</span> <span class="o">-&gt;</span>
+    <span class="nx">func</span><span class="p">()</span> <span class="k">for</span> <span class="nx">func</span> <span class="k">in</span> <span class="nx">_page_unload_once</span>
+    <span class="nx">_page_unload_once</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="nx">func</span><span class="p">()</span> <span class="k">for</span> <span class="nx">func</span> <span class="k">in</span> <span class="nx">_page_unload</span>
+
+    <span class="no">null</span>
+</code></pre>
+<h3>兼容 Vue.js 1.x</h3>
+
+<p>当一个页面的交互越来越复杂时，就需要用如 Vue.js 之类的框架，来简化交互的代码，但 Turbolinks 在缓存页面时，不会缓存 dom 里绑定的 events。当用户返回一个使用了 Vue 组件的页面时，这些组件的交互就都无法失效了。</p>
+
+<p>我们的解决思路是在页面离开时，缓存 Vue 组件的数据，并注销组件。当返回时，再重新渲染组件，并注入之前缓存的数据。</p>
+
+<p>另外要注意的是，Turbolinks 也会记住当前页面的滚动位置，记录在 <code>Turbolinks.controller.getCurrentRestorationData().scrollPosition</code> 中，因此如果你的组件是一个长长的列表，且是异步加载的话，需要在加载前，先手动缓存这个位置（因为页面返回后，Turbolinks 会自动刷新记录值），待列表数据加载和渲染完成后，再将页面滚动到缓存的位置。</p>
+
+<p>具体实现如下：（因为我们现在不再继续使用 Vue.js，因此只给出 1.x 版本的实现方案）</p>
+<pre class="highlight coffeescript"><code><span class="nx">vm_caches</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="nx">cache_data</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span><span class="o">-&gt;</span>
+  <span class="nx">cache</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">$</span><span class="p">.</span><span class="na">extend</span><span class="p">(</span><span class="nx">props</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">v</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">v</span><span class="p">[</span><span class="s">'raw'</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">'undefined'</span>
+      <span class="k">continue</span> <span class="k">if</span> <span class="nx">v</span><span class="p">.</span><span class="na">raw</span> <span class="o">&amp;&amp;</span> <span class="nx">v</span><span class="p">.</span><span class="na">raw</span><span class="p">.</span><span class="na">indexOf</span><span class="p">(</span><span class="s">'$data'</span><span class="p">)</span> <span class="o">is</span> <span class="mi">0</span>
+      <span class="k">try</span>
+        <span class="nx">cache</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="na">raw</span><span class="p">)</span>
+      <span class="k">catch</span> <span class="nx">error</span>
+        <span class="nx">cache</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">.</span><span class="na">raw</span>
+    <span class="k">else</span>
+      <span class="nx">cache</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
+  <span class="nx">cache</span>
+
+<span class="nx">cache_vm</span> <span class="o">=</span> <span class="p">(</span><span class="nx">parent</span><span class="p">,</span> <span class="nx">cache</span><span class="p">)</span><span class="o">-&gt;</span>
+  <span class="k">for</span> <span class="nx">child</span> <span class="k">in</span> <span class="nx">parent</span><span class="p">.</span><span class="na">$children</span>
+    <span class="k">continue</span> <span class="k">if</span> <span class="k">typeof</span> <span class="nx">child</span> <span class="o">is</span> <span class="s">'undefined'</span>
+    <span class="nx">cache</span><span class="p">[</span><span class="nx">child</span><span class="p">.</span><span class="na">constructor</span><span class="p">.</span><span class="na">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">cache_data</span><span class="p">(</span><span class="nx">child</span><span class="p">.</span><span class="na">_data</span><span class="p">,</span> <span class="nx">child</span><span class="p">.</span><span class="na">_props</span><span class="p">)</span>
+    <span class="nx">cache_vm</span> <span class="nx">child</span><span class="p">,</span> <span class="nx">cache</span>
+
+<span class="nx">$loaded</span> <span class="o">-&gt;</span>
+  <span class="nb">window</span><span class="p">.</span><span class="na">vm</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span>
+    <span class="na">el</span><span class="o">:</span> <span class="s">'body'</span>
+
+<span class="nb">window</span><span class="p">.</span><span class="na">addEventListener</span> <span class="s">'turbolinks:before-cache'</span><span class="p">,</span> <span class="o">-&gt;</span>
+  <span class="nx">list</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">while</span> <span class="nx">vm</span><span class="p">.</span><span class="na">$children</span><span class="p">.</span><span class="na">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="nx">child</span> <span class="o">=</span> <span class="nx">vm</span><span class="p">.</span><span class="na">$children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nx">id</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="na">id</span><span class="p">()</span> <span class="c1"># $.id 是一个生成唯一 ID 的函数，大家可以自行实现</span>
+    <span class="nx">vm_caches</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span>
+      <span class="na">data</span><span class="o">:</span> <span class="nx">cache_data</span><span class="p">(</span><span class="nx">child</span><span class="p">.</span><span class="na">_data</span><span class="p">,</span> <span class="nx">child</span><span class="p">.</span><span class="na">_props</span><span class="p">)</span>
+      <span class="na">children</span><span class="o">:</span> <span class="p">{}</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nx">child</span><span class="p">.</span><span class="na">$el</span><span class="p">).</span><span class="na">after</span><span class="p">(</span><span class="nx">child</span><span class="p">.</span><span class="na">$options</span><span class="p">.</span><span class="na">el</span><span class="p">.</span><span class="na">outerHTML</span><span class="p">.</span><span class="na">replace</span><span class="p">(</span><span class="s">'&gt;&lt;'</span><span class="p">,</span> <span class="s">" _cache_key=</span><span class="se">\"</span><span class="si">#{</span><span class="nx">id</span><span class="si">}</span><span class="se">\"</span><span class="s">&gt;&lt;"</span><span class="p">))</span>
+    <span class="nx">cache_vm</span> <span class="nx">child</span><span class="p">,</span> <span class="nx">vm_caches</span><span class="p">[</span><span class="nx">id</span><span class="p">].</span><span class="na">children</span>
+    <span class="nx">child</span><span class="p">.</span><span class="na">$destroy</span><span class="p">(</span><span class="no">true</span><span class="p">)</span>
+
+<span class="nx">Vue</span><span class="p">.</span><span class="na">define</span> <span class="o">=</span> <span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span><span class="o">-&gt;</span>
+  <span class="k">if</span> <span class="nx">options</span><span class="p">[</span><span class="s">'props'</span><span class="p">]</span>
+    <span class="nx">options</span><span class="p">.</span><span class="na">props</span><span class="p">.</span><span class="na">push</span> <span class="s">'_cache_key'</span>
+  <span class="k">else</span>
+    <span class="nx">options</span><span class="p">.</span><span class="na">props</span> <span class="o">=</span> <span class="p">[]</span>
+
+  <span class="k">if</span> <span class="nx">options</span><span class="p">[</span><span class="s">'ready'</span><span class="p">]</span>
+    <span class="nx">originalReady</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="na">ready</span>
+    <span class="nx">options</span><span class="p">.</span><span class="na">ready</span> <span class="o">=</span> <span class="o">-&gt;</span>
+      <span class="k">if</span> <span class="nx">vm_caches</span><span class="p">[</span><span class="vi">@</span><span class="na">$parent</span><span class="p">.</span><span class="na">_cache_key</span><span class="p">]</span>
+        <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">vm_caches</span><span class="p">[</span><span class="vi">@</span><span class="na">$parent</span><span class="p">.</span><span class="na">_cache_key</span><span class="p">].</span><span class="na">children</span><span class="p">[</span><span class="vi">@</span><span class="na">constructor</span><span class="p">.</span><span class="na">name</span><span class="p">]</span>
+          <span class="nx">Vue</span><span class="p">.</span><span class="na">set</span> <span class="k">this</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span>
+      <span class="k">if</span> <span class="nx">vm_caches</span><span class="p">[</span><span class="vi">@</span><span class="na">_cache_key</span><span class="p">]</span>
+        <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">vm_caches</span><span class="p">[</span><span class="vi">@</span><span class="na">_cache_key</span><span class="p">].</span><span class="na">data</span>
+          <span class="nx">Vue</span><span class="p">.</span><span class="na">set</span> <span class="k">this</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span>
+      <span class="nx">originalReady</span><span class="p">.</span><span class="na">call</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+  <span class="k">else</span>
+    <span class="nx">options</span><span class="p">.</span><span class="na">ready</span> <span class="o">=</span> <span class="o">-&gt;</span>
+      <span class="k">if</span> <span class="vi">@</span><span class="na">_cache_key</span>
+        <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">vm_caches</span><span class="p">[</span><span class="vi">@</span><span class="na">_cache_key</span><span class="p">]</span>
+          <span class="nx">Vue</span><span class="p">.</span><span class="na">set</span> <span class="k">this</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span>
+
+  <span class="nx">Vue</span><span class="p">.</span><span class="na">component</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">options</span>
+</code></pre>
+<p>如果你有更多技巧，欢迎交流分享。</p>
+</div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><a class="logo" href="https://www.jiandanxinli.com"><img src="/images/logo_text.png" alt="简单心理" /></a><div class="links"><a href="http://gold.xitu.io/user/57c7a5fba633bd006cfc360b">掘金</a><a href="https://toutiao.io/subjects/17642">开发者头条</a></div><div class="links"><a href="/">Home</a><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">About</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>

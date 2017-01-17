@@ -21,7 +21,7 @@
 <h4>创建Session</h4>
 
 <p>使用 turbolinks-iOS，最重要的一个概念就是 session， session 控制着网页的前进和返回，也是网页和原生代码之间交互的通道。创建 session, 设置 delegate， 同时设置好 processPool。 如果你有多个 session, 并且想要在多个 session 之间共享 cookies，那就需要创建一个共享的 pool，比如通过 singleton 的方式。</p>
-<pre class="highlight swift"><code><span class="n">fileprivate</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">webViewConfiguration</span><span class="p">:</span> <span class="kt">WKWebViewConfiguration</span> <span class="o">=</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="kd">fileprivate</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">webViewConfiguration</span><span class="p">:</span> <span class="kt">WKWebViewConfiguration</span> <span class="o">=</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">configuration</span> <span class="o">=</span> <span class="kt">WKWebViewConfiguration</span><span class="p">()</span>
     <span class="n">configuration</span><span class="o">.</span><span class="n">userContentController</span><span class="o">.</span><span class="nf">add</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"turbolinksDemo"</span><span class="p">)</span>
     <span class="n">configuration</span><span class="o">.</span><span class="n">processPool</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">webViewProcessPool</span>
@@ -29,7 +29,7 @@
     <span class="k">return</span> <span class="n">configuration</span>
 <span class="p">}()</span>
 
-<span class="n">fileprivate</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">Session</span> <span class="o">=</span> <span class="p">{</span>
+<span class="kd">fileprivate</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">Session</span> <span class="o">=</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">session</span> <span class="o">=</span> <span class="kt">Session</span><span class="p">(</span><span class="nv">webViewConfiguration</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">webViewConfiguration</span><span class="p">)</span>
     <span class="n">session</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
     <span class="k">return</span> <span class="n">session</span>
@@ -103,7 +103,7 @@
 Instead, we recommend submitting forms with JavaScript using XMLHttpRequest, and using the response to tell Turbolinks where to navigate afterwards. See Redirecting After a Form Submission in the Turbolinks documentation for more details.</p>
 </blockquote>
 
-<p>官网的这句话就是我 pull request 的，^<em>^， 就不翻译了。 改用 Ajax 的方式提交 Form,  在返回的结果中， 调用 `Turbolinks.visit(some</em>url)` 来指向新的页面。</p>
+<p>官网的这句话就是我 pull request 的，^_^， 就不翻译了。 改用 Ajax 的方式提交 Form,  在返回的结果中， 调用 <code>Turbolinks.visit(some_url)</code> 来指向新的页面。</p>
 
 <h3>Turbolinks 和 Turbolinks-iOS 是如何通信的</h3>
 

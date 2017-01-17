@@ -1,4 +1,5 @@
 require 'slim'
+Tilt::SYMBOL_ARRAY_SORTABLE = false
 ###
 # Page options, layouts, aliases and proxies
 ###

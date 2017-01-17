@@ -1,0 +1,153 @@
+---
+title: Turbolinks 介绍及使用技巧 · Turbolinks Part 1
+date: 2017-01-17
+tags: Web
+author: Ben
+summary: Turbolinks makes navigating your web application faster.
+---
+
+Turbolinks 是源自 Ruby on Rails 的 Web 加载优化方案。简单来说就是当用户点击链接时，并不真实的跳转网页，而是通过 ajax 读取目标页的内容，然后替换当前页。这种方式有以下优点：
+
+* 避免 Javascript 和 CSS 的重新加载
+* 减少网页的重新渲染的工作量
+* 对搜索引擎友好
+* 无须后端改动
+* 支持 App 端（有 Android 和 iOS SDK）
+
+以上是功能性的优点，除此之外，这种传统的“页面”形式的交互，也能让用户更易于理解（虽然现在更流行应用式的交互，但这对设计师的要求更高，设计的不好很容易让用户迷路）。
+
+## 安装 Turbolinks
+
+见 https://github.com/turbolinks/turbolinks ，我这里就不重复文档的内容了。
+
+## 基本技巧
+
+### 避免巨无霸型的 css 和 js 文件
+
+因为 Turbolinks 的加载机制，导致使用者倾向于把所有的样式和脚本打包成一个巨无霸型的 css 和 js，这会严重影响首次加载。Turbolinks 是完全支持不同页面加载不同的 css 和 js。
+
+简单心理的项目中，采用了如下方式来自动判断和加载当前页面所需的样式和脚本：
+
+```slim
+/ 加载样式文件，如 pages#home 的 css 文件，存放在 app/assets/stylesheets/www/pages/home.sass
+- if File.exist?(Rails.root.join("app/assets/stylesheets/#{request.subdomain.split('.')[0]}/#{params[:controller]}/#{params[:action]}.sass"))
+  = stylesheet_link_tag "#{request.subdomain.split('.')[0]}/#{params[:controller]}/#{params[:action]}"
+
+/ 加载脚本文件，如 pages#home 的 js 文件，存放在 app/assets/stylesheets/www/pages/home.coffee
+- if File.exist?(Rails.root.join("app/assets/javascripts/#{request.subdomain.split('.')[0]}/#{params[:controller]}/#{params[:action]}.coffee"))
+  = javascript_include_tag "#{request.subdomain.split('.')[0]}/#{params[:controller]}/#{params[:action]}"
+```
+
+### 简化页面加载事件
+
+因为 Turbolinks 的特殊加载机制，我们经常需要手动注册和注销事件。在简单心理，我们通过以下方式来简化这部分的代码：
+
+```coffeescript
+  _page_loaded = []
+  _page_unload = []
+  _page_unload_once = []
+
+  # 网页加载时执行
+  window.$loaded = (func)->
+    _page_loaded.push(func)
+
+  # 离开网页时执行
+  window.$unload = (func)->
+    _page_unload.push(func)
+
+  # 离开网页时执行，且执行一次
+  window.$unload_once = (func)->
+    _page_unload_once.push(func)
+
+  # 下面代码是以上接口的实现
+
+  window.addEventListener 'turbolinks:load', ->
+    func() for func in _page_loaded
+
+  window.addEventListener 'turbolinks:before-visit', ->
+    func() for func in _page_unload_once
+    _page_unload_once = []
+    func() for func in _page_unload
+
+  window.addEventListener 'beforeunload', ->
+    func() for func in _page_unload_once
+    _page_unload_once = []
+    func() for func in _page_unload
+
+    null
+  ```
+
+### 兼容 Vue.js 1.x
+
+当一个页面的交互越来越复杂时，就需要用如 Vue.js 之类的框架，来简化交互的代码，但 Turbolinks 在缓存页面时，不会缓存 dom 里绑定的 events。当用户返回一个使用了 Vue 组件的页面时，这些组件的交互就都无法失效了。
+
+我们的解决思路是在页面离开时，缓存 Vue 组件的数据，并注销组件。当返回时，再重新渲染组件，并注入之前缓存的数据。
+
+另外要注意的是，Turbolinks 也会记住当前页面的滚动位置，记录在 `Turbolinks.controller.getCurrentRestorationData().scrollPosition` 中，因此如果你的组件是一个长长的列表，且是异步加载的话，需要在加载前，先手动缓存这个位置（因为页面返回后，Turbolinks 会自动刷新记录值），待列表数据加载和渲染完成后，再将页面滚动到缓存的位置。
+
+具体实现如下：（因为我们现在不再继续使用 Vue.js，因此只给出 1.x 版本的实现方案）
+
+```coffeescript
+vm_caches = {}
+
+cache_data = (props, data)->
+  cache = {}
+  for k, v of $.extend(props, data)
+    if v && typeof v['raw'] isnt 'undefined'
+      continue if v.raw && v.raw.indexOf('$data') is 0
+      try
+        cache[k] = eval(v.raw)
+      catch error
+        cache[k] = v.raw
+    else
+      cache[k] = v
+  cache
+
+cache_vm = (parent, cache)->
+  for child in parent.$children
+    continue if typeof child is 'undefined'
+    cache[child.constructor.name] = cache_data(child._data, child._props)
+    cache_vm child, cache
+
+$loaded ->
+  window.vm = new Vue
+    el: 'body'
+
+window.addEventListener 'turbolinks:before-cache', ->
+  list = []
+  while vm.$children.length > 0
+    child = vm.$children[0]
+    id = $.id() # $.id 是一个生成唯一 ID 的函数，大家可以自行实现
+    vm_caches[id] =
+      data: cache_data(child._data, child._props)
+      children: {}
+    $(child.$el).after(child.$options.el.outerHTML.replace('><', " _cache_key=\"#{id}\"><"))
+    cache_vm child, vm_caches[id].children
+    child.$destroy(true)
+
+Vue.define = (id, options)->
+  if options['props']
+    options.props.push '_cache_key'
+  else
+    options.props = []
+
+  if options['ready']
+    originalReady = options.ready
+    options.ready = ->
+      if vm_caches[@$parent._cache_key]
+        for k, v of vm_caches[@$parent._cache_key].children[@constructor.name]
+          Vue.set this, k, v
+      if vm_caches[@_cache_key]
+        for k, v of vm_caches[@_cache_key].data
+          Vue.set this, k, v
+      originalReady.call(this)
+  else
+    options.ready = ->
+      if @_cache_key
+        for k, v of vm_caches[@_cache_key]
+          Vue.set this, k, v
+
+  Vue.component id, options
+```
+
+如果你有更多技巧，欢迎交流分享。

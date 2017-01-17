@@ -33,7 +33,7 @@ Turbolinks 是源自 Ruby on Rails 的 Web 加载优化方案。简单来说就�
 - if File.exist?(Rails.root.join("app/assets/stylesheets/#{request.subdomain.split('.')[0]}/#{params[:controller]}/#{params[:action]}.sass"))
   = stylesheet_link_tag "#{request.subdomain.split('.')[0]}/#{params[:controller]}/#{params[:action]}"
 
-/ 加载脚本文件，如 pages#home 的 js 文件，存放在 app/assets/stylesheets/www/pages/home.coffee
+/ 加载脚本文件，如 pages#home 的 js 文件，存放在 app/assets/javascripts/www/pages/home.coffee
 - if File.exist?(Rails.root.join("app/assets/javascripts/#{request.subdomain.split('.')[0]}/#{params[:controller]}/#{params[:action]}.coffee"))
   = javascript_include_tag "#{request.subdomain.split('.')[0]}/#{params[:controller]}/#{params[:action]}"
 ```

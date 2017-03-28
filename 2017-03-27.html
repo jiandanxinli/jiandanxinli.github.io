@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1" name="viewport" /><title>使用 Subscriber 来管理 Model Callbacks · 简单心理技术团队</title><meta content="为了避免造成 Model 文件过长，把 callbacks 移到 Subscriber 中。" name="description" /><link href="/stylesheets/app.css" rel="stylesheet" /><link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><link href="/images/favicon.ico" rel="icon" /></head><body><div class="animated fadeInDown"><div class="header container"><a class="logo" href="/"><img src="/images/logo.png" alt="Logo" /></a><h1><a href="/">简单心理 · 技术团队</a></h1><a class="github" href="https://github.com/jiandanxinli">github.com/jiandanxinli</a></div></div><div class="animated_container"><div class="content container animated fadeIn delay"><h2>使用 Subscriber 来管理 Model Callbacks</h2><div class="meta"><span class="date">2017-03-27</span><span class="author">Ben</span></div><blockquote>为了避免造成 Model 文件过长，把 callbacks 移到 Subscriber 中。</blockquote><h2>场景及问题</h2>
+
+<ul>
+<li>随着业务的复杂化，Model 间互相调用的情况越来越多</li>
+<li>但大部分情况下如果封装 service 层又过于复杂</li>
+<li>于是 callback 里堆积了大量操作，导致 model 文件越来越长</li>
+</ul>
+
+<h2>解决方法</h2>
+
+<ul>
+<li>用观察者模式，监听 model callback 触发</li>
+<li>用约定来清晰划分代码位置</li>
+</ul>
+
+<h2>简单栗子</h2>
+
+<p>当更新商品价格时，需要更新相关订单的价格。</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:orders</span>
+
+  <span class="n">after_update</span> <span class="k">do</span>
+    <span class="k">if</span> <span class="n">price_changed?</span>
+      <span class="n">orders</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">order</span><span class="o">|</span>
+        <span class="n">order</span><span class="p">.</span><span class="nf">update!</span> <span class="ss">price: </span><span class="n">price</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<h2>使用 Subscriber 后</h2>
+<pre class="highlight ruby"><code><span class="c1"># ./app/subscribers/order_subscriber.rb</span>
+<span class="n">subscribe_model</span> <span class="ss">:product</span><span class="p">,</span> <span class="ss">:after_update</span> <span class="k">do</span>
+  <span class="k">if</span> <span class="n">price_changed?</span>
+    <span class="n">orders</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">order</span><span class="o">|</span>
+      <span class="n">order</span><span class="p">.</span><span class="nf">update!</span> <span class="ss">price: </span><span class="n">price</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<h2>使用约定</h2>
+
+<ul>
+<li>只有与别的 model 交互的业务，才能写到 subscriber 中</li>
+<li>subscriber 中不能修改触发 model</li>
+<li>业务代码放置在消费该触发的 subscriber 里</li>
+<li>如果单个 subscriber 太长，也可以按业务切分成多个 subscriber，如 order_product_subscriber.rb</li>
+</ul>
+
+<h2>好处</h2>
+
+<ul>
+<li>model 文件中不再包含大量 callback</li>
+<li>每个 model 需要消费哪些其它 model 一目了然</li>
+<li>after_save 类的 callback，依然是被包裹在一个 transaction 中</li>
+<li>支持二级 model 的回调（会先触发二级 model 的 callbacks，再触发 base_class 的 callbacks）</li>
+<li>可以单独写测试（基于 ActiveSupport::Notifications）</li>
+</ul>
+
+<h2>核心代码</h2>
+<pre class="highlight ruby"><code><span class="c1"># ./config/initializers/subscribe_model.rb</span>
+<span class="k">def</span> <span class="nf">subscribe_model</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">event_name</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+  <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Notifications</span><span class="p">.</span><span class="nf">subscribe</span><span class="p">(</span><span class="s2">"active_record.</span><span class="si">#{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.</span><span class="si">#{</span><span class="n">event_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">_name</span><span class="p">,</span> <span class="n">_started</span><span class="p">,</span> <span class="n">_finished</span><span class="p">,</span> <span class="n">_unique_id</span><span class="p">,</span> <span class="n">data</span><span class="o">|</span>
+    <span class="n">data</span><span class="p">[</span><span class="ss">:model</span><span class="p">].</span><span class="nf">instance_eval</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">class_attribute</span> <span class="ss">:skip_model_subscribers</span>
+  <span class="nb">self</span><span class="p">.</span><span class="nf">skip_model_subscribers</span> <span class="o">=</span> <span class="kp">false</span>
+<span class="k">end</span>
+
+<span class="sx">%i(after_create after_update after_destroy after_save after_commit after_create_commit after_update_commit)</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
+  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">public_send</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span> <span class="k">do</span>
+    <span class="k">unless</span> <span class="n">skip_model_subscribers</span>
+      <span class="n">readonly!</span> <span class="k">unless</span> <span class="n">readonly?</span>
+      <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Notifications</span><span class="p">.</span><span class="nf">instrument</span> <span class="s2">"active_record.</span><span class="si">#{</span><span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">model_name</span><span class="p">.</span><span class="nf">singular</span><span class="si">}</span><span class="s2">.</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="ss">model: </span><span class="nb">self</span>
+      <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Notifications</span><span class="p">.</span><span class="nf">instrument</span> <span class="s2">"active_record.</span><span class="si">#{</span><span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">base_class</span><span class="p">.</span><span class="nf">model_name</span><span class="p">.</span><span class="nf">singular</span><span class="si">}</span><span class="s2">.</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="ss">model: </span><span class="nb">self</span> <span class="k">if</span> <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">base_class</span> <span class="o">!=</span> <span class="nb">self</span><span class="p">.</span><span class="nf">class</span>
+      <span class="n">public_send</span><span class="p">(</span><span class="ss">:instance_variable_set</span><span class="p">,</span> <span class="ss">:@readonly</span><span class="p">,</span> <span class="kp">false</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">after_initialize</span> <span class="k">do</span>
+  <span class="no">Dir</span><span class="p">[</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s1">'app/subscribers/*.rb'</span><span class="p">)].</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="nb">require</span> <span class="n">f</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre>
+<h2>FAQ</h2>
+
+<p>Q: 为什么不用 concern？</p>
+
+<p>A: 团队内部约定，只有两个及以上的 model 有共用代码，才能移到 concern。</p>
+
+<p>Q: 为什么不创建 service 层？</p>
+
+<p>A: service 层不够直观，而且对于小型团队来说，维护成本高于 subscriber。</p>
+</div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><a class="logo" href="https://www.jiandanxinli.com"><img src="/images/logo_text.png" alt="简单心理" /></a><div class="links"><a href="http://gold.xitu.io/user/57c7a5fba633bd006cfc360b">掘金</a><a href="https://toutiao.io/subjects/17642">开发者头条</a></div><div class="links"><a href="/">Home</a><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">About</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>

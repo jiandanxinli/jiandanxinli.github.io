@@ -1,0 +1,105 @@
+---
+title: 使用 Subscriber 来管理 Model Callbacks
+date: 2017-03-27
+tags: Ruby
+author: Ben
+summary: 为了避免造成 Model 文件过长，把 callbacks 移到 Subscriber 中。
+---
+
+## 场景及问题
+
+* 随着业务的复杂化，Model 间互相调用的情况越来越多
+* 但大部分情况下如果封装 service 层又过于复杂
+* 于是 callback 里堆积了大量操作，导致 model 文件越来越长
+
+## 解决方法
+
+* 用观察者模式，监听 model callback 触发
+* 用约定来清晰划分代码位置
+
+## 简单栗子
+
+当更新商品价格时，需要更新相关订单的价格。
+
+```ruby
+class Product < ApplicationRecord
+  has_many :orders
+
+  after_update do
+    if price_changed?
+      orders.each do |order|
+        order.update! price: price
+      end
+    end
+  end
+end
+```
+
+## 使用 Subscriber 后
+
+```ruby
+# ./app/subscribers/order_subscriber.rb
+subscribe_model :product, :after_update do
+  if price_changed?
+    orders.each do |order|
+      order.update! price: price
+    end
+  end
+end
+```
+
+## 使用约定
+
+* 只有与别的 model 交互的业务，才能写到 subscriber 中
+* subscriber 中不能修改触发 model
+* 业务代码放置在消费该触发的 subscriber 里
+* 如果单个 subscriber 太长，也可以按业务切分成多个 subscriber，如 order_product_subscriber.rb
+
+## 好处
+
+* model 文件中不再包含大量 callback
+* 每个 model 需要消费哪些其它 model 一目了然
+* after_save 类的 callback，依然是被包裹在一个 transaction 中
+* 支持二级 model 的回调（会先触发二级 model 的 callbacks，再触发 base_class 的 callbacks）
+* 可以单独写测试（基于 ActiveSupport::Notifications）
+
+## 核心代码
+
+```ruby
+# ./config/initializers/subscribe_model.rb
+def subscribe_model(model_name, event_name, &block)
+  ActiveSupport::Notifications.subscribe("active_record.#{model_name}.#{event_name}") do |_name, _started, _finished, _unique_id, data|
+    data[:model].instance_eval(&block)
+  end
+end
+
+class ActiveRecord::Base
+  class_attribute :skip_model_subscribers
+  self.skip_model_subscribers = false
+end
+
+%i(after_create after_update after_destroy after_save after_commit after_create_commit after_update_commit).each do |name|
+  ActiveRecord::Base.public_send(name) do
+    unless skip_model_subscribers
+      readonly! unless readonly?
+      ActiveSupport::Notifications.instrument "active_record.#{self.class.model_name.singular}.#{name}", model: self
+      ActiveSupport::Notifications.instrument "active_record.#{self.class.base_class.model_name.singular}.#{name}", model: self if self.class.base_class != self.class
+      public_send(:instance_variable_set, :@readonly, false)
+    end
+  end
+end
+
+Rails.application.config.after_initialize do
+  Dir[Rails.root.join('app/subscribers/*.rb')].each { |f| require f }
+end
+```
+
+## FAQ
+
+Q: 为什么不用 concern？
+
+A: 团队内部约定，只有两个及以上的 model 有共用代码，才能移到 concern。
+
+Q: 为什么不创建 service 层？
+
+A: service 层不够直观，而且对于小型团队来说，维护成本高于 subscriber。

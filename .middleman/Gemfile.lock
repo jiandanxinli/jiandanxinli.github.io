@@ -1,5 +1,5 @@
 GEM
-  remote: https://gems.ruby-china.org/
+  remote: https://gems.ruby-china.com/
   specs:
     activesupport (5.0.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
@@ -133,4 +133,4 @@ DEPENDENCIES
   slim
 
 BUNDLED WITH
-   1.13.7
+   1.16.1

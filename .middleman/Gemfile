@@ -1,6 +1,6 @@
 # If you do not have OpenSSL installed, change
 # the following line to use 'http://'
-source 'https://gems.ruby-china.org'
+source 'https://gems.ruby-china.com'
 
 # Middleman Gems
 gem 'middleman'

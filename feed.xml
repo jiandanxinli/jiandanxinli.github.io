@@ -5,16 +5,106 @@
   <id>https://jiandanxinli.github.io/</id>
   <link href="https://jiandanxinli.github.io/"/>
   <link href="https://jiandanxinli.github.io/feed.xml" rel="self"/>
-  <updated>2017-03-27T08:00:00+08:00</updated>
+  <updated>2018-09-15T08:00:00+08:00</updated>
   <author>
     <name>北京竹间科技有限公司</name>
   </author>
+  <entry>
+    <title>简单心理 Serverless 初步实践指南</title>
+    <link rel="alternate" href="https://jiandanxinli.github.io/2018-09-15.html"/>
+    <id>https://jiandanxinli.github.io/2018-09-15.html</id>
+    <published>2018-09-15T08:00:00+08:00</published>
+    <updated>2018-09-15T17:58:50+08:00</updated>
+    <author>
+      <name>Ben</name>
+    </author>
+    <content type="html">&lt;h2&gt;缘由&lt;/h2&gt;
+
+&lt;p&gt;简单心理的主系统基于 Ruby on Rails 已运行了 4 年多，随着业务发展，单体应用的局限性越来越明显，即使通过容器化大幅提升了其负载能力，简化了部署过程，但对于开发人员来说，随着时间的推移，系统内的耦合不可避免的越来越严重，开发体验越来越差。&lt;/p&gt;
+
+&lt;p&gt;在这个背景下，我们先尝试了微服务架构，微服务的高内聚特性，虽然可以较好的解决当前业务复杂度下系统耦合严重的问题，但若随着时间推移，部分复杂的微服务依然可能会发展成一个内部耦合严重的单体应用。&lt;/p&gt;
+
+&lt;p&gt;于是我们又把目光继续往前，开始尝试 Serverless。&lt;/p&gt;
+
+&lt;p&gt;Serverless 简单来说是一个事件驱动的全托管计算服务，你只需写好业务代码，剩下的事情托管给服务商即可。&lt;/p&gt;
+
+&lt;p&gt;听上去很简单，实际上手操作也的确非常容易。但问题就在于它过于简单，以至于对于复杂的业务需求，没有任何范式可参考。&lt;/p&gt;
+
+&lt;p&gt;单体应用有很多成熟的框架可以使用，并且这些框架大部分在微服务中也可以使用。但到了 Serverless，会突然陷入无框架可用的境地。虽然你可以把一个 MVC 框架上传上去当成一个可以处理多种请求的“超级函数”，但这会导致开发和维护的困难。&lt;/p&gt;
+
+&lt;p&gt;Serverless 提倡一个函数只解决一个问题，使得开发人员可以专注于具体的业务流程及环节，不必为了某个小的业务迭代而花费大量时间熟悉整个系统和整个业务。但随着函数数量的增多，如果没有一定的约束，开发人员肯定会放飞自我，造成大量碎片化的问题。我们的解决办法就是建立一套人为的约束机制，让所有函数都可以被方便的理解和开发维护。&lt;/p&gt;
+
+&lt;p&gt;这套机制主要目标是让开发人员可以快速理解和迭代业务环节，并可以方便的拓展新业务。（因为简单心理的日常任务主要是优化各项业务环节，以及尝试新业务）。&lt;/p&gt;
+
+&lt;h2&gt;实践指南&lt;/h2&gt;
+
+&lt;p&gt;本实践指南仅仅是简单心理内部尝试的实践方式，仅供参考，欢迎讨论完善。&lt;/p&gt;
+
+&lt;p&gt;首先，本实践指南基于腾讯云构建，不一定适合其它服务商，我们主要使用以下服务：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://cloud.tencent.com/product/scf"&gt;无服务器云函数 SCF&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://cloud.tencent.com/product/apigateway"&gt;API 网关&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;为了解决函数碎片化问题，实践的核心思想是：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;将函数抽象为基于事件触发的业务环节。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;同时，基于领域驱动的设计，我们把业务环节抽象为&lt;code&gt;指令&lt;/code&gt;，而所有函数被区分为&lt;code&gt;指令处理函数&lt;/code&gt;和&lt;code&gt;事件响应函数&lt;/code&gt;两类。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;指令&lt;/code&gt;被处理的流程如下：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;事件响应函数&lt;/code&gt;将事件转化为具体指令，存入相应的指令队列；&lt;/li&gt;
+&lt;li&gt;调度函数（本质是&lt;code&gt;定时指令响应函数&lt;/code&gt;）根据设定的规则，将指令从队列中取出；&lt;/li&gt;
+&lt;li&gt;取出的指令被异步分发到对应的&lt;code&gt;指令处理函数&lt;/code&gt;；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;指令处理函数&lt;/code&gt;完成指令。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;最终，我们对函数的命名做如下规定：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;命名格式：&lt;code&gt;&amp;lt;类型名&amp;gt;--&amp;lt;业务领域名&amp;gt;--&amp;lt;资源名&amp;gt;--&amp;lt;指令名&amp;gt;&lt;/code&gt;，总共分四级；&lt;/li&gt;
+&lt;li&gt;类型名全部大写，其余全部小写；&lt;/li&gt;
+&lt;li&gt;生产环境有以下类型：
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;PE&lt;/strong&gt; 指令处理函数&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PC&lt;/strong&gt; 定时指令 响应函数&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PI&lt;/strong&gt; 内网网关指令 响应函数&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PO&lt;/strong&gt; 外网网关指令 响应函数&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PW&lt;/strong&gt; 前台网关指令 响应函数&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PD&lt;/strong&gt; 后台网关指令 响应函数&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;测试环境下，类型的第一个字母为&lt;code&gt;T&lt;/code&gt;，如&lt;code&gt;TE&lt;/code&gt;、&lt;code&gt;TC&lt;/code&gt;等；&lt;/li&gt;
+&lt;li&gt;开发环境下，类型的第一个字母为&lt;code&gt;D&lt;/code&gt;，如&lt;code&gt;DE&lt;/code&gt;、&lt;code&gt;DC&lt;/code&gt;等；&lt;/li&gt;
+&lt;li&gt;若名字由多个单词组成，互相之间用&lt;code&gt;-&lt;/code&gt;连接，如&lt;code&gt;PE--user--user-account--create&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;于是，实际开发人员的工作流程如下：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;如需跟客户端配合，则先新建或修改开发环境下的API网关的模拟数据&lt;/li&gt;
+&lt;li&gt;创建或修改测试环境的函数，并完成测试验收&lt;/li&gt;
+&lt;li&gt;将测试环境的代码同步到生产环境，并完成生产环境的验收&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这种开发模式下，一个函数同一时间段里最多只允许一个开发人员修改。开发人员可以根据需求的复杂情况决定改动一个还是多个函数。&lt;/p&gt;
+
+&lt;h2&gt;加入讨论&lt;/h2&gt;
+
+&lt;p&gt;此文仅抛砖引玉，欢迎对 Serverless 实践感兴趣的朋友加入微信群交流讨论：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://user-images.githubusercontent.com/215433/45583884-73457000-b8fc-11e8-88b4-8e1c44709b0d.jpg" alt="91536996447_ pic" /&gt;&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>使用 Subscriber 来管理 Model Callbacks</title>
     <link rel="alternate" href="https://jiandanxinli.github.io/2017-03-27.html"/>
     <id>https://jiandanxinli.github.io/2017-03-27.html</id>
     <published>2017-03-27T08:00:00+08:00</published>
-    <updated>2017-03-28T10:27:43+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>Ben</name>
     </author>
@@ -121,7 +211,7 @@
     <link rel="alternate" href="https://jiandanxinli.github.io/2017-01-17.html"/>
     <id>https://jiandanxinli.github.io/2017-01-17.html</id>
     <published>2017-01-17T08:00:00+08:00</published>
-    <updated>2017-01-17T16:35:19+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>Ben</name>
     </author>
@@ -270,7 +360,7 @@
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-11-16.html"/>
     <id>https://jiandanxinli.github.io/2016-11-16.html</id>
     <published>2016-11-16T08:00:00+08:00</published>
-    <updated>2016-11-16T10:23:41+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>fengd</name>
     </author>
@@ -454,7 +544,7 @@ Instead, we recommend submitting forms with JavaScript using XMLHttpRequest, and
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-11-14.html"/>
     <id>https://jiandanxinli.github.io/2016-11-14.html</id>
     <published>2016-11-14T08:00:00+08:00</published>
-    <updated>2016-11-14T11:43:16+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>BugDev</name>
     </author>
@@ -1120,7 +1210,7 @@ Instead, we recommend submitting forms with JavaScript using XMLHttpRequest, and
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-10-30.html"/>
     <id>https://jiandanxinli.github.io/2016-10-30.html</id>
     <published>2016-10-30T08:00:00+08:00</published>
-    <updated>2016-11-01T12:59:01+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>lei.wang</name>
     </author>
@@ -1347,7 +1437,7 @@ mutual – 与数据库交互
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-10-18.html"/>
     <id>https://jiandanxinli.github.io/2016-10-18.html</id>
     <published>2016-10-18T08:00:00+08:00</published>
-    <updated>2016-10-18T13:14:29+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>zhangyao</name>
     </author>
@@ -1495,7 +1585,7 @@ mutual – 与数据库交互
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-09-01.html"/>
     <id>https://jiandanxinli.github.io/2016-09-01.html</id>
     <published>2016-09-01T08:00:00+08:00</published>
-    <updated>2016-09-03T08:39:47+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>Ben</name>
     </author>
@@ -2214,7 +2304,7 @@ For customising the slider appearance see the &lt;span class="p"&gt;[&lt;/span&g
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-31.html"/>
     <id>https://jiandanxinli.github.io/2016-08-31.html</id>
     <published>2016-08-31T08:00:00+08:00</published>
-    <updated>2016-08-31T11:50:41+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>BugDev</name>
     </author>
@@ -2923,7 +3013,7 @@ For customising the slider appearance see the &lt;span class="p"&gt;[&lt;/span&g
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-25.html"/>
     <id>https://jiandanxinli.github.io/2016-08-25.html</id>
     <published>2016-08-25T08:00:00+08:00</published>
-    <updated>2016-08-29T11:22:16+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>fengd</name>
     </author>
@@ -3020,7 +3110,7 @@ For customising the slider appearance see the &lt;span class="p"&gt;[&lt;/span&g
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-11.html"/>
     <id>https://jiandanxinli.github.io/2016-08-11.html</id>
     <published>2016-08-11T08:00:00+08:00</published>
-    <updated>2016-08-11T20:05:39+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>zangbianxuegu</name>
     </author>
@@ -3313,7 +3403,7 @@ For customising the slider appearance see the &lt;span class="p"&gt;[&lt;/span&g
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-09.html"/>
     <id>https://jiandanxinli.github.io/2016-08-09.html</id>
     <published>2016-08-09T08:00:00+08:00</published>
-    <updated>2016-08-10T10:40:30+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>lei.wang</name>
     </author>
@@ -3485,7 +3575,7 @@ For customising the slider appearance see the &lt;span class="p"&gt;[&lt;/span&g
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-08-06.html"/>
     <id>https://jiandanxinli.github.io/2016-08-06.html</id>
     <published>2016-08-06T08:00:00+08:00</published>
-    <updated>2016-08-16T07:21:15+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>Ben</name>
     </author>
@@ -3569,7 +3659,7 @@ For customising the slider appearance see the &lt;span class="p"&gt;[&lt;/span&g
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-07-31.html"/>
     <id>https://jiandanxinli.github.io/2016-07-31.html</id>
     <published>2016-07-31T08:00:00+08:00</published>
-    <updated>2016-08-04T13:13:28+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>fengd</name>
     </author>
@@ -3729,7 +3819,7 @@ For customising the slider appearance see the &lt;span class="p"&gt;[&lt;/span&g
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-07-30.html"/>
     <id>https://jiandanxinli.github.io/2016-07-30.html</id>
     <published>2016-07-30T08:00:00+08:00</published>
-    <updated>2016-08-04T13:09:46+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>Ben</name>
     </author>
@@ -3759,7 +3849,7 @@ For customising the slider appearance see the &lt;span class="p"&gt;[&lt;/span&g
     <link rel="alternate" href="https://jiandanxinli.github.io/2016-07-29.html"/>
     <id>https://jiandanxinli.github.io/2016-07-29.html</id>
     <published>2016-07-29T08:00:00+08:00</published>
-    <updated>2016-11-01T12:59:01+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>Qiuncheng</name>
     </author>
@@ -3928,7 +4018,7 @@ lazy var scrollView: UIScrollView = {
     <link rel="alternate" href="https://jiandanxinli.github.io/2015-09-08.html"/>
     <id>https://jiandanxinli.github.io/2015-09-08.html</id>
     <published>2015-09-08T08:00:00+08:00</published>
-    <updated>2016-07-27T11:40:16+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>Ben</name>
     </author>
@@ -4121,7 +4211,7 @@ app/views/pages/home.html+mobile.erb # 文件名格式为 响应格式+设备名
     <link rel="alternate" href="https://jiandanxinli.github.io/2014-07-23.html"/>
     <id>https://jiandanxinli.github.io/2014-07-23.html</id>
     <published>2014-07-23T08:00:00+08:00</published>
-    <updated>2016-08-08T10:12:51+08:00</updated>
+    <updated>2018-09-01T09:45:16+08:00</updated>
     <author>
       <name>韩冰</name>
     </author>

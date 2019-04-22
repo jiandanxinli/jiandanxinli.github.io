@@ -21,18 +21,18 @@
 <p>因为 Turbolinks 的加载机制，导致使用者倾向于把所有的样式和脚本打包成一个巨无霸型的 css 和 js，这会严重影响首次加载。Turbolinks 是完全支持不同页面加载不同的 css 和 js。</p>
 
 <p>简单心理的项目中，采用了如下方式来自动判断和加载当前页面所需的样式和脚本：</p>
-<pre class="highlight slim"><code><span class="c">/ 加载样式文件，如 pages#home 的 css 文件，存放在 app/assets/stylesheets/www/pages/home.sass</span>
+<div class="highlight"><pre class="highlight slim"><code><span class="c">/ 加载样式文件，如 pages#home 的 css 文件，存放在 app/assets/stylesheets/www/pages/home.sass</span>
 <span class="p">-</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">exist?</span><span class="p">(</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">"app/assets/stylesheets/</span><span class="si">#{</span><span class="n">request</span><span class="p">.</span><span class="nf">subdomain</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:controller</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:action</span><span class="p">]</span><span class="si">}</span><span class="s2">.sass"</span><span class="p">))</span>
   <span class="p">=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"</span><span class="si">#{</span><span class="n">request</span><span class="p">.</span><span class="nf">subdomain</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:controller</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:action</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
 
 <span class="c">/ 加载脚本文件，如 pages#home 的 js 文件，存放在 app/assets/javascripts/www/pages/home.coffee</span>
 <span class="p">-</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">exist?</span><span class="p">(</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">"app/assets/javascripts/</span><span class="si">#{</span><span class="n">request</span><span class="p">.</span><span class="nf">subdomain</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:controller</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:action</span><span class="p">]</span><span class="si">}</span><span class="s2">.coffee"</span><span class="p">))</span>
   <span class="p">=</span> <span class="n">javascript_include_tag</span> <span class="s2">"</span><span class="si">#{</span><span class="n">request</span><span class="p">.</span><span class="nf">subdomain</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:controller</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">params</span><span class="p">[</span><span class="ss">:action</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
-</code></pre>
+</code></pre></div>
 <h3>简化页面加载事件</h3>
 
 <p>因为 Turbolinks 的特殊加载机制，我们经常需要手动注册和注销事件。在简单心理，我们通过以下方式来简化这部分的代码：</p>
-<pre class="highlight coffeescript"><code>  <span class="nx">_page_loaded</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="highlight"><pre class="highlight coffeescript"><code>  <span class="nx">_page_loaded</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="nx">_page_unload</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="nx">_page_unload_once</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -64,7 +64,7 @@
     <span class="nx">func</span><span class="p">()</span> <span class="k">for</span> <span class="nx">func</span> <span class="k">in</span> <span class="nx">_page_unload</span>
 
     <span class="no">null</span>
-</code></pre>
+</code></pre></div>
 <h3>兼容 Vue.js 1.x</h3>
 
 <p>当一个页面的交互越来越复杂时，就需要用如 Vue.js 之类的框架，来简化交互的代码，但 Turbolinks 在缓存页面时，不会缓存 dom 里绑定的 events。当用户返回一个使用了 Vue 组件的页面时，这些组件的交互就都无法失效了。</p>
@@ -74,7 +74,7 @@
 <p>另外要注意的是，Turbolinks 也会记住当前页面的滚动位置，记录在 <code>Turbolinks.controller.getCurrentRestorationData().scrollPosition</code> 中，因此如果你的组件是一个长长的列表，且是异步加载的话，需要在加载前，先手动缓存这个位置（因为页面返回后，Turbolinks 会自动刷新记录值），待列表数据加载和渲染完成后，再将页面滚动到缓存的位置。</p>
 
 <p>具体实现如下：（因为我们现在不再继续使用 Vue.js，因此只给出 1.x 版本的实现方案）</p>
-<pre class="highlight coffeescript"><code><span class="nx">vm_caches</span> <span class="o">=</span> <span class="p">{}</span>
+<div class="highlight"><pre class="highlight coffeescript"><code><span class="nx">vm_caches</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="nx">cache_data</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span><span class="o">-&gt;</span>
   <span class="nx">cache</span> <span class="o">=</span> <span class="p">{}</span>
@@ -134,6 +134,6 @@
           <span class="nx">Vue</span><span class="p">.</span><span class="na">set</span> <span class="k">this</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span>
 
   <span class="nx">Vue</span><span class="p">.</span><span class="na">component</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">options</span>
-</code></pre>
+</code></pre></div>
 <p>如果你有更多技巧，欢迎交流分享。</p>
 </div></div><a class="top" href="#">Back to Top</a><div class="footer"><div class="container"><a class="logo" href="https://www.jiandanxinli.com"><img src="/images/logo_text.png" alt="简单心理" /></a><div class="links"><a href="http://gold.xitu.io/user/57c7a5fba633bd006cfc360b">掘金</a><a href="https://toutiao.io/subjects/17642">开发者头条</a></div><div class="links"><a href="/">Home</a><a href="/feed.xml">Feed</a><a href="https://github.com/jiandanxinli">Github</a><a href="https://www.jiandanxinli.com/pages/37">About</a></div><p>&copy; 2014 - 2016 北京竹间科技有限公司 版权所有</p></div></div></body></html>

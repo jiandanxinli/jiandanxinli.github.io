@@ -47,7 +47,7 @@
 <p>下面简单介绍下WebView的基本使用：</p>
 
 <p>首先新建一个工程，在layout文件里放入一个WebView控件（当然也可以通过Java代码动态放入，这里不演示了）</p>
-<pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<div class="highlight"><pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
 <span class="nt">&lt;LinearLayout</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
     <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
     <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">&gt;</span>
@@ -57,15 +57,15 @@
         <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
         <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/LinearLayout&gt;</span>
-</code></pre>
+</code></pre></div>
 <p>然后在Activity的onCreate方法里写入如下代码：</p>
-<pre class="highlight java"><code><span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">"https://www.google.com"</span><span class="o">;</span>
+<div class="highlight"><pre class="highlight java"><code><span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">"https://www.google.com"</span><span class="o">;</span>
 <span class="n">WebView</span> <span class="n">webView</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebView</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">web_view</span><span class="o">);</span>
 <span class="n">webView</span><span class="o">.</span><span class="na">loadUrl</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
-</code></pre>
+</code></pre></div>
 <p>接着在AndroidManifest声明访问网络的权限：</p>
-<pre class="highlight xml"><code><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">"android.permission.INTERNET"</span><span class="nt">/&gt;</span>
-</code></pre>
+<div class="highlight"><pre class="highlight xml"><code><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">"android.permission.INTERNET"</span><span class="nt">/&gt;</span>
+</code></pre></div>
 <p>就，完事了~</p>
 
 <p>这时运行app，它已经可以访问指定地址的网页了。</p>
@@ -73,7 +73,7 @@
 <p>上面提到了WebView继承自AbsoluteLayout，可以在其中放入一些子View，那也顺手来一下。</p>
 
 <p>Layout文件改为：</p>
-<pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<div class="highlight"><pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
 <span class="nt">&lt;LinearLayout</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
   <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
   <span class="na">android:layout_height=</span><span class="s">"match_parent"</span><span class="nt">&gt;</span>
@@ -93,20 +93,20 @@
           <span class="na">android:text=</span><span class="s">"@string/app_name"</span> <span class="nt">/&gt;</span>
   <span class="nt">&lt;/WebView&gt;</span>
 <span class="nt">&lt;/LinearLayout&gt;</span>
-</code></pre>
+</code></pre></div>
 <p>Activity的onCreate里加上：</p>
-<pre class="highlight java"><code><span class="n">Button</span> <span class="n">button</span> <span class="o">=</span> <span class="o">(</span><span class="n">Button</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">button</span><span class="o">);</span>
+<div class="highlight"><pre class="highlight java"><code><span class="n">Button</span> <span class="n">button</span> <span class="o">=</span> <span class="o">(</span><span class="n">Button</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">button</span><span class="o">);</span>
 <span class="n">button</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">view</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">(),</span> <span class="s">"系好安全带!"</span><span class="o">,</span> <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_SHORT</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">});</span>
-</code></pre>
+</code></pre></div>
 <p>这时，运行app，里面就会多出一个Button~ 但如果你真的运行的话，你就会发现，app会自动跳到浏览器并打开指定的网页，而并非在app内展示网页，那这就与我们的初衷背道而驰了，那么要如何实现网页在App内打开呢?这就引出了下面的章节会提到的东西：WebViewClient。我先将代码贴出，具体实现原理留到下节说明。</p>
 
 <p>最终XML布局就如上面那样，Java代码（最终）如下：</p>
-<pre class="highlight java"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">AppCompatActivity</span> <span class="o">{</span>
+<div class="highlight"><pre class="highlight java"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">AppCompatActivity</span> <span class="o">{</span>
     <span class="nd">@Override</span>
     <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
         <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
@@ -133,7 +133,7 @@
         <span class="o">});</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</code></pre></div>
 <p>效果图：<a href="http://www.iqiyi.com/w_19rsx20xst.html">效果视频</a></p>
 
 <h3>WebView简介</h3>
@@ -158,22 +158,22 @@
 <li><p><strong>resumeTimers</strong>()：恢复pauseTimers时的所有操作。</p></li>
 <li><p><strong>destroy</strong>()：销毁WebView。需要注意的是：这个方法的调用应在WebView从父容器中被remove掉之后。我们可以手动地调用</p></li>
 </ul>
-<pre class="highlight java"><code><span class="n">rootLayout</span><span class="o">.</span><span class="na">removeView</span><span class="o">(</span><span class="n">webView</span><span class="o">);</span>
+<div class="highlight"><pre class="highlight java"><code><span class="n">rootLayout</span><span class="o">.</span><span class="na">removeView</span><span class="o">(</span><span class="n">webView</span><span class="o">);</span>
 <span class="n">webView</span><span class="o">.</span><span class="na">destroy</span><span class="o">();</span>
-</code></pre>
+</code></pre></div>
 <ul>
 <li><p><strong>getScrollY</strong>()：该方法返回的当前可见区域的顶端距整个页面顶端的距离，也就是当前内容滚动的距离。</p></li>
 <li><p><strong>getHeight</strong>()：方法都返回当前WebView这个容器的高度。其实以上两个方法都属于View。</p></li>
 <li><p><strong>getContentHeight</strong>()：该方法返回整个HTML页面的高度，但该高度值并不等同于当前整个页面的高度，因为WebView有缩放功能， 所以当前整个页面的高度实际上应该是原始HTML的高度再乘上缩放比例。因此，准确的判断方法应该是</p></li>
 </ul>
-<pre class="highlight java"><code><span class="k">if</span> <span class="o">(</span><span class="n">webView</span><span class="o">.</span><span class="na">getContentHeight</span><span class="o">()</span> <span class="o">*</span> <span class="n">webView</span><span class="o">.</span><span class="na">getScale</span><span class="o">()</span> <span class="o">==</span> <span class="o">(</span><span class="n">webView</span><span class="o">.</span><span class="na">getHeight</span><span class="o">()</span> <span class="o">+</span> <span class="n">webView</span><span class="o">.</span><span class="na">getScrollY</span><span class="o">()))</span> <span class="o">{</span>
+<div class="highlight"><pre class="highlight java"><code><span class="k">if</span> <span class="o">(</span><span class="n">webView</span><span class="o">.</span><span class="na">getContentHeight</span><span class="o">()</span> <span class="o">*</span> <span class="n">webView</span><span class="o">.</span><span class="na">getScale</span><span class="o">()</span> <span class="o">==</span> <span class="o">(</span><span class="n">webView</span><span class="o">.</span><span class="na">getHeight</span><span class="o">()</span> <span class="o">+</span> <span class="n">webView</span><span class="o">.</span><span class="na">getScrollY</span><span class="o">()))</span> <span class="o">{</span>
     <span class="c1">//已经处于底端</span>
 <span class="o">}</span>
 
 <span class="k">if</span><span class="o">(</span><span class="n">webView</span><span class="o">.</span><span class="na">getScrollY</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">){</span>
     <span class="c1">//处于顶端</span>
 <span class="o">}</span>
-</code></pre>
+</code></pre></div>
 <ul>
 <li><p><strong>pageUp</strong>(boolean top)：将WebView展示的页面滑动至顶部。</p></li>
 <li><p><strong>pageDown</strong>(boolean bottom)：将WebView展示的页面滑动至底部。</p></li>
@@ -186,8 +186,8 @@
 <p>WebSettings对象可以通过<strong><em>WebView.getSettings()</em></strong>获得，它的生命周期是与它的WebView本身息息相关的，如果WebView被销毁了，那么任何由WebSettings调用的方法也同样不能使用。</p>
 
 <h3>获取WebSettings对象</h3>
-<pre class="highlight java"><code>  <span class="n">WebSettings</span> <span class="n">webSettings</span> <span class="o">=</span> <span class="n">webView</span><span class="o">.</span><span class="na">getSettings</span><span class="o">();</span>
-</code></pre>
+<div class="highlight"><pre class="highlight java"><code>  <span class="n">WebSettings</span> <span class="n">webSettings</span> <span class="o">=</span> <span class="n">webView</span><span class="o">.</span><span class="na">getSettings</span><span class="o">();</span>
+</code></pre></div>
 <h3>WebSettings常用方法</h3>
 
 <p>（几乎所有的set方法都有相应的get方法，这里就只介绍set了。<strong>另，所有未写方法返回值类型的皆为空类型</strong>）</p>
@@ -305,7 +305,7 @@
 <p>在WebView中调用Js的基本格式为<strong>webView.loadUrl(&quot;javascript:methodName(parameterValues)&quot;);</strong></p>
 
 <p><strong>现有以下这段JavaScript代码</strong></p>
-<pre class="highlight javascript"><code>  <span class="kd">function</span> <span class="nx">readyToGo</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight"><pre class="highlight javascript"><code>  <span class="kd">function</span> <span class="nx">readyToGo</span><span class="p">()</span> <span class="p">{</span>
       <span class="nx">alert</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">)</span>
   <span class="p">}</span>
 
@@ -316,17 +316,17 @@
   <span class="kd">function</span> <span class="nx">getYourCar</span><span class="p">(){</span>
       <span class="k">return</span> <span class="s2">"Car"</span><span class="p">;</span>
   <span class="p">}</span>
-</code></pre>
+</code></pre></div>
 <h4>1. WebView调用JavaScript无参无返回值函数</h4>
-<pre class="highlight java"><code><span class="n">String</span> <span class="n">call</span> <span class="o">=</span> <span class="s">"javascript:readyToGo()"</span><span class="o">;</span>
+<div class="highlight"><pre class="highlight java"><code><span class="n">String</span> <span class="n">call</span> <span class="o">=</span> <span class="s">"javascript:readyToGo()"</span><span class="o">;</span>
 <span class="n">webView</span><span class="o">.</span><span class="na">loadUrl</span><span class="o">(</span><span class="n">call</span><span class="o">);</span>
-</code></pre>
+</code></pre></div>
 <h4>2. WebView调用JavScript有参无返回值函数</h4>
-<pre class="highlight java"><code><span class="n">String</span> <span class="n">call</span> <span class="o">=</span> <span class="s">"javascript:alertMessage(\""</span> <span class="o">+</span> <span class="s">"content"</span> <span class="o">+</span> <span class="s">"\")"</span><span class="o">;</span>
+<div class="highlight"><pre class="highlight java"><code><span class="n">String</span> <span class="n">call</span> <span class="o">=</span> <span class="s">"javascript:alertMessage(\""</span> <span class="o">+</span> <span class="s">"content"</span> <span class="o">+</span> <span class="s">"\")"</span><span class="o">;</span>
 <span class="n">webView</span><span class="o">.</span><span class="na">loadUrl</span><span class="o">(</span><span class="n">call</span><span class="o">);</span>
-</code></pre>
+</code></pre></div>
 <h4>3. WebView调用JavaScript有参数有返回值的函数</h4>
-<pre class="highlight java"><code><span class="nd">@TargetApi</span><span class="o">(</span><span class="n">Build</span><span class="o">.</span><span class="na">VERSION_CODES</span><span class="o">.</span><span class="na">KITKAT</span><span class="o">)</span>
+<div class="highlight"><pre class="highlight java"><code><span class="nd">@TargetApi</span><span class="o">(</span><span class="n">Build</span><span class="o">.</span><span class="na">VERSION_CODES</span><span class="o">.</span><span class="na">KITKAT</span><span class="o">)</span>
 <span class="kd">private</span> <span class="kt">void</span> <span class="nf">evaluateJavaScript</span><span class="o">(</span><span class="n">WebView</span> <span class="n">webView</span><span class="o">){</span>
     <span class="n">webView</span><span class="o">.</span><span class="na">evaluateJavascript</span><span class="o">(</span><span class="s">"getYourCar()"</span><span class="o">,</span> <span class="k">new</span> <span class="n">ValueCallback</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
         <span class="nd">@Override</span>
@@ -335,7 +335,7 @@
         <span class="o">}</span>
     <span class="o">});</span>
 <span class="o">}</span>
-</code></pre>
+</code></pre></div>
 <h4>JavaScript通过WebView调用Java代码</h4>
 
 <p>从API19开始，Android提供了@JavascriptInterface对象注解的方式来建立起Javascript对象和Android原生对象的绑定，提供给JavScript调用的函数必须带有@JavascriptInterface。</p>
@@ -343,38 +343,38 @@
 <p><strong>演示一 JavaScript调用Android Toast方法</strong></p>
 
 <p><strong>1. 编写Java原生方法并用使用@JavascriptInterface注解</strong></p>
-<pre class="highlight java"><code><span class="nd">@JavascriptInterface</span>
+<div class="highlight"><pre class="highlight java"><code><span class="nd">@JavascriptInterface</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">show</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">){</span>
     <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="n">getApplication</span><span class="o">(),</span> <span class="n">s</span><span class="o">,</span> <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_SHORT</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre>
+</code></pre></div>
 <p><strong>2.注册JavaScriptInterface</strong></p>
-<pre class="highlight java"><code><span class="n">webView</span><span class="o">.</span><span class="na">addJavascriptInterface</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"android"</span><span class="o">);</span>
-</code></pre>
+<div class="highlight"><pre class="highlight java"><code><span class="n">webView</span><span class="o">.</span><span class="na">addJavascriptInterface</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"android"</span><span class="o">);</span>
+</code></pre></div>
 <p><strong>addJavascriptInterface的作用是把this所代表的类映射为JavaScript中的android对象。</strong></p>
 
 <p><strong>3.编写JavaScript代码</strong></p>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">toastClick</span><span class="p">(){</span>
+<div class="highlight"><pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">toastClick</span><span class="p">(){</span>
     <span class="nb">window</span><span class="p">.</span><span class="nx">android</span><span class="p">.</span><span class="nx">show</span><span class="p">(</span><span class="s2">"JavaScript called~!"</span><span class="p">);</span>
 <span class="p">}</span>
-</code></pre>
+</code></pre></div>
 <p><strong>演示二 JavaScript调用有返回值的Java方法</strong></p>
 
 <p><strong>1.定义一个带返回值的Java方法，并使用@JavaInterface：</strong></p>
-<pre class="highlight java"><code><span class="nd">@JavaInterface</span>
+<div class="highlight"><pre class="highlight java"><code><span class="nd">@JavaInterface</span>
 <span class="kd">public</span> <span class="n">String</span> <span class="nf">getMessage</span><span class="o">(){</span>
     <span class="k">return</span> <span class="s">"Hello,boy~"</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre>
+</code></pre></div>
 <p><strong>2.添加JavaScript的映射</strong></p>
-<pre class="highlight java"><code><span class="n">webView</span><span class="o">.</span><span class="na">addJavaScriptInterface</span><span class="o">(</span><span class="k">this</span><span class="o">,</span><span class="s">"Android"</span><span class="o">);</span>
-</code></pre>
+<div class="highlight"><pre class="highlight java"><code><span class="n">webView</span><span class="o">.</span><span class="na">addJavaScriptInterface</span><span class="o">(</span><span class="k">this</span><span class="o">,</span><span class="s">"Android"</span><span class="o">);</span>
+</code></pre></div>
 <p><strong>3.通过JavaScript调用Java方法</strong></p>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">showHello</span><span class="p">(){</span>
+<div class="highlight"><pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">showHello</span><span class="p">(){</span>
     <span class="kd">var</span> <span class="nx">str</span><span class="o">=</span><span class="nb">window</span><span class="p">.</span><span class="nx">Android</span><span class="p">.</span><span class="nx">getMessage</span><span class="p">();</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">str</span><span class="p">);</span>
 <span class="p">}</span>
-</code></pre>
+</code></pre></div>
 <p>以上就是Js与WebView交互的一些介绍，希望能对你有帮助。</p>
 
 <h3>WebView加载优化</h3>
@@ -398,12 +398,12 @@
 <h4>第二个，就是缓存的问题</h4>
 
 <p>倘若你不采用或不完全采用第一条资源本地化的思路，那么你的WebView缓存是必须要开启的（虽然这一思路和第一条有重合的地方）。</p>
-<pre class="highlight java"><code><span class="n">WebSettings</span> <span class="n">settings</span> <span class="o">=</span> <span class="n">webView</span><span class="o">.</span><span class="na">getSettings</span><span class="o">();</span>
+<div class="highlight"><pre class="highlight java"><code><span class="n">WebSettings</span> <span class="n">settings</span> <span class="o">=</span> <span class="n">webView</span><span class="o">.</span><span class="na">getSettings</span><span class="o">();</span>
 <span class="n">settings</span><span class="o">.</span><span class="na">setAppCacheEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
 <span class="n">settings</span><span class="o">.</span><span class="na">setDatabaseEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
 <span class="n">settings</span><span class="o">.</span><span class="na">setDomStorageEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span><span class="c1">//开启DOM缓存</span>
 <span class="n">settings</span><span class="o">.</span><span class="na">setCacheMode</span><span class="o">(</span><span class="n">WebSettings</span><span class="o">.</span><span class="na">LOAD_DEFAULT</span><span class="o">);</span>
-</code></pre>
+</code></pre></div>
 <p>在网络正常时，采用默认缓存策略，在缓存可获取并且没有过期的情况下加载缓存，否则通过网络获取资源以减少页面的网络请求次数。</p>
 
 <p>这里值得提起的是，我们经常在app里用WebView展示页面时，并不想让用户觉得他是在访问一个网页。因为倘若我们的app里网页非常多，而我们给用户的感觉又都像在访问网页的话，我们的app便失去了意义。（我的意思是为什么用户不直接使用浏览器呢？）</p>
@@ -411,14 +411,14 @@
 <p>所以这时，离线缓存的问题就值得我们注意。我们需要让用户在没有网的时候，依然能够操作我们的app，而不是面对一个和浏览器里的网络错误一样的页面，哪怕他能进行的操作十分有限。</p>
 
 <p>这里我的思路是，在开启缓存的前提下，WebView在加载页面时检测网络变化，倘若在加载页面时用户的网络突然断掉，我们应当更改WebView的缓存策略。</p>
-<pre class="highlight java"><code><span class="n">ConnectivityManager</span> <span class="n">connectivityManager</span> <span class="o">=</span> <span class="o">(</span><span class="n">ConnectivityManager</span><span class="o">)</span><span class="n">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">CONNECTIVITY_SERVICE</span><span class="o">);</span>
+<div class="highlight"><pre class="highlight java"><code><span class="n">ConnectivityManager</span> <span class="n">connectivityManager</span> <span class="o">=</span> <span class="o">(</span><span class="n">ConnectivityManager</span><span class="o">)</span><span class="n">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">CONNECTIVITY_SERVICE</span><span class="o">);</span>
 <span class="n">NetworkInfo</span> <span class="n">networkInfo</span> <span class="o">=</span> <span class="n">connectivityManager</span><span class="o">.</span><span class="na">getActiveNetworkInfo</span><span class="o">();</span>
 <span class="k">if</span><span class="o">(</span><span class="n">networkInfo</span><span class="o">.</span><span class="na">isAvailable</span><span class="o">())</span> <span class="o">{</span>
     <span class="n">settings</span><span class="o">.</span><span class="na">setCacheMode</span><span class="o">(</span><span class="n">WebSettings</span><span class="o">.</span><span class="na">LOAD_DEFAULT</span><span class="o">);</span><span class="c1">//网络正常时使用默认缓存策略</span>
 <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
     <span class="n">settings</span><span class="o">.</span><span class="na">setCacheMode</span><span class="o">(</span><span class="n">WebSettings</span><span class="o">.</span><span class="na">LOAD_CACHE_ONLY</span><span class="o">);</span><span class="c1">//网络不可用时只使用缓存</span>
 <span class="o">}</span>
-</code></pre>
+</code></pre></div>
 <p>既然有缓存，就要有缓存控制，与一相似的是我们也要建立缓存控制机制，定期或接受服务器通知来进行缓存的清空或更新。</p>
 
 <h4>第三个，就是延迟加载和执行js</h4>
@@ -432,7 +432,7 @@
 <h2>驾照考试</h2>
 
 <p>介绍了这么多，希望能对你有点帮助。接下来时纯实战时间，我会将上面所介绍的很多知识点在接下来的代码里实际应用一遍，希望能够带给你更加直观的使用感受。</p>
-<pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<div class="highlight"><pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
 <span class="nt">&lt;LinearLayout</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
     <span class="na">xmlns:app=</span><span class="s">"http://schemas.android.com/apk/res-auto"</span>
     <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
@@ -469,9 +469,9 @@
             <span class="na">android:visibility=</span><span class="s">"gone"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/FrameLayout&gt;</span>
 <span class="nt">&lt;/LinearLayout&gt;</span>
-</code></pre>
+</code></pre></div>
 <p>Java部分</p>
-<pre class="highlight java"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">AppCompatActivity</span> <span class="o">{</span>
+<div class="highlight"><pre class="highlight java"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">AppCompatActivity</span> <span class="o">{</span>
 
   <span class="kd">private</span> <span class="n">WebView</span> <span class="n">mWebView</span><span class="o">;</span>
 
@@ -673,7 +673,7 @@
       <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">onKeyDown</span><span class="o">(</span><span class="n">keyCode</span><span class="o">,</span> <span class="n">event</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</code></pre></div>
 <p>效果图：</p>
 
 <p>fuck，效果图太大压缩无望~~~

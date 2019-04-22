@@ -24,7 +24,7 @@
 <p>针对原理一，我就来简单实现下。(我这里使用代码创建,你也可以使用Storyboard创建,原理一样)</p>
 
 <h4>创建工程，创建<code>BannerView.Swift</code>,添加初始化代码如下：</h4>
-<pre class="highlight plaintext"><code>/// 初始化scrollView
+<div class="highlight"><pre class="highlight plaintext"><code>/// 初始化scrollView
 lazy var scrollView: UIScrollView = {
        let scrollView = UIScrollView()
        scrollView.delegate = self
@@ -58,9 +58,9 @@ lazy var scrollView: UIScrollView = {
        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[p(==20)]-10-|", options: [], metrics: nil, views: ["p": pageControl]))
        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[p(==100)]-10-|", options: [], metrics: nil, views: ["p": pageControl]))
    }
-</code></pre>
+</code></pre></div>
 <h4>初始化UIScrollView：</h4>
-<pre class="highlight plaintext"><code>func setupScrollView() {
+<div class="highlight"><pre class="highlight plaintext"><code>func setupScrollView() {
         /// 创建 （imageNames.count + 2）个UIImageView
         for index in 0 ... (imageNmaes.count + 1) {
             let imageView = UIImageView(frame: CGRect(x: self.width*CGFloat(index), y: 0, width: self.width, height: self.height))
@@ -87,9 +87,9 @@ lazy var scrollView: UIScrollView = {
         scrollView.contentSize = CGSize(width: self.width * CGFloat(imageNames.count + 2), height: self.height)
         scrollView.contentOffset = CGPoint(x: self.width, y: 0)
     }
-</code></pre>
+</code></pre></div>
 <h4>无限轮番的实现。（重点）使用UIScrollViewDelegate协议。</h4>
-<pre class="highlight plaintext"><code>func scrollViewDidScroll(scrollView: UIScrollView) {
+<div class="highlight"><pre class="highlight plaintext"><code>func scrollViewDidScroll(scrollView: UIScrollView) {
        if scrollView == self.scrollView {
            let contentOffsetX = scrollView.contentOffset.x
           ///向前滑动到第0张图的时候，滚到第三张图
@@ -105,11 +105,11 @@ lazy var scrollView: UIScrollView = {
            self.pageControl.currentPage = Int(index)
        }
    }
-</code></pre>
+</code></pre></div>
 <h4>添加计时器</h4>
 
 <p>好了，做到这里，你已经成功实现了轮播图，可是这个轮播图是手动的，下面添加自动滚动。也很简单，设置一个NSTimer计时器即可。代码如下：</p>
-<pre class="highlight plaintext"><code>// MARK: - Timer
+<div class="highlight"><pre class="highlight plaintext"><code>// MARK: - Timer
    var timer: NSTimer?
    var i = 1
    /// 在scrollView上的图片成功设置后调用startTimer即可
@@ -143,7 +143,7 @@ lazy var scrollView: UIScrollView = {
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         self.stopTimer()
     }
-</code></pre>
+</code></pre></div>
 <h4>添加具体点击事件</h4>
 
 <p>具体到点击事件的话，我是放在初始化imageView那里处理的，给imageVIew添加一个UITapGestureRecognizer，在这里最好再写一个代理方法，将imageView的点击事件传递出去。然后根据当前<code>contentOffet.x / self.width</code>来将具体哪张图片的事件传递出去。我就不用代码展示了。</p>

@@ -16,7 +16,7 @@
 <h2>简单栗子</h2>
 
 <p>当更新商品价格时，需要更新相关订单的价格。</p>
-<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">has_many</span> <span class="ss">:orders</span>
 
   <span class="n">after_update</span> <span class="k">do</span>
@@ -27,9 +27,9 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <h2>使用 Subscriber 后</h2>
-<pre class="highlight ruby"><code><span class="c1"># ./app/subscribers/order_subscriber.rb</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># ./app/subscribers/order_subscriber.rb</span>
 <span class="n">subscribe_model</span> <span class="ss">:product</span><span class="p">,</span> <span class="ss">:after_update</span> <span class="k">do</span>
   <span class="k">if</span> <span class="n">price_changed?</span>
     <span class="n">orders</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">order</span><span class="o">|</span>
@@ -37,7 +37,7 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <h2>使用约定</h2>
 
 <ul>
@@ -58,7 +58,7 @@
 </ul>
 
 <h2>核心代码</h2>
-<pre class="highlight ruby"><code><span class="c1"># ./config/initializers/subscribe_model.rb</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># ./config/initializers/subscribe_model.rb</span>
 <span class="k">def</span> <span class="nf">subscribe_model</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">event_name</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
   <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Notifications</span><span class="p">.</span><span class="nf">subscribe</span><span class="p">(</span><span class="s2">"active_record.</span><span class="si">#{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.</span><span class="si">#{</span><span class="n">event_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">_name</span><span class="p">,</span> <span class="n">_started</span><span class="p">,</span> <span class="n">_finished</span><span class="p">,</span> <span class="n">_unique_id</span><span class="p">,</span> <span class="n">data</span><span class="o">|</span>
     <span class="n">data</span><span class="p">[</span><span class="ss">:model</span><span class="p">].</span><span class="nf">instance_eval</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
@@ -84,7 +84,7 @@
 <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">after_initialize</span> <span class="k">do</span>
   <span class="no">Dir</span><span class="p">[</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s1">'app/subscribers/*.rb'</span><span class="p">)].</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="nb">require</span> <span class="n">f</span> <span class="p">}</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <h2>FAQ</h2>
 
 <p>Q: 为什么不用 concern？</p>

@@ -13,28 +13,28 @@
 </ol>
 
 <p>这些参数组合起来挺有用的，比如</p>
-<pre class="highlight plaintext"><code>git log --author="jack" --after="1 week ago" -- oneline
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>git log --author="jack" --after="1 week ago" -- oneline
+</code></pre></div>
 <h3>查看还没有合并到Master/父分之中的改动</h3>
-<pre class="highlight plaintext"><code>git log --no-merges masters..
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>git log --no-merges masters..
+</code></pre></div>
 <h3>从另一个分支中获取文件</h3>
 
 <p>先看另一个分支的某个文件，其实可以不用切换到那个分支，执行下面的命令就可以直接查看</p>
-<pre class="highlight plaintext"><code>git show some-branch:somefile.js
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>git show some-branch:somefile.js
+</code></pre></div>
 <p>如果你想和某个分支上的版本进行对比</p>
-<pre class="highlight plaintext"><code>git diff some-branch some-file.js
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>git diff some-branch some-file.js
+</code></pre></div>
 <h3>关于 rebasing</h3>
 
 <p>Rebase其实比较复杂，单独写一篇文章都未必讲的清楚明白, 当时有一个很实用的技巧不得不提</p>
-<pre class="highlight plaintext"><code>`git pull --rebase`
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>`git pull --rebase`
+</code></pre></div>
 <p>这是什么？
 当你在本地改完，想要把代码push上去，如果主分支上已经有改动，这时候push失败，而且会提示你使用<code>git pull</code> 来获取最新的代码, 和本地的代码合并，产生log</p>
-<pre class="highlight plaintext"><code>&gt; Merge remote-tracking branch 'origin/master'
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>&gt; Merge remote-tracking branch 'origin/master'
+</code></pre></div>
 <p>这时rebase就是更好的选择，<code>git pull --rebase</code>, git 会先从remote获取最新的代码，然后在push本地的改动，不会有merge产生.</p>
 
 <h3>修改上一个 Commit</h3>
@@ -71,16 +71,16 @@
 </ol>
 
 <p>最常用的一个可能是第一个, 放弃本地所有的改动</p>
-<pre class="highlight plaintext"><code>git reset --hard HEAD
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>git reset --hard HEAD
+</code></pre></div>
 <h3>Revert Commit</h3>
-<pre class="highlight plaintext"><code>git revert -n
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>git revert -n
+</code></pre></div>
 <p>取消之前的Commit</p>
 
 <h3>为常用的git命令设置别名</h3>
-<pre class="highlight plaintext"><code>git l = git log --online --grath
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>git l = git log --online --grath
+</code></pre></div>
 <p>等等等等</p>
 
 <p>来自文章 <a href="http://www.alexkras.com/19-git-tips-for-everyday-use/">Top 19 Tips For everyday git use</a></p>

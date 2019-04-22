@@ -9,7 +9,7 @@
 <h2>分离</h2>
 
 <p>曾经我们这样定义选择器：</p>
-<pre class="highlight sass"><code><span class="nc">.fl</span>
+<div class="highlight"><pre class="highlight sass"><code><span class="nc">.fl</span>
   <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span>
 
 <span class="nc">.fr</span>
@@ -26,10 +26,10 @@
 
 <span class="nc">.highlight</span>
   <span class="nl">color</span><span class="p">:</span> <span class="nv">$green</span>
-</code></pre>
+</code></pre></div>
 <p>在 html 中添加选择器：</p>
-<pre class="highlight sass"><code><span class="nc">.fl.pb10.highlight</span>
-</code></pre>
+<div class="highlight"><pre class="highlight sass"><code><span class="nc">.fl.pb10.highlight</span>
+</code></pre></div>
 <p>这就是规则分离的做法，将一些确定值的 CSS 规则单独定义选择器，这样做的目的是提高代码的重用，但是也有很多缺点：</p>
 
 <ul>
@@ -42,7 +42,7 @@
 <h2>不好的写法</h2>
 
 <p>html：</p>
-<pre class="highlight slim"><code><span class="nc">.container</span>
+<div class="highlight"><pre class="highlight slim"><code><span class="nc">.container</span>
   <span class="nc">.actions</span>
     <span class="nc">.card_wrapper</span>
       <span class="nc">.card</span>
@@ -50,9 +50,9 @@
         <span class="nc">.content</span>
           <span class="nc">.list</span>
             <span class="nt">i</span><span class="nc">.fa.fa-cog</span>
-</code></pre>
+</code></pre></div>
 <p>CSS：</p>
-<pre class="highlight sass"><code><span class="nt">body</span><span class="nc">.events</span><span class="o">,</span>
+<div class="highlight"><pre class="highlight sass"><code><span class="nt">body</span><span class="nc">.events</span><span class="o">,</span>
 <span class="nt">body</span><span class="nc">.aaa</span><span class="o">,</span>
 <span class="nt">body</span><span class="nc">.bbb</span>
 
@@ -72,7 +72,7 @@
 
     <span class="nc">.another</span>
 
-</code></pre>
+</code></pre></div>
 <p>以上是我们现在常见的写法，但是是需要绝对避免的，虽然 class 有一定语义了，但是并不能真正的重用。class 命名太通用了，我们不知道还有什么地方用到 <code>.title</code> <code>.content</code> 这样的命名，就不敢直接使用，一方面层层嵌套防止冲突，一方面想要重用时就在顶层添加 <code>body.aaa</code> 这样的东西，导致很多样式用不到，写的乱七八糟。</p>
 
 <p>这样一直写下去，旧的 CSS 我们永远不会删，只敷衍写出效果，如此往复循环，最终就会像上面的窗帘，让人忍无可忍。每个页面都有 <code>.content</code> 甚至每个模块都有 <code>.content</code>，<code>.content</code> 就毫无意义（.content 不是抽象化的全局共用模块）。深层次的嵌套也会降低渲染效率。</p>
@@ -80,16 +80,16 @@
 <p>另一种常见的：</p>
 
 <p>html：</p>
-<pre class="highlight slim"><code><span class="nc">.main-news-box</span>
+<div class="highlight"><pre class="highlight slim"><code><span class="nc">.main-news-box</span>
   <span class="nt">h2</span><span class="nc">.news-title</span>
   <span class="nt">ul</span><span class="nc">.main-news-list</span>
     <span class="nt">li</span>
       <span class="nt">a</span>
         <span class="nt">span</span>
         <span class="nt">span</span>
-</code></pre>
+</code></pre></div>
 <p>CSS：</p>
-<pre class="highlight sass"><code><span class="nc">.main-news-box</span>
+<div class="highlight"><pre class="highlight sass"><code><span class="nc">.main-news-box</span>
 
 <span class="nc">.main-news-box</span> <span class="nc">.news-title</span>
 
@@ -101,7 +101,7 @@
 
 <span class="nc">.main-news-list</span> <span class="nt">span</span>
 
-</code></pre>
+</code></pre></div>
 <p>这种写法的问题：</p>
 
 <ul>
@@ -120,13 +120,13 @@
 </ul>
 
 <p>例如：</p>
-<pre class="highlight slim"><code><span class="nc">.user-home-nav</span>
+<div class="highlight"><pre class="highlight slim"><code><span class="nc">.user-home-nav</span>
   <span class="nc">.user-home-nav-item.user-home-nav-item--small</span>
     <span class="nc">.user-home-nav-item__icon</span>
     <span class="nc">.user-home-nav-item__text</span>
-</code></pre>
+</code></pre></div>
 <p>CSS 中这样写：</p>
-<pre class="highlight sass"><code><span class="nc">.user-home-nav</span>
+<div class="highlight"><pre class="highlight sass"><code><span class="nc">.user-home-nav</span>
 
   <span class="k">&amp;</span><span class="nt">-item</span>
 
@@ -136,14 +136,14 @@
 
     <span class="k">&amp;</span><span class="nt">__text</span>
 
-</code></pre>
+</code></pre></div>
 <p>这样命名的好处：</p>
 
 <ul>
 <li>语义化，此处的语义化不是指 html 标签的语义化，对 SEO 可能也没有任何意义，但是这是一种人阅读的语义化。语义化的重要意义：宁可增加 html 大小，力图使维护变得轻松。</li>
 <li>减少层层嵌套，有利于渲染效率。以上 sass 解析之后就是：</li>
 </ul>
-<pre class="highlight sass"><code><span class="nc">.user-home-nav</span>
+<div class="highlight"><pre class="highlight sass"><code><span class="nc">.user-home-nav</span>
 
 <span class="nc">.user-home-nav-item</span>
 
@@ -153,7 +153,7 @@
 
 <span class="nc">.user-home-nav-item--small</span>
 
-</code></pre>
+</code></pre></div>
 <p>缺点？</p>
 
 <ul>
@@ -164,7 +164,7 @@
 <h2>BEM 的问题</h2>
 
 <p>但是 BEM 最大的问题却是这个：如何给 modifier 下的 element 定义规则呢？</p>
-<pre class="highlight sass"><code><span class="nc">.user-home-nav</span>
+<div class="highlight"><pre class="highlight sass"><code><span class="nc">.user-home-nav</span>
 
   <span class="k">&amp;</span><span class="nt">-item</span>
 
@@ -178,7 +178,7 @@
 
     <span class="k">&amp;</span><span class="nt">__text</span>
 
-</code></pre>
+</code></pre></div>
 <p>这样做太不优雅了，太违背 sass 的优雅性质了。或许是我没有找到更好的写法？</p>
 
 <p>还能产生更多的写法，例如 <code>.user-home-nav-item--small__icon</code> 、<code>.user-home-nav-item__icon--small</code>，但是或多或少会存在问题，还是尽量保持简单。</p>
@@ -207,7 +207,7 @@
 </ul>
 
 <p>例如一个圆形头像组件：</p>
-<pre class="highlight sass"><code><span class="nc">.c-avatar-circle</span>
+<div class="highlight"><pre class="highlight sass"><code><span class="nc">.c-avatar-circle</span>
 
   <span class="k">&amp;</span><span class="nt">__img</span>
     <span class="nl">display</span><span class="p">:</span> <span class="nb">block</span>
@@ -217,7 +217,7 @@
 
   <span class="k">&amp;</span><span class="nt">__name</span>
     <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span>
-</code></pre>
+</code></pre></div>
 <p>以上，BEM 产生的重用性问题还是没有解决，如何解决？</p>
 
 <h2>模块</h2>
@@ -225,12 +225,12 @@
 <p>模块化类似于分离的概念，也是分离进化的结果，我们从分离中提取出 <code>.hidden {overflow: hidden}</code> 这样的命名，进而扩展 <code>.avatar {}</code> 这样的命名，不再只包含一条规则。看一下 airbnb 的圆形头像写法：</p>
 
 <p>html：</p>
-<pre class="highlight slim"><code><span class="nt">a</span><span class="nc">.pull-right.media-photo-badge.card-profile-picture.card-profile-picture-offset.is-superhost</span>
+<div class="highlight"><pre class="highlight slim"><code><span class="nt">a</span><span class="nc">.pull-right.media-photo-badge.card-profile-picture.card-profile-picture-offset.is-superhost</span>
   <span class="nc">.media-photo.media-round</span>
     <span class="nt">img</span>
-</code></pre>
+</code></pre></div>
 <p>CSS：</p>
-<pre class="highlight sass"><code><span class="nc">.card-profile-picture</span>
+<div class="highlight"><pre class="highlight sass"><code><span class="nc">.card-profile-picture</span>
   <span class="nl">width</span><span class="p">:</span> <span class="m">60px</span>
   <span class="nl">height</span><span class="p">:</span> <span class="m">60px</span>
 
@@ -257,7 +257,7 @@
 <span class="nc">.media-round</span>
   <span class="nl">border-radius</span><span class="p">:</span> <span class="m">50%</span>
   <span class="nl">border</span><span class="p">:</span> <span class="m">2px</span> <span class="nb">solid</span> <span class="mh">#fff</span>
-</code></pre>
+</code></pre></div>
 <p>这个是比较复杂，相对特例的。<code>.media-photo</code> 和 <code>.media-round</code> 是典型的抽象出来的模块，一个定义照片的基本属性，一个定义圆形属性。<code>.card-profile-picture</code> 是特定的命名定义特定具体的值。</p>
 
 <h2>总结</h2>

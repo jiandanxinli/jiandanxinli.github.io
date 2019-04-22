@@ -50,7 +50,7 @@
 <h2>具体步骤</h2>
 
 <h3>1. 使用并扩展 <a href="https://github.com/fnando/browser">browser gem</a> 来判断终端类型</h3>
-<pre class="highlight ruby"><code><span class="no">Browser</span><span class="o">::</span><span class="no">NAMES</span><span class="p">[</span><span class="ss">:smileback</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'SmileBack'</span> <span class="c1"># 我们 App 的自定义 User Agent 标识</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Browser</span><span class="o">::</span><span class="no">NAMES</span><span class="p">[</span><span class="ss">:smileback</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'SmileBack'</span> <span class="c1"># 我们 App 的自定义 User Agent 标识</span>
 <span class="no">Browser</span><span class="o">::</span><span class="no">NAMES</span><span class="p">[</span><span class="ss">:wechat</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Wechat'</span>
 <span class="no">Browser</span><span class="o">::</span><span class="no">NAMES</span><span class="p">[</span><span class="ss">:desktop</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'Desktop'</span>
 
@@ -89,16 +89,16 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <h3>2. 在 html body class 里添加 browser 信息，方便 CSS 套用</h3>
-<pre class="highlight erb"><code><span class="nt">&lt;body</span> <span class="na">class=</span><span class="s">"</span><span class="cp">&lt;%=</span> <span class="no">Browser</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">ua: </span><span class="n">request</span><span class="p">.</span><span class="nf">env</span><span class="p">[</span><span class="s1">'HTTP_USER_AGENT'</span><span class="p">]).</span><span class="nf">to_s</span> <span class="cp">%&gt;</span><span class="s">"</span><span class="nt">&gt;</span> <span class="c">&lt;!-- class 会输出如 chrome modern mac webkit desktop 或 iphone ios mobile modern other safari safari5 webkit --!&gt;
-</span></code></pre><pre class="highlight css"><code><span class="nt">body</span><span class="p">{</span> <span class="c">/* 默认的样式 */</span> <span class="p">}</span>
+<div class="highlight"><pre class="highlight erb"><code><span class="nt">&lt;body</span> <span class="na">class=</span><span class="s">"</span><span class="cp">&lt;%=</span> <span class="no">Browser</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">ua: </span><span class="n">request</span><span class="p">.</span><span class="nf">env</span><span class="p">[</span><span class="s1">'HTTP_USER_AGENT'</span><span class="p">]).</span><span class="nf">to_s</span> <span class="cp">%&gt;</span><span class="s">"</span><span class="nt">&gt;</span> <span class="c">&lt;!-- class 会输出如 chrome modern mac webkit desktop 或 iphone ios mobile modern other safari safari5 webkit --!&gt;
+</span></code></pre></div><div class="highlight"><pre class="highlight css"><code><span class="nt">body</span><span class="p">{</span> <span class="c">/* 默认的样式 */</span> <span class="p">}</span>
 <span class="nt">body</span><span class="nc">.desktop</span><span class="p">{</span> <span class="c">/* 桌面浏览器定制样式 */</span> <span class="p">}</span>
 <span class="nt">body</span><span class="nc">.mobile</span><span class="p">{</span> <span class="c">/* 手机浏览器定制样式 */</span> <span class="p">}</span>
 <span class="nt">body</span><span class="nc">.wechat</span><span class="p">{</span> <span class="c">/* 微信定制样式 */</span> <span class="p">}</span>
-</code></pre>
+</code></pre></div>
 <h3>3. 使用 <a href="http://api.rubyonrails.org/classes/ActionController/MimeResponds.html">Variant Response</a> 来针对部分区别大的页面做两套或多套 views</h3>
-<pre class="highlight ruby"><code><span class="c1"># application_controller.rb</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># application_controller.rb</span>
 
 <span class="n">before_action</span> <span class="ss">:detect_browser</span>
 
@@ -107,18 +107,18 @@
 <span class="k">def</span> <span class="nf">detect_browser</span>
   <span class="n">request</span><span class="p">.</span><span class="nf">variant</span> <span class="o">=</span> <span class="ss">:mobile</span> <span class="k">if</span> <span class="no">Browser</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">ua: </span><span class="n">request</span><span class="p">.</span><span class="nf">env</span><span class="p">[</span><span class="s1">'HTTP_USER_AGENT'</span><span class="p">]).</span><span class="nf">mobile?</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>需要拆分的页面，做成如下形式：</p>
-<pre class="highlight plaintext"><code>app/views/pages/home.erb
+<div class="highlight"><pre class="highlight plaintext"><code>app/views/pages/home.erb
 app/views/pages/home.html+mobile.erb # 文件名格式为 响应格式+设备名
-</code></pre>
+</code></pre></div>
 <h3>4. 添加 helper，方便复杂的情况下调用，比如支付</h3>
-<pre class="highlight ruby"><code><span class="c1"># application_helper.rb</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># application_helper.rb</span>
 
 <span class="k">def</span> <span class="nf">browser</span>
   <span class="vi">@_browser</span> <span class="o">||=</span> <span class="no">Browser</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">ua: </span><span class="n">request</span><span class="p">.</span><span class="nf">env</span><span class="p">[</span><span class="s1">'HTTP_USER_AGENT'</span><span class="p">])</span>
 <span class="k">end</span>
-</code></pre><pre class="highlight slim"><code><span class="c">/ 懒得转 erb 格式了，下面这段是 slim 格式的</span>
+</code></pre></div><div class="highlight"><pre class="highlight slim"><code><span class="c">/ 懒得转 erb 格式了，下面这段是 slim 格式的</span>
 <span class="p">-</span> <span class="k">if</span> <span class="n">browser</span><span class="p">.</span><span class="nf">smileback?</span>
   <span class="nt">a</span><span class="nc">.button</span><span class="w"> </span><span class="na">href</span><span class="p">=</span><span class="s">"jdxlsmileback://recharges/#{resource.id}/pay"</span><span class="w"> </span>支付宝付款
   <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'银联付款'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">unionpay: </span><span class="kp">true</span><span class="p">),</span> <span class="s1">'data-no-turbolink'</span> <span class="o">=&gt;</span> <span class="kp">true</span>
@@ -135,7 +135,7 @@ app/views/pages/home.html+mobile.erb # 文件名格式为 响应格式+设备名
   <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'支付宝付款'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">alipay: </span><span class="kp">true</span><span class="p">),</span> <span class="ss">class: </span><span class="s1">'button'</span><span class="p">,</span> <span class="s1">'data-no-turbolink'</span> <span class="o">=&gt;</span> <span class="kp">true</span>
   <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'微信支付'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">scan_wepay: </span><span class="kp">true</span><span class="p">)</span>
   <span class="p">=</span> <span class="n">link_to</span> <span class="s1">'银联付款'</span><span class="p">,</span> <span class="n">pay_recharge_path</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="ss">unionpay: </span><span class="kp">true</span><span class="p">),</span> <span class="s1">'data-no-turbolink'</span> <span class="o">=&gt;</span> <span class="kp">true</span>
-</code></pre>
+</code></pre></div>
 <h2>其它经验</h2>
 
 <ul>
